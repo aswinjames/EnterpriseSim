@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/application.schema.json",
+  "title": "Application",
+  "description": "A Meridian Commerce Group enterprise application (APP-###) per CANON-001 §3. Reference-enterprise records must not contradict CANON's application landscape.",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "name", "purpose", "owner_team", "tech_stack", "criticality", "repository", "status"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/appId" },
+    "name": { "type": "string", "minLength": 1 },
+    "purpose": { "type": "string", "minLength": 1 },
+    "owner_team": { "$ref": "common.schema.json#/$defs/teamId" },
+    "dependencies": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/appId" } },
+    "tech_stack": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "criticality": { "type": "integer", "minimum": 0, "maximum": 3, "description": "CANON-001 criticality tier (0=revenue/safety critical)." },
+    "repository": { "type": "string", "pattern": "^mcg-[a-z0-9-]+$" },
+    "status": { "type": "string", "enum": ["active", "legacy", "deprecated", "incubating"] },
+    "business_unit": { "type": "string", "pattern": "^BU-[A-Z]+$" }
+  },
+  "unevaluatedProperties": false
+}

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "APP-001", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Storefront Web", "purpose": "meridian.com consumer web experience",
+    "owner_team": "TEAM-001", "dependencies": ["APP-005", "APP-006", "APP-004", "APP-007", "APP-024"],
+    "tech_stack": ["Next.js/React", "Node BFF", "TypeScript"], "criticality": 0,
+    "repository": "mcg-storefront-web", "status": "active", "business_unit": "BU-DIGITAL"
+  },
+  {
+    "id": "APP-003", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Checkout Service", "purpose": "Orchestrates checkout and order placement",
+    "owner_team": "TEAM-004", "dependencies": ["APP-004", "APP-007", "APP-012", "APP-010", "APP-009"],
+    "tech_stack": ["Java", "Spring Boot"], "criticality": 0,
+    "repository": "mcg-checkout-service", "status": "active", "business_unit": "BU-DIGITAL"
+  },
+  {
+    "id": "APP-004", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Cart Service", "purpose": "Shopping cart state and pricing preview",
+    "owner_team": "TEAM-004", "dependencies": ["APP-005", "APP-007", "APP-008"],
+    "tech_stack": ["Go", "Redis"], "criticality": 0,
+    "repository": "mcg-cart-service", "status": "active", "business_unit": "BU-DIGITAL"
+  },
+  {
+    "id": "APP-005", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Product Catalog", "purpose": "Canonical product and offer data",
+    "owner_team": "TEAM-005", "dependencies": ["APP-020"],
+    "tech_stack": ["Java", "PostgreSQL", "OpenSearch"], "criticality": 0,
+    "repository": "mcg-catalog-service", "status": "active", "business_unit": "BU-DIGITAL"
+  },
+  {
+    "id": "APP-006", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Search & Browse", "purpose": "Product search, browse and recommendations",
+    "owner_team": "TEAM-003", "dependencies": ["APP-005", "APP-020", "APP-024"],
+    "tech_stack": ["Python", "OpenSearch", "Kafka"], "criticality": 0,
+    "repository": "mcg-search-service", "status": "active", "business_unit": "BU-DIGITAL"
+  },
+  {
+    "id": "APP-007", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Pricing Service", "purpose": "Base and regional price resolution",
+    "owner_team": "TEAM-007", "dependencies": ["APP-005", "APP-020"],
+    "tech_stack": ["Java", "PostgreSQL"], "criticality": 0,
+    "repository": "mcg-pricing-service", "status": "active", "business_unit": "BU-DIGITAL"
+  },
+  {
+    "id": "APP-008", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Promotions Engine", "purpose": "Offers, coupons and cart-level discounts",
+    "owner_team": "TEAM-008", "dependencies": ["APP-007", "APP-015"],
+    "tech_stack": ["Kotlin", "Spring Boot", "Redis"], "criticality": 1,
+    "repository": "mcg-promotions-engine", "status": "active", "business_unit": "BU-DIGITAL"
+  },
+  {
+    "id": "APP-009", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Order Management", "purpose": "Order lifecycle and fulfillment orchestration",
+    "owner_team": "TEAM-006", "dependencies": ["APP-010", "APP-011", "APP-012"],
+    "tech_stack": ["Java", "Spring Boot", "PostgreSQL"], "criticality": 0,
+    "repository": "mcg-oms", "status": "active", "business_unit": "BU-LOGISTICS"
+  },
+  {
+    "id": "APP-010", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Inventory Service", "purpose": "Real-time available-to-promise inventory",
+    "owner_team": "TEAM-012", "dependencies": ["APP-011"],
+    "tech_stack": ["Go", "PostgreSQL", "Redis"], "criticality": 0,
+    "repository": "mcg-inventory-service", "status": "active", "business_unit": "BU-LOGISTICS"
+  },
+  {
+    "id": "APP-012", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Payments Service", "purpose": "Payment authorization and capture (PCI scope)",
+    "owner_team": "TEAM-009", "dependencies": ["APP-013", "APP-024"],
+    "tech_stack": ["Java", "Spring Boot", "PostgreSQL"], "criticality": 0,
+    "repository": "mcg-payments-service", "status": "active", "business_unit": "BU-FIN"
+  },
+  {
+    "id": "APP-021", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Customer Portal", "purpose": "My Meridian account, orders and returns self-service",
+    "owner_team": "TEAM-001", "dependencies": ["APP-009", "APP-014", "APP-015"],
+    "tech_stack": ["React", "Node BFF"], "criticality": 1,
+    "repository": "mcg-customer-portal", "status": "active", "business_unit": "BU-DIGITAL"
+  },
+  {
+    "id": "APP-024", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "API Gateway / Edge", "purpose": "Ingress, routing, authN and rate limiting",
+    "owner_team": "TEAM-030", "dependencies": ["APP-014"],
+    "tech_stack": ["Envoy/Kong", "Go", "Lua"], "criticality": 0,
+    "repository": "mcg-api-gateway", "status": "active", "business_unit": "BU-TECH"
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/repository.schema.json",
+  "title": "Repository",
+  "description": "A GitHub Enterprise repository (REPO-###) following CANON-001 §5 naming (mcg-<domain>-<type>).",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "name", "owner_team", "language", "default_branch"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^REPO-\\d{3}$" },
+    "name": { "type": "string", "pattern": "^mcg-[a-z0-9-]+$" },
+    "app": { "$ref": "common.schema.json#/$defs/appId" },
+    "owner_team": { "$ref": "common.schema.json#/$defs/teamId" },
+    "kind": { "type": "string", "enum": ["service", "frontend", "library", "infra", "pipeline", "contracts", "tooling", "e2e"] },
+    "language": { "type": "string" },
+    "criticality": { "type": "integer", "minimum": 0, "maximum": 3 },
+    "default_branch": { "type": "string", "enum": ["main"] },
+    "ci_pipeline": { "type": "string", "description": "Golden-path pipeline id or 'azure-devops' for the legacy .NET estate." },
+    "visibility": { "type": "string", "enum": ["internal"] }
+  },
+  "unevaluatedProperties": false
+}

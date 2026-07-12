@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/team.schema.json",
+  "title": "Team",
+  "description": "An engineering squad (TEAM-###) per CANON-001 §2. Ownership is single and non-negotiable (you build it, you run it).",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "name", "domain", "charter", "owns"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/teamId" },
+    "name": { "type": "string", "minLength": 1 },
+    "domain": { "type": "string", "description": "Engineering domain / horizontal function code (e.g. DOM-COMMERCE, PLAT)." },
+    "charter": { "type": "string", "minLength": 1 },
+    "owns": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/appId" } },
+    "repositories": { "type": "array", "items": { "type": "string", "pattern": "^mcg-[a-z0-9-]+$" } },
+    "on_call": { "type": "boolean" }
+  },
+  "unevaluatedProperties": false
+}

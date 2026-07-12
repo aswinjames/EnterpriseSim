@@ -1,0 +1,64 @@
+[
+  {
+    "id": "TEAM-001", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Storefront Experience", "domain": "DOM-STORE",
+    "charter": "Owns the meridian.com web storefront and the My Meridian customer portal, including the shared frontend design system.",
+    "owns": ["APP-001", "APP-021"],
+    "repositories": ["mcg-storefront-web", "mcg-customer-portal", "mcg-design-system"], "on_call": true
+  },
+  {
+    "id": "TEAM-003", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Search & Discovery", "domain": "DOM-STORE",
+    "charter": "Owns product search, browse and recommendations; relevance quality and index freshness.",
+    "owns": ["APP-006"], "repositories": ["mcg-search-service"], "on_call": true
+  },
+  {
+    "id": "TEAM-004", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Cart & Checkout", "domain": "DOM-COMMERCE",
+    "charter": "Owns the cart and the checkout orchestration path from cart to placed order.",
+    "owns": ["APP-003", "APP-004"], "repositories": ["mcg-checkout-service", "mcg-cart-service"], "on_call": true
+  },
+  {
+    "id": "TEAM-005", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Catalog", "domain": "DOM-COMMERCE",
+    "charter": "Owns canonical product and offer data and its ingestion from the data platform.",
+    "owns": ["APP-005"], "repositories": ["mcg-catalog-service"], "on_call": true
+  },
+  {
+    "id": "TEAM-006", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Order Management", "domain": "DOM-COMMERCE",
+    "charter": "Owns the order lifecycle and fulfillment orchestration across inventory, warehouse and payments.",
+    "owns": ["APP-009"], "repositories": ["mcg-oms"], "on_call": true
+  },
+  {
+    "id": "TEAM-007", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Pricing", "domain": "DOM-PRICING",
+    "charter": "Owns base and regional price resolution and price-consistency guarantees.",
+    "owns": ["APP-007"], "repositories": ["mcg-pricing-service"], "on_call": true
+  },
+  {
+    "id": "TEAM-008", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Promotions & Offers", "domain": "DOM-PRICING",
+    "charter": "Owns offers, coupons and cart-level discounts, including promotion-cache correctness.",
+    "owns": ["APP-008"], "repositories": ["mcg-promotions-engine"], "on_call": true
+  },
+  {
+    "id": "TEAM-009", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Payments", "domain": "DOM-PAYMENTS",
+    "charter": "Owns payment authorization and capture within the PCI cardholder-data boundary.",
+    "owns": ["APP-012"], "repositories": ["mcg-payments-service"], "on_call": true
+  },
+  {
+    "id": "TEAM-012", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Inventory", "domain": "DOM-FULFIL",
+    "charter": "Owns real-time available-to-promise inventory and reservation semantics.",
+    "owns": ["APP-010"], "repositories": ["mcg-inventory-service"], "on_call": true
+  },
+  {
+    "id": "TEAM-030", "schema_version": "2020-12.v1", "created_at": "2026-01-01T00:00:00Z",
+    "name": "Core Platform", "domain": "PLAT",
+    "charter": "Owns the API gateway/edge and shared platform capabilities: libraries, API/event contracts, infrastructure and feature flags.",
+    "owns": ["APP-024"],
+    "repositories": ["mcg-api-gateway", "mcg-platform-libs", "mcg-contracts", "mcg-infra", "mcg-feature-flags"], "on_call": true
+  }
+]

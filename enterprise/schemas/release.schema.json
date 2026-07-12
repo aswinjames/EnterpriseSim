@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/release.schema.json",
+  "title": "Release",
+  "description": "A coordinated fortnightly release train (REL-YYYY-###) per CANON-001 §7.2.",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "name", "date", "sprint", "apps", "status"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/releaseId" },
+    "name": { "type": "string", "minLength": 1 },
+    "date": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "sprint": { "type": "integer", "minimum": 1 },
+    "theme": { "type": "string" },
+    "apps": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/appId" } },
+    "included_stories": { "type": "array", "items": { "type": "string", "pattern": "^[A-Z]{2,4}-\\d+$" } },
+    "included_prs": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/prId" } },
+    "highlights": { "type": "array", "items": { "type": "string" } },
+    "related_incidents": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/incidentId" } },
+    "status": { "type": "string", "enum": ["planned", "released", "rolled_back"] }
+  },
+  "unevaluatedProperties": false
+}
