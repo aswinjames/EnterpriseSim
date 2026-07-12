@@ -1,0 +1,256 @@
+{
+  "run_id": "RUN-0081",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-05-26T09:00:00Z",
+  "worker": "software-engineering-worker",
+  "task": {
+    "type": "feature",
+    "ref": "OMS-1349",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "sprint": 11,
+    "family": "order-saga"
+  },
+  "knowledge_retrieved": [
+    "KN-209",
+    "KN-307"
+  ],
+  "experience_retrieved": [
+    "EXP-206"
+  ],
+  "prior_executions": [
+    "RUN-0073"
+  ],
+  "context": {
+    "id": "CTX-1081",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-26T09:00:00Z",
+    "task": {
+      "type": "jira_story",
+      "ref": "OMS-1349",
+      "app": "APP-009",
+      "repo": "mcg-oms"
+    },
+    "intent_ref": "PLAN-1081",
+    "model_budget": {
+      "window_tokens": 200000,
+      "reserved_output": 8000
+    },
+    "included": [
+      {
+        "source": "KN-209",
+        "kind": "knowledge",
+        "reason": "relevant order-saga rule/doc",
+        "score": 0.87
+      },
+      {
+        "source": "KN-307",
+        "kind": "knowledge",
+        "reason": "relevant order-saga rule/doc",
+        "score": 0.87
+      },
+      {
+        "source": "EXP-206",
+        "kind": "experience",
+        "reason": "prior order-saga lesson",
+        "score": 0.86
+      }
+    ],
+    "excluded": [],
+    "coverage_confidence": 0.85,
+    "signals": {
+      "hit_ratio": 0.8,
+      "budget_utilization": 0.49,
+      "staleness_index": 0.1
+    }
+  },
+  "decision": {
+    "id": "DEC-0081",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-26T11:00:00Z",
+    "plan": "PLAN-1081",
+    "choice": "proceed",
+    "rationale": "Applied EXP-206; fused confidence adequate.",
+    "fused_confidence": 0.85,
+    "inputs": {
+      "context": 0.85,
+      "knowledge": 0.86,
+      "experience": 0.81,
+      "evaluation": 0.88
+    },
+    "worker": "software-engineering-worker",
+    "trace_seq": 1
+  },
+  "plan": {
+    "id": "PLAN-1081",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-26T10:00:00Z",
+    "task": "OMS-1349",
+    "app": "APP-009",
+    "intent": "Feature for order-saga: Saga compensations must be idempotent and tested for partial",
+    "success_criteria": [
+      "Task acceptance criteria met.",
+      "No regression of the known failure class.",
+      "Applies prior lesson EXP-206"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "action": "analyze order-saga change site",
+        "tool": "repo"
+      },
+      {
+        "n": 2,
+        "action": "implement order-saga change",
+        "tool": "repo"
+      },
+      {
+        "n": 3,
+        "action": "add regression test for Saga compensations must be idempotent an",
+        "tool": "repo"
+      },
+      {
+        "n": 4,
+        "action": "run tests",
+        "tool": "ci",
+        "expect": "TR pass"
+      },
+      {
+        "n": 5,
+        "action": "open PR",
+        "tool": "github"
+      }
+    ],
+    "rollback": "Feature-flag or revert; expand-contract migration if schema touched.",
+    "risk_tier": 0,
+    "routing": {
+      "model_class": "high-reasoning",
+      "reason": "tier 0 order-saga change"
+    },
+    "applied_experience": [
+      "EXP-206"
+    ]
+  },
+  "execution": {
+    "id": "EXE-0081",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-27T14:00:00Z",
+    "plan": "PLAN-1081",
+    "step": 5,
+    "tool": "github",
+    "directives": {
+      "open_pr": true
+    },
+    "artifacts": [
+      {
+        "id": "PR-6081",
+        "schema_version": "2020-12.v1",
+        "created_at": "2026-05-27T14:00:00Z",
+        "artifact_type": "pull_request",
+        "ref": "PR-6081",
+        "uri": "mcg-oms#6081",
+        "repo": "mcg-oms"
+      }
+    ],
+    "status": "succeeded",
+    "worker": "software-engineering-worker",
+    "run_id": "RUN-0081"
+  },
+  "evaluation": {
+    "id": "EVAL-1081",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-28T12:00:00Z",
+    "execution": "PR-6081",
+    "plan": "PLAN-1081",
+    "task": "OMS-1349",
+    "rubric": {
+      "id": "RUBRIC-feature",
+      "version": 2
+    },
+    "objective": [
+      {
+        "gate": "unit_tests",
+        "result": "pass",
+        "evidence": "TR-7081",
+        "weight": 0.3
+      },
+      {
+        "gate": "coverage",
+        "result": "pass",
+        "value": 0.85,
+        "threshold": 0.8,
+        "evidence": "TR-7081",
+        "weight": 0.2
+      },
+      {
+        "gate": "dependency_rule",
+        "result": "pass",
+        "weight": 0.2
+      },
+      {
+        "gate": "security_scan",
+        "result": "pass",
+        "weight": 0.15
+      },
+      {
+        "gate": "regression_check",
+        "result": "pass",
+        "weight": 0.15
+      }
+    ],
+    "rubric_items": [
+      {
+        "item": "order-saga change is correct and maintainable",
+        "result": "pass",
+        "evidence": "reviewer notes",
+        "judgment_confidence": 0.87
+      }
+    ],
+    "verdict": {
+      "outcome": "pass",
+      "score": 0.88,
+      "outcome_confidence": 0.9,
+      "judgment_confidence": 0.87
+    },
+    "regression_check": {
+      "reintroduced_defect": false,
+      "checked_against": [
+        "EXP-206"
+      ]
+    }
+  },
+  "reflection": {
+    "id": "REF-1081",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-28T16:00:00Z",
+    "evaluation": "EVAL-1081",
+    "execution": "PR-6081",
+    "plan": "PLAN-1081",
+    "what_happened": "order-saga task succeeded, applying accumulated experience.",
+    "root_cause": {
+      "category": "missing_experience",
+      "detail": "Applying EXP-206 kept the order-saga failure class from recurring; loop closed.",
+      "confidence": 0.87
+    },
+    "lessons": [],
+    "policy_updates": [],
+    "loop_closed_by": "PR-6081"
+  },
+  "experience_update": {
+    "action": "reinforced",
+    "experience": "EXP-206",
+    "delta": {
+      "application_frequency_inc": 1,
+      "outcome": "pass"
+    }
+  },
+  "confidence": {
+    "context_coverage": 0.85,
+    "knowledge_authority": 0.86,
+    "experience_applicability": 0.81,
+    "evaluation_outcome": 0.88,
+    "evaluation_judgment": 0.87,
+    "fused": 0.85
+  },
+  "outcome": "pass"
+}
