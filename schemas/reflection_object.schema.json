@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/reflection_object.schema.json",
+  "title": "ReflectionObject",
+  "description": "Root-cause reasoning about an evaluated outcome (REF-###). Root cause, not symptom (ADR-0035). Realizes Reflection (ARCH-05).",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "evaluation", "execution", "what_happened", "root_cause"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/reflectionId" },
+    "evaluation": { "$ref": "common.schema.json#/$defs/evaluationId" },
+    "execution": { "$ref": "common.schema.json#/$defs/canonicalId" },
+    "plan": { "$ref": "common.schema.json#/$defs/planId" },
+    "what_happened": { "type": "string", "minLength": 1 },
+    "root_cause": {
+      "type": "object",
+      "required": ["category", "detail", "confidence"],
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "type": "string",
+          "enum": ["missing_knowledge", "missing_experience", "dropped_context", "flawed_plan", "tool_error", "evaluation_gap", "external", "missing_experience_and_test_gap"]
+        },
+        "detail": { "type": "string" },
+        "confidence": { "$ref": "common.schema.json#/$defs/confidence" }
+      }
+    },
+    "lessons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "create_experience": { "$ref": "common.schema.json#/$defs/experienceId" }
+        }
+      }
+    },
+    "policy_updates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "context": { "type": "string" },
+          "planning": { "type": "string" }
+        }
+      }
+    },
+    "loop_closed_by": {
+      "oneOf": [
+        { "$ref": "common.schema.json#/$defs/canonicalId" },
+        { "type": "null" }
+      ]
+    }
+  },
+  "unevaluatedProperties": false
+}

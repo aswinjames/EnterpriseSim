@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/worker_artifact.schema.json",
+  "title": "WorkerArtifact",
+  "description": "A concrete artifact produced by execution (pull request, test run, comment, file, incident action).",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "artifact_type", "ref"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/canonicalId" },
+    "artifact_type": {
+      "type": "string",
+      "enum": ["pull_request", "test_run", "comment", "file", "incident_action", "commit"]
+    },
+    "ref": { "$ref": "common.schema.json#/$defs/canonicalId" },
+    "uri": { "type": "string", "format": "uri-reference" },
+    "repo": { "type": "string" }
+  },
+  "unevaluatedProperties": false
+}

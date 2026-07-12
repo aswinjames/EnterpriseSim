@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/learning_event.schema.json",
+  "title": "LearningEvent",
+  "description": "A discrete change to durable memory or policy emitted by the Learning Engine (ARCH-05). Learning lives outside the model (ADR-0003).",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "kind", "source_reflection", "target", "loop_closed"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/canonicalId" },
+    "kind": {
+      "type": "string",
+      "enum": ["experience_written", "experience_reinforced", "promotion_proposed", "promotion_approved", "policy_updated", "pattern_detected"]
+    },
+    "source_reflection": { "$ref": "common.schema.json#/$defs/reflectionId" },
+    "target": { "$ref": "common.schema.json#/$defs/canonicalId" },
+    "payload": { "type": "object" },
+    "loop_closed": {
+      "type": "boolean",
+      "description": "True once the change has measurably altered a later execution (ADR-0034)."
+    }
+  },
+  "unevaluatedProperties": false
+}

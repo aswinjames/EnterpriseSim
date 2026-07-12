@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/execution_object.schema.json",
+  "title": "ExecutionObject",
+  "description": "Record of a plan step (or plan) executed via tools, producing artifacts. Realizes Execution (CANON-001 §9, Stage 4).",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "plan", "step", "tool", "status"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/canonicalId" },
+    "plan": { "$ref": "common.schema.json#/$defs/planId" },
+    "step": { "type": "integer", "minimum": 0 },
+    "tool": { "type": "string" },
+    "directives": { "type": "object" },
+    "artifacts": { "type": "array", "items": { "$ref": "worker_artifact.schema.json" } },
+    "status": { "type": "string", "enum": ["succeeded", "failed", "partial"] },
+    "error": { "type": ["string", "null"] }
+  },
+  "unevaluatedProperties": false
+}

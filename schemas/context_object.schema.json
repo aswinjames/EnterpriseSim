@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/context_object.schema.json",
+  "title": "ContextObject",
+  "description": "Ephemeral, per-task working set (CTX-###). Never persisted as durable truth (ADR-0006). Realizes the Context Layer (ARCH-01).",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "task", "included", "coverage_confidence"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/contextId" },
+    "task": {
+      "type": "object",
+      "required": ["ref"],
+      "properties": {
+        "type": { "type": "string" },
+        "ref": { "$ref": "common.schema.json#/$defs/canonicalId" },
+        "app": { "$ref": "common.schema.json#/$defs/appId" },
+        "repo": { "type": "string" }
+      }
+    },
+    "intent_ref": { "$ref": "common.schema.json#/$defs/canonicalId" },
+    "model_budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "window_tokens": { "type": "integer", "minimum": 1 },
+        "reserved_output": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "included": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/provenance" } },
+    "excluded": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/provenance" } },
+    "coverage_confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+    "signals": {
+      "type": "object",
+      "description": "Retrieval signals (hit_ratio, budget_utilization, staleness_index, ...).",
+      "additionalProperties": { "type": "number" }
+    }
+  },
+  "unevaluatedProperties": false
+}

@@ -1,0 +1,18 @@
+{
+  "id": "CTX-0118",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-07-01T10:15:00Z",
+  "task": { "type": "jira_story", "ref": "CHK-1421", "app": "APP-003", "repo": "mcg-checkout-service" },
+  "intent_ref": "PLAN-0072",
+  "model_budget": { "window_tokens": 200000, "reserved_output": 8000 },
+  "included": [
+    { "source": "KN-045", "kind": "knowledge", "reason": "defines order-placement invariants", "score": 0.94 },
+    { "source": "KN-052", "kind": "knowledge", "reason": "guest orders need idempotency keys", "score": 0.88 },
+    { "source": "EXP-090", "kind": "experience", "reason": "prior regression on APP-015", "score": 0.91 }
+  ],
+  "excluded": [
+    { "source": "KN-047", "kind": "knowledge", "reason": "dropped for budget; flagged", "score": 0.61 }
+  ],
+  "coverage_confidence": 0.86,
+  "signals": { "hit_ratio": 0.83, "budget_utilization": 0.41, "staleness_index": 0.12 }
+}

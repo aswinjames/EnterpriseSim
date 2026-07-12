@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/worker_execution.schema.json",
+  "title": "WorkerExecution",
+  "description": "An ExecutionObject scoped to a concrete Worker run (adds worker + run_id). Fields mirror execution_object.schema.json.",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "plan", "step", "tool", "status", "worker", "run_id"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/canonicalId" },
+    "plan": { "$ref": "common.schema.json#/$defs/planId" },
+    "step": { "type": "integer", "minimum": 0 },
+    "tool": { "type": "string" },
+    "directives": { "type": "object" },
+    "artifacts": { "type": "array", "items": { "$ref": "worker_artifact.schema.json" } },
+    "status": { "type": "string", "enum": ["succeeded", "failed", "partial"] },
+    "error": { "type": ["string", "null"] },
+    "worker": { "type": "string" },
+    "run_id": { "$ref": "common.schema.json#/$defs/canonicalId" }
+  },
+  "unevaluatedProperties": false
+}

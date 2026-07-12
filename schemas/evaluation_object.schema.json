@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/evaluation_object.schema.json",
+  "title": "EvaluationObject",
+  "description": "Scored, evidence-linked judgment of an execution (EVAL-###). Objective-first (ADR-0015); no score without evidence (ADR-0016); dual confidence (ADR-0017). Realizes the Evaluation Layer (ARCH-04).",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "execution", "plan", "rubric", "verdict"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/evaluationId" },
+    "execution": { "$ref": "common.schema.json#/$defs/canonicalId" },
+    "plan": { "$ref": "common.schema.json#/$defs/planId" },
+    "task": { "$ref": "common.schema.json#/$defs/canonicalId" },
+    "rubric": {
+      "type": "object",
+      "required": ["id", "version"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "version": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "objective": {
+      "type": "array",
+      "description": "Deterministic gate results (tests, coverage, security, dependency rule).",
+      "items": {
+        "type": "object",
+        "required": ["gate", "result", "weight"],
+        "additionalProperties": false,
+        "properties": {
+          "gate": { "type": "string" },
+          "result": { "type": "string", "enum": ["pass", "fail"] },
+          "evidence": { "$ref": "common.schema.json#/$defs/canonicalId" },
+          "value": { "type": "number" },
+          "threshold": { "type": "number" },
+          "note": { "type": "string" },
+          "weight": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      }
+    },
+    "rubric_items": {
+      "type": "array",
+      "description": "Qualitative, possibly model-assisted items — evidence required.",
+      "items": {
+        "type": "object",
+        "required": ["item", "result", "evidence", "judgment_confidence"],
+        "additionalProperties": false,
+        "properties": {
+          "item": { "type": "string" },
+          "result": { "type": "string", "enum": ["pass", "partial", "fail"] },
+          "evidence": { "type": "string" },
+          "judgment_confidence": { "$ref": "common.schema.json#/$defs/confidence" }
+        }
+      }
+    },
+    "verdict": {
+      "type": "object",
+      "required": ["outcome", "score", "outcome_confidence", "judgment_confidence"],
+      "additionalProperties": false,
+      "properties": {
+        "outcome": { "type": "string", "enum": ["pass", "partial", "fail"] },
+        "score": { "$ref": "common.schema.json#/$defs/confidence" },
+        "outcome_confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+        "judgment_confidence": { "$ref": "common.schema.json#/$defs/confidence" }
+      }
+    },
+    "regression_check": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reintroduced_defect": { "type": "boolean" },
+        "checked_against": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/experienceId" } }
+      }
+    }
+  },
+  "unevaluatedProperties": false
+}

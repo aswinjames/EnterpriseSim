@@ -1,0 +1,26 @@
+{
+  "id": "EXP-090",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-06-20T16:45:00Z",
+  "title": "Guest carts must not create loyalty accounts",
+  "situation": {
+    "task_type": "feature_change",
+    "apps": ["APP-003", "APP-015"],
+    "failure_class": "unintended_side_effect"
+  },
+  "lesson": "When implementing guest flows in Checkout (APP-003), ensure no code path provisions a Loyalty (APP-015) account. A prior change created orphaned loyalty accounts for guests, triggering a data-cleanup incident.",
+  "evidence": {
+    "origin_execution": "PR-0207",
+    "evaluation": "EVAL-0044",
+    "reflection": "REF-0019",
+    "prevented_regressions": ["PR-0312"]
+  },
+  "value": {
+    "application_frequency": 4,
+    "outcome_lift": 0.23,
+    "corroboration": "strong",
+    "contradiction_rate": 0.0
+  },
+  "status": "promotion_candidate",
+  "promoted_to_knowledge": "KN-045"
+}

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/common.schema.json",
+  "title": "EnterpriseSim Common Definitions",
+  "description": "Shared $defs for all ECL object schemas. Canonical ID patterns follow CANON-001 §6. IDs are globally unique and never reused.",
+  "$defs": {
+    "canonicalId": {
+      "type": "string",
+      "description": "Any canonical ECL identifier or Jira project-key issue reference. ECL prefixes (CANON, KN, CTX, PLAN, EXP, EVAL, REF, APP, TEAM, PR, REL, INC, TC, TS, TR, ...) follow CANON-001 §6; Jira issues use per-project keys such as CHK-1421, OMS-980, PAY-312 per CANON-001 §5.",
+      "pattern": "^((CANON|BU|TEAM|APP|SVC|REPO|ADR|RFC|PR|REL|INC|TC|TS|TR|KN|CTX|PLAN|EXP|EVAL|REF)-[A-Za-z0-9-]+|[A-Z]{2,4}-\\d+)$"
+    },
+    "knowledgeId":   { "type": "string", "pattern": "^KN-\\d{3,}$" },
+    "contextId":     { "type": "string", "pattern": "^CTX-\\d{3,}$" },
+    "planId":        { "type": "string", "pattern": "^PLAN-\\d{3,}$" },
+    "experienceId":  { "type": "string", "pattern": "^EXP-\\d{3,}$" },
+    "evaluationId":  { "type": "string", "pattern": "^EVAL-\\d{3,}$" },
+    "reflectionId":  { "type": "string", "pattern": "^REF-\\d{3,}$" },
+    "appId":         { "type": "string", "pattern": "^APP-\\d{3}$" },
+    "teamId":        { "type": "string", "pattern": "^TEAM-\\d{3}$" },
+    "prId":          { "type": "string", "pattern": "^PR-\\d{4,}$" },
+    "testRunId":     { "type": "string", "pattern": "^TR-\\d{4,}$" },
+    "incidentId":    { "type": "string", "pattern": "^INC-\\d{4}-\\d{3}$" },
+    "releaseId":     { "type": "string", "pattern": "^REL-\\d{4}-\\d{3}$" },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 / RFC-3339 timestamp, e.g. 2026-06-30T12:00:00Z."
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "A confidence in [0.0, 1.0] (see RFC-0009)."
+    },
+    "sensitivity": {
+      "type": "string",
+      "enum": ["public", "internal", "pci", "pii"],
+      "description": "Classification that must travel with the data (ADR-0043)."
+    },
+    "provenance": {
+      "type": "object",
+      "description": "Where a piece of information came from and why it was selected.",
+      "additionalProperties": false,
+      "required": ["source", "kind", "reason", "score"],
+      "properties": {
+        "source": { "$ref": "#/$defs/canonicalId" },
+        "kind": { "type": "string", "enum": ["knowledge", "experience", "code", "state"] },
+        "reason": { "type": "string", "minLength": 1 },
+        "score": { "$ref": "#/$defs/confidence" },
+        "tokens": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Free-form, additive metadata. Never used to carry required semantics.",
+      "additionalProperties": true
+    },
+    "eclObjectBase": {
+      "type": "object",
+      "description": "Fields common to every persisted ECL artifact.",
+      "required": ["id", "schema_version", "created_at"],
+      "properties": {
+        "id": { "$ref": "#/$defs/canonicalId" },
+        "schema_version": {
+          "type": "string",
+          "description": "The schema version this instance conforms to (RFC-0021).",
+          "pattern": "^2020-12\\.v\\d+$"
+        },
+        "created_at": { "$ref": "#/$defs/timestamp" },
+        "metadata": { "$ref": "#/$defs/metadata" }
+      }
+    }
+  }
+}

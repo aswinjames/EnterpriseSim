@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/planning_object.schema.json",
+  "title": "PlanningObject",
+  "description": "An explicit, testable plan (PLAN-###) produced by Decision Intelligence (ARCH-06). The commitment executed and evaluated against.",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "task", "intent", "success_criteria", "steps", "rollback", "risk_tier"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/planId" },
+    "task": { "$ref": "common.schema.json#/$defs/canonicalId" },
+    "app": { "$ref": "common.schema.json#/$defs/appId" },
+    "intent": { "type": "string", "minLength": 1 },
+    "success_criteria": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["n", "action", "tool"],
+        "additionalProperties": false,
+        "properties": {
+          "n": { "type": "integer", "minimum": 1 },
+          "action": { "type": "string" },
+          "tool": { "type": "string" },
+          "expect": { "type": "string" }
+        }
+      }
+    },
+    "rollback": { "type": "string", "minLength": 1 },
+    "risk_tier": { "type": "integer", "minimum": 0, "maximum": 3, "description": "CANON-001 criticality tier." },
+    "applied_experience": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/experienceId" } },
+    "supersedes": { "$ref": "common.schema.json#/$defs/planId" },
+    "routing": {
+      "type": "object",
+      "properties": {
+        "model_class": { "type": "string" },
+        "reason": { "type": "string" }
+      }
+    }
+  },
+  "unevaluatedProperties": false
+}

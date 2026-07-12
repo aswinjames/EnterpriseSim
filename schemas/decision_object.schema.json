@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/decision_object.schema.json",
+  "title": "DecisionObject",
+  "description": "A single control decision made by Decision Intelligence (ARCH-06), with fused confidence and rationale.",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "plan", "choice", "rationale", "fused_confidence"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/canonicalId" },
+    "plan": { "$ref": "common.schema.json#/$defs/planId" },
+    "choice": { "type": "string", "enum": ["proceed", "re-retrieve", "replan", "retry", "escalate", "abort"] },
+    "rationale": { "type": "string", "minLength": 1 },
+    "fused_confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+    "inputs": {
+      "type": "object",
+      "description": "Per-layer confidences that were fused (context, knowledge, experience, evaluation).",
+      "additionalProperties": { "$ref": "common.schema.json#/$defs/confidence" }
+    },
+    "policy_verdict": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "allowed": { "type": "boolean" },
+        "reason": { "type": "string" },
+        "requires_human": { "type": "boolean" }
+      }
+    }
+  },
+  "unevaluatedProperties": false
+}

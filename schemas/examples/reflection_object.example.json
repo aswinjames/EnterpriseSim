@@ -1,0 +1,20 @@
+{
+  "id": "REF-0019",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-06-20T16:40:00Z",
+  "evaluation": "EVAL-0044",
+  "execution": "PR-0207",
+  "plan": "PLAN-0051",
+  "what_happened": "Guest checkout implementation created a Loyalty (APP-015) account for every guest order, producing orphaned accounts. Tests passed because none asserted the negative case.",
+  "root_cause": {
+    "category": "missing_experience_and_test_gap",
+    "detail": "No prior experience warned about the APP-003 -> APP-015 side effect, and the plan did not include a negative assertion. Context CTX-0091 did NOT include the loyalty domain rules (dropped for budget).",
+    "confidence": 0.88
+  },
+  "lessons": [{ "create_experience": "EXP-090" }],
+  "policy_updates": [
+    { "context": "for APP-003 feature changes, always retrieve APP-015 domain rules (raise priority)" },
+    { "planning": "feature-change plans must include negative-side-effect assertions" }
+  ],
+  "loop_closed_by": "PR-0312"
+}

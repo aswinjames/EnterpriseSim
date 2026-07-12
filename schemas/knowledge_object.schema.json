@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/knowledge_object.schema.json",
+  "title": "KnowledgeObject",
+  "description": "Durable, governed enterprise truth (KN-###). Immutable once published (ADR-0004). Realizes the Knowledge Layer (ARCH-02).",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "title", "body", "owner_team", "sensitivity", "authority", "version", "status"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/knowledgeId" },
+    "title": { "type": "string", "minLength": 1 },
+    "body": { "type": "string", "minLength": 1 },
+    "owner_team": { "$ref": "common.schema.json#/$defs/teamId" },
+    "app": { "$ref": "common.schema.json#/$defs/appId" },
+    "canon_refs": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^CANON-\\d{3}(#.*)?$" }
+    },
+    "sensitivity": { "$ref": "common.schema.json#/$defs/sensitivity" },
+    "authority": { "type": "string", "enum": ["canon", "owner-approved", "provisional"] },
+    "version": { "type": "integer", "minimum": 1 },
+    "status": { "type": "string", "enum": ["drafted", "in_review", "approved", "published", "stale", "deprecated"] },
+    "superseded_by": { "$ref": "common.schema.json#/$defs/knowledgeId" },
+    "freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "last_validated": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "sla_days": { "type": "integer", "minimum": 1 },
+        "index": { "$ref": "common.schema.json#/$defs/confidence" }
+      }
+    },
+    "relations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "$ref": "common.schema.json#/$defs/canonicalId" }
+      }
+    },
+    "promoted_from_experience": { "$ref": "common.schema.json#/$defs/experienceId" }
+  },
+  "unevaluatedProperties": false
+}

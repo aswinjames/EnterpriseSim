@@ -1,0 +1,21 @@
+{
+  "id": "EVAL-0061",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-07-01T14:05:00Z",
+  "execution": "PR-0312",
+  "plan": "PLAN-0072",
+  "task": "CHK-1421",
+  "rubric": { "id": "RUBRIC-feature-change", "version": 3 },
+  "objective": [
+    { "gate": "unit_tests", "result": "pass", "evidence": "TR-0442", "weight": 0.25 },
+    { "gate": "coverage", "result": "pass", "value": 0.84, "threshold": 0.80, "evidence": "TR-0442", "weight": 0.15 },
+    { "gate": "contract_tests", "result": "pass", "evidence": "TR-0443", "weight": 0.15 },
+    { "gate": "dependency_rule", "result": "pass", "note": "no reverse dep APP-012->APP-003", "weight": 0.10 }
+  ],
+  "rubric_items": [
+    { "item": "guest flow avoids APP-015 side effect", "result": "pass", "evidence": "test GuestNoLoyaltyTest", "judgment_confidence": 0.98 },
+    { "item": "code clarity / maintainability", "result": "partial", "evidence": "reviewer notes", "judgment_confidence": 0.62 }
+  ],
+  "verdict": { "outcome": "pass", "score": 0.91, "outcome_confidence": 0.90, "judgment_confidence": 0.88 },
+  "regression_check": { "reintroduced_defect": false, "checked_against": ["EXP-090"] }
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/worker_decision.schema.json",
+  "title": "WorkerDecision",
+  "description": "A DecisionObject as emitted onto a concrete Worker run's decision trace (adds worker + trace_seq). Fields mirror decision_object.schema.json.",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "plan", "choice", "rationale", "fused_confidence", "worker", "trace_seq"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/canonicalId" },
+    "plan": { "$ref": "common.schema.json#/$defs/planId" },
+    "choice": { "type": "string", "enum": ["proceed", "re-retrieve", "replan", "retry", "escalate", "abort"] },
+    "rationale": { "type": "string", "minLength": 1 },
+    "fused_confidence": { "$ref": "common.schema.json#/$defs/confidence" },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": { "$ref": "common.schema.json#/$defs/confidence" }
+    },
+    "worker": { "type": "string", "description": "Worker type name, e.g. qa-worker." },
+    "trace_seq": { "type": "integer", "minimum": 0, "description": "Monotonic position in the run's decision trace." }
+  },
+  "unevaluatedProperties": false
+}

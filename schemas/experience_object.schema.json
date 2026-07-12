@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/experience_object.schema.json",
+  "title": "ExperienceObject",
+  "description": "Accumulated, situation-linked lesson (EXP-###). Append-only (ADR-0005). Realizes the Experience Layer (ARCH-03).",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "title", "situation", "lesson", "evidence", "status"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/experienceId" },
+    "title": { "type": "string", "minLength": 1 },
+    "situation": {
+      "type": "object",
+      "required": ["task_type", "apps"],
+      "additionalProperties": true,
+      "properties": {
+        "task_type": { "type": "string" },
+        "apps": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/appId" } },
+        "failure_class": { "type": "string" }
+      }
+    },
+    "lesson": { "type": "string", "minLength": 1 },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "origin_execution": { "$ref": "common.schema.json#/$defs/canonicalId" },
+        "evaluation": { "$ref": "common.schema.json#/$defs/evaluationId" },
+        "reflection": { "$ref": "common.schema.json#/$defs/reflectionId" },
+        "prevented_regressions": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/canonicalId" } }
+      }
+    },
+    "value": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "application_frequency": { "type": "integer", "minimum": 0 },
+        "outcome_lift": { "type": "number" },
+        "corroboration": { "type": "string", "enum": ["none", "weak", "moderate", "strong"] },
+        "contradiction_rate": { "$ref": "common.schema.json#/$defs/confidence" }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["captured", "indexed", "retrievable", "applied", "reinforced", "promotion_candidate", "promoted", "downweighted"]
+    },
+    "promoted_to_knowledge": { "$ref": "common.schema.json#/$defs/knowledgeId" }
+  },
+  "unevaluatedProperties": false
+}
