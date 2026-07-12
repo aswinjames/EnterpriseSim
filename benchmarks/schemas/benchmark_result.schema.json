@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/benchmark_result.schema.json",
+  "title": "BenchmarkResult",
+  "description": "A scored result within a run (BRES-####): either a single case (scope=case) or an aggregate over cases/repeats (scope=aggregate). Objective-first, evidence-linked, dual-confidence — the same discipline as the Evaluation Layer (ARCH-04; ADR-0015/0016/0017) applied to benchmarking (RFC-0026).",
+  "type": "object",
+  "allOf": [{ "$ref": "benchmark_common.schema.json#/$defs/benchmarkObjectBase" }],
+  "required": ["id", "suite", "run", "scope", "verdict", "score", "outcome_confidence", "judgment_confidence"],
+  "properties": {
+    "id": { "$ref": "benchmark_common.schema.json#/$defs/resultId" },
+    "run": { "$ref": "benchmark_common.schema.json#/$defs/runId" },
+    "scope": { "type": "string", "enum": ["case", "aggregate"] },
+    "case": { "$ref": "benchmark_common.schema.json#/$defs/caseId", "description": "Required when scope=case." },
+    "verdict": { "$ref": "benchmark_common.schema.json#/$defs/verdict" },
+    "score": { "$ref": "benchmark_common.schema.json#/$defs/score" },
+    "outcome_confidence": {
+      "$ref": "common.schema.json#/$defs/confidence",
+      "description": "How good the work is (mirrors ARCH-04 outcome confidence)."
+    },
+    "judgment_confidence": {
+      "$ref": "common.schema.json#/$defs/confidence",
+      "description": "How certain the scoring itself is. Objective-heavy results are high; model-assisted rubric items lower it (ADR-0017)."
+    },
+    "objective": {
+      "type": "array",
+      "description": "Deterministic gate results (tests, coverage, retrieval precision/recall, latency budget, dependency rule, ...).",
+      "items": { "$ref": "benchmark_common.schema.json#/$defs/gateResult" }
+    },
+    "rubric_items": {
+      "type": "array",
+      "description": "Qualitative, possibly model-assisted items — evidence required.",
+      "items": { "$ref": "benchmark_common.schema.json#/$defs/rubricItemResult" }
+    },
+    "evidence": {
+      "type": "array",
+      "description": "Linked evidence for the result (ADR-0016). Ties the score back to concrete ECL/MCG artifacts.",
+      "items": { "$ref": "benchmark_common.schema.json#/$defs/evidenceRef" }
+    },
+    "repeats": { "type": "integer", "minimum": 1, "description": "Number of repeated executions this result aggregates." },
+    "score_mean": { "$ref": "benchmark_common.schema.json#/$defs/score" },
+    "score_stddev": { "type": "number", "minimum": 0 },
+    "confidence_interval": { "$ref": "benchmark_common.schema.json#/$defs/confidenceInterval" },
+    "per_case": {
+      "type": "array",
+      "description": "For scope=aggregate: the per-case result IDs rolled up here.",
+      "items": { "$ref": "benchmark_common.schema.json#/$defs/resultId" }
+    },
+    "calibration": {
+      "type": "object",
+      "description": "Confidence-calibration metrics (BENCH-10). Compares the Worker's stated confidence to observed correctness.",
+      "additionalProperties": false,
+      "properties": {
+        "expected_calibration_error": { "type": "number", "minimum": 0, "maximum": 1 },
+        "brier_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "overconfidence": { "type": "number", "description": "Mean(stated_confidence - observed_accuracy); >0 means overconfident." }
+      }
+    },
+    "cost": {
+      "type": "object",
+      "description": "Reasoning cost accounting (BENCH-13). Provider-neutral where possible.",
+      "additionalProperties": false,
+      "properties": {
+        "model_calls": { "type": "integer", "minimum": 0 },
+        "input_tokens": { "type": "integer", "minimum": 0 },
+        "output_tokens": { "type": "integer", "minimum": 0 },
+        "usd": { "type": "number", "minimum": 0 }
+      }
+    },
+    "latency": {
+      "type": "object",
+      "description": "Latency measurements (BENCH-12), wall-clock and per-phase.",
+      "additionalProperties": false,
+      "properties": {
+        "wall_ms": { "type": "integer", "minimum": 0 },
+        "p50_ms": { "type": "integer", "minimum": 0 },
+        "p95_ms": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "gaming_flags": {
+      "type": "array",
+      "description": "Anti-gaming detections tripped while scoring (ARCH-04). Non-empty flags cap or void the score.",
+      "items": { "type": "string" }
+    }
+  },
+  "unevaluatedProperties": false
+}

@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/benchmark_common.schema.json",
+  "title": "EnterpriseSim Benchmark Common Definitions",
+  "description": "Shared $defs for the benchmark object schemas (RFC-0025 Benchmarking Harness, RFC-0026 Scoring & Leaderboards). Extends the ECL common definitions (common.schema.json) rather than duplicating them. Benchmark IDs follow CANON-001 §6 conventions: globally unique, zero-padded, never reused.",
+  "$defs": {
+    "benchmarkId": {
+      "type": "string",
+      "description": "One of the 13 canonical benchmark suites, BENCH-01 .. BENCH-13.",
+      "pattern": "^BENCH-\\d{2}$"
+    },
+    "caseId": {
+      "type": "string",
+      "description": "A single benchmark case (one task with inputs + ground truth + rubric ref).",
+      "pattern": "^BC-\\d{4,}$"
+    },
+    "runId": {
+      "type": "string",
+      "description": "One Worker+model executing a suite under fixed, captured conditions.",
+      "pattern": "^BR-\\d{4,}$"
+    },
+    "resultId": {
+      "type": "string",
+      "description": "A per-case or aggregate scored result produced within a run.",
+      "pattern": "^BRES-\\d{4,}$"
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "A normalized score in [0.0, 1.0] (RFC-0026). 1.0 == matches ground truth / senior-MCG-engineer quality; 0.0 == no credit."
+    },
+    "eclLayer": {
+      "type": "string",
+      "description": "The ECL component a suite primarily exercises (ARCH-01 .. ARCH-07).",
+      "enum": ["ARCH-01", "ARCH-02", "ARCH-03", "ARCH-04", "ARCH-05", "ARCH-06", "ARCH-07"]
+    },
+    "verdict": {
+      "type": "string",
+      "description": "Objective-first verdict, mirroring the Evaluation Layer (ARCH-04).",
+      "enum": ["pass", "partial", "fail"]
+    },
+    "groundTruthType": {
+      "type": "string",
+      "description": "How the case's ground truth is compared against the Worker's output (RFC-0026).",
+      "enum": ["exact_match", "set_match", "ranking", "numeric", "verdict", "reference_set", "rubric_only"]
+    },
+    "confidenceInterval": {
+      "type": "object",
+      "description": "A two-sided interval for an aggregated score across repeats/seeds (RFC-0026 statistical treatment).",
+      "additionalProperties": false,
+      "required": ["low", "high", "level"],
+      "properties": {
+        "low": { "$ref": "#/$defs/score" },
+        "high": { "$ref": "#/$defs/score" },
+        "level": { "type": "number", "minimum": 0.5, "maximum": 0.999, "description": "Interval level, e.g. 0.95 for a 95% CI." },
+        "method": { "type": "string", "enum": ["bootstrap", "normal", "wilson"], "description": "Estimator used (bootstrap is the harness default)." }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "description": "Reproducibility capture for a run (ADR-0048 Benchmark Reproducibility; RFC-0025). Everything needed to re-run identically.",
+      "additionalProperties": false,
+      "required": ["provider", "model", "seed", "harness_version"],
+      "properties": {
+        "provider": { "type": "string", "description": "Vendor-neutral provider label (e.g. provider-a). Public releases anonymize vendors; the mapping is recorded out-of-band." },
+        "model": { "type": "string", "description": "Model identifier as routed by the Model Gateway (ARCH-07)." },
+        "model_class": { "type": "string", "description": "Routing class (e.g. high-reasoning | balanced | small), per Decision Intelligence routing (ARCH-06)." },
+        "seed": { "type": "integer", "minimum": 0, "description": "Deterministic seed applied to every sampled step in the run." },
+        "temperature": { "type": "number", "minimum": 0.0, "maximum": 2.0 },
+        "harness_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "Benchmark harness SemVer (RFC-0025)." },
+        "gateway_capability_digest": { "type": "string", "description": "Hash of the Model Gateway capability descriptor in effect (ARCH-07), so capability negotiation is reproducible." },
+        "dataset_version": { "type": "string", "description": "Version tag of the frozen case set executed." }
+      }
+    },
+    "gateResult": {
+      "type": "object",
+      "description": "A single deterministic, objective gate result (ADR-0015). Mirrors EvaluationObject.objective for cross-comparability.",
+      "additionalProperties": false,
+      "required": ["gate", "result", "weight"],
+      "properties": {
+        "gate": { "type": "string" },
+        "result": { "type": "string", "enum": ["pass", "fail"] },
+        "evidence": { "$ref": "common.schema.json#/$defs/canonicalId" },
+        "value": { "type": "number" },
+        "threshold": { "type": "number" },
+        "note": { "type": "string" },
+        "weight": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "rubricItemResult": {
+      "type": "object",
+      "description": "A qualitative, possibly model-assisted item — evidence required (ADR-0016), judgment confidence separate (ADR-0017).",
+      "additionalProperties": false,
+      "required": ["item", "result", "evidence", "judgment_confidence"],
+      "properties": {
+        "item": { "type": "string" },
+        "result": { "type": "string", "enum": ["pass", "partial", "fail"] },
+        "evidence": { "type": "string" },
+        "judgment_confidence": { "$ref": "common.schema.json#/$defs/confidence" }
+      }
+    },
+    "evidenceRef": {
+      "type": "object",
+      "description": "One piece of linked evidence justifying a score line. No score without evidence (ADR-0016).",
+      "additionalProperties": false,
+      "required": ["ref", "reason"],
+      "properties": {
+        "ref": { "$ref": "common.schema.json#/$defs/canonicalId" },
+        "kind": {
+          "type": "string",
+          "enum": ["knowledge", "experience", "context", "plan", "execution", "evaluation", "reflection", "test_run", "artifact", "trace"]
+        },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "benchmarkObjectBase": {
+      "type": "object",
+      "description": "Fields common to every persisted benchmark artifact; extends the ECL object base (id, schema_version, created_at, metadata) and adds the owning suite.",
+      "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+      "properties": {
+        "suite": { "$ref": "#/$defs/benchmarkId" }
+      }
+    }
+  }
+}

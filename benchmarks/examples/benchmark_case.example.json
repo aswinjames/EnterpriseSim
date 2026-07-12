@@ -1,0 +1,51 @@
+{
+  "id": "BC-0101",
+  "suite": "BENCH-01",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-07-05T09:00:00Z",
+  "title": "Context assembly for guest checkout (CHK-1421)",
+  "description": "Given the CHK-1421 trigger and the full MCG knowledge/experience corpora, the Worker's Context Layer (ARCH-01) must assemble a working set that surfaces the decisive facts and excludes distractors, within the model budget. Scored against the reference context CTX-0118.",
+  "ecl_layer": "ARCH-01",
+  "task_ref": "CHK-1421",
+  "apps": ["APP-003", "APP-015", "APP-012"],
+  "difficulty": "medium",
+  "inputs": {
+    "trigger": { "type": "jira_story", "ref": "CHK-1421", "repo": "mcg-checkout-service" },
+    "available_corpus": {
+      "knowledge": ["KN-045", "KN-052", "KN-063", "KN-047", "KN-101"],
+      "experience": ["EXP-090", "EXP-055"],
+      "state": ["service-catalog:APP-003"]
+    },
+    "model_budget": { "window_tokens": 200000, "reserved_output": 8000 }
+  },
+  "ground_truth": {
+    "type": "reference_set",
+    "must_include": ["KN-045", "KN-052", "EXP-090"],
+    "must_exclude": ["KN-101"],
+    "expected": {
+      "code": ["mcg-checkout-service/src/checkout/PlaceOrder.java"],
+      "acceptable_optional": ["KN-063", "EXP-055"]
+    },
+    "source": "CTX-0118",
+    "notes": "KN-101 (marketplace seller onboarding) is an out-of-scope distractor; KN-047 (legacy monolith checkout) is a defensible budget drop but not required."
+  },
+  "rubric": { "id": "RUBRIC-context-assembly", "version": 2 },
+  "scoring": {
+    "objective_first": true,
+    "aggregation": "gated_weighted_sum",
+    "metrics": [
+      { "name": "required_items_present", "kind": "objective", "weight": 0.30, "description": "All must_include present AND all must_exclude absent (hard gate)." },
+      { "name": "retrieval_recall", "kind": "objective", "weight": 0.30, "description": "Fraction of ground-truth-relevant items retrieved." },
+      { "name": "retrieval_precision", "kind": "objective", "weight": 0.25, "description": "Fraction of retrieved items that are relevant (penalizes flooding)." },
+      { "name": "composition_quality", "kind": "rubric", "weight": 0.15, "description": "Ordering, provenance completeness and budget discipline (model-assisted, evidence-linked)." }
+    ]
+  },
+  "thresholds": { "pass": 0.80, "partial": 0.60 },
+  "repeats": 5,
+  "anti_gaming": [
+    "must_exclude distractors penalize dumping the whole corpus",
+    "precision term makes 'retrieve everything' score poorly",
+    "provenance required for every included item or composition_quality is capped"
+  ],
+  "references": ["CHK-1421", "APP-003", "CTX-0118", "KN-045", "KN-052", "KN-063", "KN-047", "KN-101", "EXP-090", "EXP-055"]
+}

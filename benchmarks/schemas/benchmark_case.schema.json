@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/benchmark_case.schema.json",
+  "title": "BenchmarkCase",
+  "description": "A single benchmark task (BC-####): fixed inputs, machine-checkable ground truth, a rubric reference and an objective-first scoring recipe. Cases are frozen and versioned so runs are reproducible (ADR-0048). Realizes RFC-0025 task-suite cases against the MCG world (CANON-001) and the ECL (ARCH-01..07).",
+  "type": "object",
+  "allOf": [{ "$ref": "benchmark_common.schema.json#/$defs/benchmarkObjectBase" }],
+  "required": ["id", "suite", "title", "ecl_layer", "inputs", "ground_truth", "scoring", "thresholds"],
+  "properties": {
+    "id": { "$ref": "benchmark_common.schema.json#/$defs/caseId" },
+    "title": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "ecl_layer": { "$ref": "benchmark_common.schema.json#/$defs/eclLayer" },
+    "task_ref": {
+      "$ref": "common.schema.json#/$defs/canonicalId",
+      "description": "The MCG artifact the case is anchored on (e.g. a Jira issue CHK-1421 or incident INC-2026-007)."
+    },
+    "apps": {
+      "type": "array",
+      "description": "MCG applications in scope for the case (CANON-001 §3).",
+      "items": { "$ref": "common.schema.json#/$defs/appId" }
+    },
+    "difficulty": { "type": "string", "enum": ["easy", "medium", "hard"] },
+    "inputs": {
+      "type": "object",
+      "description": "Exactly what the Worker is given for this case: the trigger, any provided context corpus handles, and constraints. Shape varies by suite; kept open here and pinned by each suite spec (specs/BENCH-NN.md).",
+      "additionalProperties": true
+    },
+    "ground_truth": {
+      "type": "object",
+      "description": "The reference the output is scored against. Machine-checkable wherever possible (objective-first, ADR-0015).",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "$ref": "benchmark_common.schema.json#/$defs/groundTruthType" },
+        "expected": { "description": "The reference answer; shape depends on ground_truth.type (a value, a set, a ranking, a verdict, etc.)." },
+        "must_include": {
+          "type": "array",
+          "description": "Canonical IDs that MUST appear in the output (e.g. required KN-###/EXP-### in a context set).",
+          "items": { "$ref": "common.schema.json#/$defs/canonicalId" }
+        },
+        "must_exclude": {
+          "type": "array",
+          "description": "Canonical IDs that MUST NOT appear (distractors / out-of-scope items).",
+          "items": { "$ref": "common.schema.json#/$defs/canonicalId" }
+        },
+        "tolerance": { "type": "number", "minimum": 0, "description": "Allowed absolute deviation for numeric ground truth." },
+        "source": { "$ref": "common.schema.json#/$defs/canonicalId", "description": "The canonical artifact establishing the ground truth (audit anchor)." },
+        "notes": { "type": "string" }
+      }
+    },
+    "rubric": {
+      "type": "object",
+      "description": "The versioned rubric applied by the Evaluation Layer (ARCH-04). Mirrors EvaluationObject.rubric.",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": { "type": "string" },
+        "version": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "scoring": {
+      "type": "object",
+      "description": "How the case is scored. Objective gates are weighted above model-assisted rubric items (ADR-0015).",
+      "additionalProperties": false,
+      "required": ["objective_first", "metrics"],
+      "properties": {
+        "objective_first": { "type": "boolean", "description": "Must be true for scored suites: deterministic gates dominate the score." },
+        "aggregation": { "type": "string", "enum": ["weighted_sum", "gated_weighted_sum", "min"], "description": "How metric scores combine (RFC-0026)." },
+        "metrics": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "kind", "weight"],
+            "properties": {
+              "name": { "type": "string" },
+              "kind": { "type": "string", "enum": ["objective", "rubric"] },
+              "weight": { "type": "number", "minimum": 0, "maximum": 1 },
+              "description": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "thresholds": {
+      "type": "object",
+      "description": "Score cut-points for the pass/partial/fail verdict (RFC-0026).",
+      "additionalProperties": false,
+      "required": ["pass"],
+      "properties": {
+        "pass": { "$ref": "benchmark_common.schema.json#/$defs/score" },
+        "partial": { "$ref": "benchmark_common.schema.json#/$defs/score" }
+      }
+    },
+    "repeats": { "type": "integer", "minimum": 1, "description": "Recommended repeats (distinct seeds) for statistical treatment (RFC-0026)." },
+    "anti_gaming": {
+      "type": "array",
+      "description": "Named guards against metric gaming for this case (ARCH-04 failure modes).",
+      "items": { "type": "string" }
+    },
+    "references": {
+      "type": "array",
+      "description": "MCG / ECL artifacts the case cites, preserving referential integrity (CANON-001 §6).",
+      "items": { "$ref": "common.schema.json#/$defs/canonicalId" }
+    }
+  },
+  "unevaluatedProperties": false
+}

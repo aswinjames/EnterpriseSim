@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/benchmark_run.schema.json",
+  "title": "BenchmarkRun",
+  "description": "One execution of a suite by a specific Worker+model under fully captured, reproducible conditions (BR-####). The environment block (provider, model, seed, harness version) is what makes a run replayable (ADR-0048; RFC-0025). Model choice is captured, never assumed — the same run definition can target any provider behind the Model Gateway (ARCH-07, ADR-0010).",
+  "type": "object",
+  "allOf": [{ "$ref": "benchmark_common.schema.json#/$defs/benchmarkObjectBase" }],
+  "required": ["id", "suite", "worker", "environment", "cases", "status"],
+  "properties": {
+    "id": { "$ref": "benchmark_common.schema.json#/$defs/runId" },
+    "worker": {
+      "type": "object",
+      "description": "The Enterprise AI Worker implementation under test (sdk.workers.WorkerSpec).",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "description": "Worker type, e.g. mcg-swe-worker, qa-worker (ARCH-07)." },
+        "version": { "type": "string", "description": "Worker implementation version." },
+        "worker_spec": { "type": "string", "description": "Reference to the WorkerSpec (knowledge domains, tools, rubrics, policies) bound for this run." }
+      }
+    },
+    "environment": { "$ref": "benchmark_common.schema.json#/$defs/environment" },
+    "cases": {
+      "type": "array",
+      "description": "The frozen case set executed in this run.",
+      "minItems": 1,
+      "items": { "$ref": "benchmark_common.schema.json#/$defs/caseId" }
+    },
+    "repeats": { "type": "integer", "minimum": 1, "description": "Repeats per case executed in this run (each with a derived seed)." },
+    "started_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "finished_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "status": { "type": "string", "enum": ["completed", "partial", "aborted"] },
+    "result_ref": { "$ref": "benchmark_common.schema.json#/$defs/resultId", "description": "The aggregate BenchmarkResult produced by this run." },
+    "prior_run": { "$ref": "benchmark_common.schema.json#/$defs/runId", "description": "Prior run this one is compared against (e.g. earlier attempt for BENCH-09 Continuous Learning)." },
+    "notes": { "type": "string" }
+  },
+  "unevaluatedProperties": false
+}

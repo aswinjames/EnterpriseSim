@@ -1,0 +1,28 @@
+{
+  "id": "BR-0101",
+  "suite": "BENCH-01",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-07-05T12:00:00Z",
+  "worker": {
+    "name": "mcg-swe-worker",
+    "version": "1.4.0",
+    "worker_spec": "WSPEC-swe-v1"
+  },
+  "environment": {
+    "provider": "provider-a",
+    "model": "provider-a-reasoning-2026-05",
+    "model_class": "high-reasoning",
+    "seed": 20260701,
+    "temperature": 0.2,
+    "harness_version": "1.0.0",
+    "gateway_capability_digest": "cap-9f2a1c",
+    "dataset_version": "bench-2026.07"
+  },
+  "cases": ["BC-0101"],
+  "repeats": 5,
+  "started_at": "2026-07-05T12:00:05Z",
+  "finished_at": "2026-07-05T12:07:41Z",
+  "status": "completed",
+  "result_ref": "BRES-0101",
+  "notes": "BENCH-01 Context Assembly, single case, 5 seeds derived from base seed. Same run definition is replayed against provider-b for BENCH-11 (ADR-0010)."
+}
