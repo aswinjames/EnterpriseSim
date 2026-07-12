@@ -1,0 +1,256 @@
+{
+  "run_id": "RUN-0049",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-04-14T09:00:00Z",
+  "worker": "software-engineering-worker",
+  "task": {
+    "type": "feature",
+    "ref": "CAT-949",
+    "app": "APP-005",
+    "repo": "mcg-catalog-service",
+    "sprint": 8,
+    "family": "catalog-freshness"
+  },
+  "knowledge_retrieved": [
+    "KN-314",
+    "KN-205"
+  ],
+  "experience_retrieved": [
+    "EXP-210"
+  ],
+  "prior_executions": [
+    "RUN-0039"
+  ],
+  "context": {
+    "id": "CTX-1049",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-14T09:00:00Z",
+    "task": {
+      "type": "jira_story",
+      "ref": "CAT-949",
+      "app": "APP-005",
+      "repo": "mcg-catalog-service"
+    },
+    "intent_ref": "PLAN-1049",
+    "model_budget": {
+      "window_tokens": 200000,
+      "reserved_output": 8000
+    },
+    "included": [
+      {
+        "source": "KN-314",
+        "kind": "knowledge",
+        "reason": "relevant catalog-freshness rule/doc",
+        "score": 0.9
+      },
+      {
+        "source": "KN-205",
+        "kind": "knowledge",
+        "reason": "relevant catalog-freshness rule/doc",
+        "score": 0.9
+      },
+      {
+        "source": "EXP-210",
+        "kind": "experience",
+        "reason": "prior catalog-freshness lesson",
+        "score": 0.9
+      }
+    ],
+    "excluded": [],
+    "coverage_confidence": 0.94,
+    "signals": {
+      "hit_ratio": 0.9,
+      "budget_utilization": 0.45,
+      "staleness_index": 0.1
+    }
+  },
+  "decision": {
+    "id": "DEC-0049",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-14T11:00:00Z",
+    "plan": "PLAN-1049",
+    "choice": "proceed",
+    "rationale": "Applied EXP-210; fused confidence adequate.",
+    "fused_confidence": 0.92,
+    "inputs": {
+      "context": 0.94,
+      "knowledge": 0.89,
+      "experience": 0.94,
+      "evaluation": 0.92
+    },
+    "worker": "software-engineering-worker",
+    "trace_seq": 1
+  },
+  "plan": {
+    "id": "PLAN-1049",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-14T10:00:00Z",
+    "task": "CAT-949",
+    "app": "APP-005",
+    "intent": "Feature for catalog-freshness: Catalog ingestion needs backpressure and data-platform outag",
+    "success_criteria": [
+      "Task acceptance criteria met.",
+      "No regression of the known failure class.",
+      "Applies prior lesson EXP-210"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "action": "analyze catalog-freshness change site",
+        "tool": "repo"
+      },
+      {
+        "n": 2,
+        "action": "implement catalog-freshness change",
+        "tool": "repo"
+      },
+      {
+        "n": 3,
+        "action": "add regression test for Catalog ingestion needs backpressure and",
+        "tool": "repo"
+      },
+      {
+        "n": 4,
+        "action": "run tests",
+        "tool": "ci",
+        "expect": "TR pass"
+      },
+      {
+        "n": 5,
+        "action": "open PR",
+        "tool": "github"
+      }
+    ],
+    "rollback": "Feature-flag or revert; expand-contract migration if schema touched.",
+    "risk_tier": 0,
+    "routing": {
+      "model_class": "high-reasoning",
+      "reason": "tier 0 catalog-freshness change"
+    },
+    "applied_experience": [
+      "EXP-210"
+    ]
+  },
+  "execution": {
+    "id": "EXE-0049",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-15T14:00:00Z",
+    "plan": "PLAN-1049",
+    "step": 5,
+    "tool": "github",
+    "directives": {
+      "open_pr": true
+    },
+    "artifacts": [
+      {
+        "id": "PR-6049",
+        "schema_version": "2020-12.v1",
+        "created_at": "2026-04-15T14:00:00Z",
+        "artifact_type": "pull_request",
+        "ref": "PR-6049",
+        "uri": "mcg-catalog-service#6049",
+        "repo": "mcg-catalog-service"
+      }
+    ],
+    "status": "succeeded",
+    "worker": "software-engineering-worker",
+    "run_id": "RUN-0049"
+  },
+  "evaluation": {
+    "id": "EVAL-1049",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-16T12:00:00Z",
+    "execution": "PR-6049",
+    "plan": "PLAN-1049",
+    "task": "CAT-949",
+    "rubric": {
+      "id": "RUBRIC-feature",
+      "version": 2
+    },
+    "objective": [
+      {
+        "gate": "unit_tests",
+        "result": "pass",
+        "evidence": "TR-7049",
+        "weight": 0.3
+      },
+      {
+        "gate": "coverage",
+        "result": "pass",
+        "value": 0.88,
+        "threshold": 0.8,
+        "evidence": "TR-7049",
+        "weight": 0.2
+      },
+      {
+        "gate": "dependency_rule",
+        "result": "pass",
+        "weight": 0.2
+      },
+      {
+        "gate": "security_scan",
+        "result": "pass",
+        "weight": 0.15
+      },
+      {
+        "gate": "regression_check",
+        "result": "pass",
+        "weight": 0.15
+      }
+    ],
+    "rubric_items": [
+      {
+        "item": "catalog-freshness change is correct and maintainable",
+        "result": "pass",
+        "evidence": "reviewer notes",
+        "judgment_confidence": 0.92
+      }
+    ],
+    "verdict": {
+      "outcome": "pass",
+      "score": 0.92,
+      "outcome_confidence": 0.94,
+      "judgment_confidence": 0.92
+    },
+    "regression_check": {
+      "reintroduced_defect": false,
+      "checked_against": [
+        "EXP-210"
+      ]
+    }
+  },
+  "reflection": {
+    "id": "REF-1049",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-16T16:00:00Z",
+    "evaluation": "EVAL-1049",
+    "execution": "PR-6049",
+    "plan": "PLAN-1049",
+    "what_happened": "catalog-freshness task succeeded, applying accumulated experience.",
+    "root_cause": {
+      "category": "missing_experience",
+      "detail": "Applying EXP-210 kept the catalog-freshness failure class from recurring; loop closed.",
+      "confidence": 0.9
+    },
+    "lessons": [],
+    "policy_updates": [],
+    "loop_closed_by": "PR-6049"
+  },
+  "experience_update": {
+    "action": "reinforced",
+    "experience": "EXP-210",
+    "delta": {
+      "application_frequency_inc": 1,
+      "outcome": "pass"
+    }
+  },
+  "confidence": {
+    "context_coverage": 0.94,
+    "knowledge_authority": 0.89,
+    "experience_applicability": 0.94,
+    "evaluation_outcome": 0.92,
+    "evaluation_judgment": 0.92,
+    "fused": 0.92
+  },
+  "outcome": "pass"
+}

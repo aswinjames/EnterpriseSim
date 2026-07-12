@@ -1,0 +1,271 @@
+{
+  "run_id": "RUN-0054",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-04-14T09:00:00Z",
+  "worker": "software-engineering-worker",
+  "task": {
+    "type": "feature",
+    "ref": "PAY-975",
+    "app": "APP-012",
+    "repo": "mcg-payments-service",
+    "sprint": 8,
+    "family": "payments-3ds"
+  },
+  "knowledge_retrieved": [
+    "KN-052",
+    "KN-258"
+  ],
+  "experience_retrieved": [
+    "EXP-202",
+    "EXP-090"
+  ],
+  "prior_executions": [
+    "RUN-0044"
+  ],
+  "context": {
+    "id": "CTX-1054",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-14T09:00:00Z",
+    "task": {
+      "type": "jira_story",
+      "ref": "PAY-975",
+      "app": "APP-012",
+      "repo": "mcg-payments-service"
+    },
+    "intent_ref": "PLAN-1054",
+    "model_budget": {
+      "window_tokens": 200000,
+      "reserved_output": 8000
+    },
+    "included": [
+      {
+        "source": "KN-052",
+        "kind": "knowledge",
+        "reason": "relevant payments-3ds rule/doc",
+        "score": 0.84
+      },
+      {
+        "source": "KN-258",
+        "kind": "knowledge",
+        "reason": "relevant payments-3ds rule/doc",
+        "score": 0.84
+      },
+      {
+        "source": "EXP-202",
+        "kind": "experience",
+        "reason": "prior payments-3ds lesson",
+        "score": 0.81
+      },
+      {
+        "source": "EXP-090",
+        "kind": "experience",
+        "reason": "prior payments-3ds lesson",
+        "score": 0.81
+      }
+    ],
+    "excluded": [
+      {
+        "source": "KN-047",
+        "kind": "knowledge",
+        "reason": "lower-relevance doc dropped for budget",
+        "score": 0.4
+      }
+    ],
+    "coverage_confidence": 0.72,
+    "signals": {
+      "hit_ratio": 0.68,
+      "budget_utilization": 0.54,
+      "staleness_index": 0.1
+    }
+  },
+  "decision": {
+    "id": "DEC-0054",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-14T11:00:00Z",
+    "plan": "PLAN-1054",
+    "choice": "proceed",
+    "rationale": "Applied EXP-202; fused confidence adequate.",
+    "fused_confidence": 0.75,
+    "inputs": {
+      "context": 0.72,
+      "knowledge": 0.79,
+      "experience": 0.73,
+      "evaluation": 0.76
+    },
+    "worker": "software-engineering-worker",
+    "trace_seq": 1
+  },
+  "plan": {
+    "id": "PLAN-1054",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-14T10:00:00Z",
+    "task": "PAY-975",
+    "app": "APP-012",
+    "intent": "Feature for payments-3ds: 3DS challenge flows need PSP-sandbox contract tests to preve",
+    "success_criteria": [
+      "Task acceptance criteria met.",
+      "No regression of the known failure class.",
+      "Applies prior lesson EXP-202"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "action": "analyze payments-3ds change site",
+        "tool": "repo"
+      },
+      {
+        "n": 2,
+        "action": "implement payments-3ds change",
+        "tool": "repo"
+      },
+      {
+        "n": 3,
+        "action": "add regression test for 3DS challenge flows need PSP-sandbox con",
+        "tool": "repo"
+      },
+      {
+        "n": 4,
+        "action": "run tests",
+        "tool": "ci",
+        "expect": "TR pass"
+      },
+      {
+        "n": 5,
+        "action": "open PR",
+        "tool": "github"
+      }
+    ],
+    "rollback": "Feature-flag or revert; expand-contract migration if schema touched.",
+    "risk_tier": 0,
+    "routing": {
+      "model_class": "high-reasoning",
+      "reason": "tier 0 payments-3ds change"
+    },
+    "applied_experience": [
+      "EXP-202"
+    ]
+  },
+  "execution": {
+    "id": "EXE-0054",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-15T14:00:00Z",
+    "plan": "PLAN-1054",
+    "step": 5,
+    "tool": "github",
+    "directives": {
+      "open_pr": true
+    },
+    "artifacts": [
+      {
+        "id": "PR-6054",
+        "schema_version": "2020-12.v1",
+        "created_at": "2026-04-15T14:00:00Z",
+        "artifact_type": "pull_request",
+        "ref": "PR-6054",
+        "uri": "mcg-payments-service#6054",
+        "repo": "mcg-payments-service"
+      }
+    ],
+    "status": "succeeded",
+    "worker": "software-engineering-worker",
+    "run_id": "RUN-0054"
+  },
+  "evaluation": {
+    "id": "EVAL-1054",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-16T12:00:00Z",
+    "execution": "PR-6054",
+    "plan": "PLAN-1054",
+    "task": "PAY-975",
+    "rubric": {
+      "id": "RUBRIC-feature",
+      "version": 2
+    },
+    "objective": [
+      {
+        "gate": "unit_tests",
+        "result": "pass",
+        "evidence": "TR-7054",
+        "weight": 0.3
+      },
+      {
+        "gate": "coverage",
+        "result": "pass",
+        "value": 0.82,
+        "threshold": 0.8,
+        "evidence": "TR-7054",
+        "weight": 0.2
+      },
+      {
+        "gate": "dependency_rule",
+        "result": "pass",
+        "weight": 0.2
+      },
+      {
+        "gate": "security_scan",
+        "result": "pass",
+        "weight": 0.15
+      },
+      {
+        "gate": "regression_check",
+        "result": "pass",
+        "weight": 0.15
+      }
+    ],
+    "rubric_items": [
+      {
+        "item": "payments-3ds change is correct and maintainable",
+        "result": "pass",
+        "evidence": "reviewer notes",
+        "judgment_confidence": 0.77
+      }
+    ],
+    "verdict": {
+      "outcome": "pass",
+      "score": 0.76,
+      "outcome_confidence": 0.78,
+      "judgment_confidence": 0.77
+    },
+    "regression_check": {
+      "reintroduced_defect": false,
+      "checked_against": [
+        "EXP-202",
+        "EXP-090"
+      ]
+    }
+  },
+  "reflection": {
+    "id": "REF-1054",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-16T16:00:00Z",
+    "evaluation": "EVAL-1054",
+    "execution": "PR-6054",
+    "plan": "PLAN-1054",
+    "what_happened": "payments-3ds task succeeded, applying accumulated experience.",
+    "root_cause": {
+      "category": "missing_experience",
+      "detail": "Applying EXP-202 kept the payments-3ds failure class from recurring; loop closed.",
+      "confidence": 0.84
+    },
+    "lessons": [],
+    "policy_updates": [],
+    "loop_closed_by": "PR-6054"
+  },
+  "experience_update": {
+    "action": "reinforced",
+    "experience": "EXP-202",
+    "delta": {
+      "application_frequency_inc": 1,
+      "outcome": "pass"
+    }
+  },
+  "confidence": {
+    "context_coverage": 0.72,
+    "knowledge_authority": 0.79,
+    "experience_applicability": 0.73,
+    "evaluation_outcome": 0.76,
+    "evaluation_judgment": 0.77,
+    "fused": 0.75
+  },
+  "outcome": "pass"
+}

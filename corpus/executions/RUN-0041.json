@@ -1,0 +1,256 @@
+{
+  "run_id": "RUN-0041",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-03-31T09:00:00Z",
+  "worker": "software-engineering-worker",
+  "task": {
+    "type": "feature",
+    "ref": "CHK-1423",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "sprint": 7,
+    "family": "guest-checkout"
+  },
+  "knowledge_retrieved": [
+    "KN-045",
+    "KN-052"
+  ],
+  "experience_retrieved": [
+    "EXP-090"
+  ],
+  "prior_executions": [
+    "RUN-0030"
+  ],
+  "context": {
+    "id": "CTX-1041",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-31T09:00:00Z",
+    "task": {
+      "type": "jira_story",
+      "ref": "CHK-1423",
+      "app": "APP-003",
+      "repo": "mcg-checkout-service"
+    },
+    "intent_ref": "PLAN-1041",
+    "model_budget": {
+      "window_tokens": 200000,
+      "reserved_output": 8000
+    },
+    "included": [
+      {
+        "source": "KN-045",
+        "kind": "knowledge",
+        "reason": "relevant guest-checkout rule/doc",
+        "score": 0.89
+      },
+      {
+        "source": "KN-052",
+        "kind": "knowledge",
+        "reason": "relevant guest-checkout rule/doc",
+        "score": 0.89
+      },
+      {
+        "source": "EXP-090",
+        "kind": "experience",
+        "reason": "prior guest-checkout lesson",
+        "score": 0.88
+      }
+    ],
+    "excluded": [],
+    "coverage_confidence": 0.92,
+    "signals": {
+      "hit_ratio": 0.85,
+      "budget_utilization": 0.47,
+      "staleness_index": 0.1
+    }
+  },
+  "decision": {
+    "id": "DEC-0041",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-31T11:00:00Z",
+    "plan": "PLAN-1041",
+    "choice": "proceed",
+    "rationale": "Applied EXP-090; fused confidence adequate.",
+    "fused_confidence": 0.89,
+    "inputs": {
+      "context": 0.92,
+      "knowledge": 0.89,
+      "experience": 0.9,
+      "evaluation": 0.87
+    },
+    "worker": "software-engineering-worker",
+    "trace_seq": 1
+  },
+  "plan": {
+    "id": "PLAN-1041",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-31T10:00:00Z",
+    "task": "CHK-1423",
+    "app": "APP-003",
+    "intent": "Feature for guest-checkout: Guest checkout must not create a Loyalty (APP-015) account.",
+    "success_criteria": [
+      "Task acceptance criteria met.",
+      "No regression of the known failure class.",
+      "Applies prior lesson EXP-090"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "action": "analyze guest-checkout change site",
+        "tool": "repo"
+      },
+      {
+        "n": 2,
+        "action": "implement guest-checkout change",
+        "tool": "repo"
+      },
+      {
+        "n": 3,
+        "action": "add regression test for Guest checkout must not create a Loyalty",
+        "tool": "repo"
+      },
+      {
+        "n": 4,
+        "action": "run tests",
+        "tool": "ci",
+        "expect": "TR pass"
+      },
+      {
+        "n": 5,
+        "action": "open PR",
+        "tool": "github"
+      }
+    ],
+    "rollback": "Feature-flag or revert; expand-contract migration if schema touched.",
+    "risk_tier": 0,
+    "routing": {
+      "model_class": "high-reasoning",
+      "reason": "tier 0 guest-checkout change"
+    },
+    "applied_experience": [
+      "EXP-090"
+    ]
+  },
+  "execution": {
+    "id": "EXE-0041",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-01T14:00:00Z",
+    "plan": "PLAN-1041",
+    "step": 5,
+    "tool": "github",
+    "directives": {
+      "open_pr": true
+    },
+    "artifacts": [
+      {
+        "id": "PR-6041",
+        "schema_version": "2020-12.v1",
+        "created_at": "2026-04-01T14:00:00Z",
+        "artifact_type": "pull_request",
+        "ref": "PR-6041",
+        "uri": "mcg-checkout-service#6041",
+        "repo": "mcg-checkout-service"
+      }
+    ],
+    "status": "succeeded",
+    "worker": "software-engineering-worker",
+    "run_id": "RUN-0041"
+  },
+  "evaluation": {
+    "id": "EVAL-1041",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-02T12:00:00Z",
+    "execution": "PR-6041",
+    "plan": "PLAN-1041",
+    "task": "CHK-1423",
+    "rubric": {
+      "id": "RUBRIC-feature",
+      "version": 2
+    },
+    "objective": [
+      {
+        "gate": "unit_tests",
+        "result": "pass",
+        "evidence": "TR-7041",
+        "weight": 0.3
+      },
+      {
+        "gate": "coverage",
+        "result": "pass",
+        "value": 0.87,
+        "threshold": 0.8,
+        "evidence": "TR-7041",
+        "weight": 0.2
+      },
+      {
+        "gate": "dependency_rule",
+        "result": "pass",
+        "weight": 0.2
+      },
+      {
+        "gate": "security_scan",
+        "result": "pass",
+        "weight": 0.15
+      },
+      {
+        "gate": "regression_check",
+        "result": "pass",
+        "weight": 0.15
+      }
+    ],
+    "rubric_items": [
+      {
+        "item": "guest-checkout change is correct and maintainable",
+        "result": "pass",
+        "evidence": "reviewer notes",
+        "judgment_confidence": 0.91
+      }
+    ],
+    "verdict": {
+      "outcome": "pass",
+      "score": 0.87,
+      "outcome_confidence": 0.89,
+      "judgment_confidence": 0.91
+    },
+    "regression_check": {
+      "reintroduced_defect": false,
+      "checked_against": [
+        "EXP-090"
+      ]
+    }
+  },
+  "reflection": {
+    "id": "REF-1041",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-02T16:00:00Z",
+    "evaluation": "EVAL-1041",
+    "execution": "PR-6041",
+    "plan": "PLAN-1041",
+    "what_happened": "guest-checkout task succeeded, applying accumulated experience.",
+    "root_cause": {
+      "category": "missing_experience",
+      "detail": "Applying EXP-090 kept the guest-checkout failure class from recurring; loop closed.",
+      "confidence": 0.89
+    },
+    "lessons": [],
+    "policy_updates": [],
+    "loop_closed_by": "PR-6041"
+  },
+  "experience_update": {
+    "action": "reinforced",
+    "experience": "EXP-090",
+    "delta": {
+      "application_frequency_inc": 1,
+      "outcome": "pass"
+    }
+  },
+  "confidence": {
+    "context_coverage": 0.92,
+    "knowledge_authority": 0.89,
+    "experience_applicability": 0.9,
+    "evaluation_outcome": 0.87,
+    "evaluation_judgment": 0.91,
+    "fused": 0.89
+  },
+  "outcome": "pass"
+}
