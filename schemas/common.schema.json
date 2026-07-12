@@ -6,8 +6,8 @@
   "$defs": {
     "canonicalId": {
       "type": "string",
-      "description": "Any canonical ECL identifier or Jira project-key issue reference. ECL prefixes (CANON, KN, CTX, PLAN, EXP, EVAL, REF, APP, TEAM, PR, REL, INC, TC, TS, TR, ...) follow CANON-001 §6; Jira issues use per-project keys such as CHK-1421, OMS-980, PAY-312 per CANON-001 §5.",
-      "pattern": "^((CANON|BU|TEAM|APP|SVC|REPO|ADR|RFC|PR|REL|INC|TC|TS|TR|KN|CTX|PLAN|EXP|EVAL|REF)-[A-Za-z0-9-]+|[A-Z]{2,4}-\\d+)$"
+      "description": "Any canonical ECL identifier or Jira project-key issue reference. ECL prefixes (CANON, KN, CTX, PLAN, EXP, EVAL, REF, APP, TEAM, PR, REL, INC, TC, TS, TR, RUN, DEC, EXE, ...) follow CANON-001 §6; Jira issues use per-project keys such as CHK-1421, OMS-980, PAY-312 per CANON-001 §5. RUN/DEC/EXE added by ADR-0051 (expand-only) for the reference learning corpus.",
+      "pattern": "^((CANON|BU|TEAM|APP|SVC|REPO|ADR|RFC|PR|REL|INC|TC|TS|TR|KN|CTX|PLAN|EXP|EVAL|REF|RUN|DEC|EXE)-[A-Za-z0-9-]+|[A-Z]{2,4}-\\d+)$"
     },
     "knowledgeId":   { "type": "string", "pattern": "^KN-\\d{3,}$" },
     "contextId":     { "type": "string", "pattern": "^CTX-\\d{3,}$" },

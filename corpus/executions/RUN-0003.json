@@ -1,0 +1,252 @@
+{
+  "run_id": "RUN-0003",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-01-06T09:00:00Z",
+  "worker": "reliability-worker",
+  "task": {
+    "type": "hardening",
+    "ref": "CRT-554",
+    "app": "APP-004",
+    "repo": "mcg-cart-service",
+    "sprint": 1,
+    "family": "cart-resilience"
+  },
+  "knowledge_retrieved": [
+    "KN-300",
+    "KN-207"
+  ],
+  "experience_retrieved": [],
+  "prior_executions": [],
+  "context": {
+    "id": "CTX-1003",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-06T09:00:00Z",
+    "task": {
+      "type": "jira_story",
+      "ref": "CRT-554",
+      "app": "APP-004",
+      "repo": "mcg-cart-service"
+    },
+    "intent_ref": "PLAN-1003",
+    "model_budget": {
+      "window_tokens": 200000,
+      "reserved_output": 8000
+    },
+    "included": [
+      {
+        "source": "KN-300",
+        "kind": "knowledge",
+        "reason": "relevant cart-resilience rule/doc",
+        "score": 0.8
+      },
+      {
+        "source": "KN-207",
+        "kind": "knowledge",
+        "reason": "relevant cart-resilience rule/doc",
+        "score": 0.8
+      }
+    ],
+    "excluded": [
+      {
+        "source": "KN-047",
+        "kind": "knowledge",
+        "reason": "lower-relevance doc dropped for budget",
+        "score": 0.4
+      }
+    ],
+    "coverage_confidence": 0.52,
+    "signals": {
+      "hit_ratio": 0.55,
+      "budget_utilization": 0.6,
+      "staleness_index": 0.1
+    }
+  },
+  "decision": {
+    "id": "DEC-0003",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-06T11:00:00Z",
+    "plan": "PLAN-1003",
+    "choice": "proceed",
+    "rationale": "Cold start for this family; limited prior experience.",
+    "fused_confidence": 0.58,
+    "inputs": {
+      "context": 0.52,
+      "knowledge": 0.68,
+      "experience": 0.0,
+      "evaluation": 0.55
+    },
+    "worker": "reliability-worker",
+    "trace_seq": 1
+  },
+  "plan": {
+    "id": "PLAN-1003",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-06T10:00:00Z",
+    "task": "CRT-554",
+    "app": "APP-004",
+    "intent": "Hardening for cart-resilience: Cart writes need optimistic concurrency plus Redis failover ",
+    "success_criteria": [
+      "Task acceptance criteria met.",
+      "No regression of the known failure class."
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "action": "analyze cart-resilience change site",
+        "tool": "repo"
+      },
+      {
+        "n": 2,
+        "action": "implement cart-resilience change",
+        "tool": "repo"
+      },
+      {
+        "n": 3,
+        "action": "run tests",
+        "tool": "ci",
+        "expect": "TR pass"
+      },
+      {
+        "n": 4,
+        "action": "open PR",
+        "tool": "github"
+      }
+    ],
+    "rollback": "Feature-flag or revert; expand-contract migration if schema touched.",
+    "risk_tier": 0,
+    "routing": {
+      "model_class": "high-reasoning",
+      "reason": "tier 0 cart-resilience change"
+    }
+  },
+  "execution": {
+    "id": "EXE-0003",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-07T14:00:00Z",
+    "plan": "PLAN-1003",
+    "step": 4,
+    "tool": "github",
+    "directives": {
+      "open_pr": true
+    },
+    "artifacts": [
+      {
+        "id": "PR-6003",
+        "schema_version": "2020-12.v1",
+        "created_at": "2026-01-07T14:00:00Z",
+        "artifact_type": "pull_request",
+        "ref": "PR-6003",
+        "uri": "mcg-cart-service#6003",
+        "repo": "mcg-cart-service"
+      }
+    ],
+    "status": "partial",
+    "worker": "reliability-worker",
+    "run_id": "RUN-0003"
+  },
+  "evaluation": {
+    "id": "EVAL-1003",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-08T12:00:00Z",
+    "execution": "PR-6003",
+    "plan": "PLAN-1003",
+    "task": "CRT-554",
+    "rubric": {
+      "id": "RUBRIC-hardening",
+      "version": 2
+    },
+    "objective": [
+      {
+        "gate": "unit_tests",
+        "result": "fail",
+        "evidence": "TR-7003",
+        "weight": 0.3
+      },
+      {
+        "gate": "coverage",
+        "result": "fail",
+        "value": 0.78,
+        "threshold": 0.8,
+        "evidence": "TR-7003",
+        "weight": 0.2
+      },
+      {
+        "gate": "dependency_rule",
+        "result": "pass",
+        "weight": 0.2
+      },
+      {
+        "gate": "security_scan",
+        "result": "pass",
+        "weight": 0.15
+      },
+      {
+        "gate": "regression_check",
+        "result": "fail",
+        "note": "cart-resilience failure class not yet guarded",
+        "weight": 0.15
+      }
+    ],
+    "rubric_items": [
+      {
+        "item": "cart-resilience change is correct and maintainable",
+        "result": "fail",
+        "evidence": "reviewer notes",
+        "judgment_confidence": 0.71
+      }
+    ],
+    "verdict": {
+      "outcome": "fail",
+      "score": 0.55,
+      "outcome_confidence": 0.57,
+      "judgment_confidence": 0.71
+    },
+    "regression_check": {
+      "reintroduced_defect": true,
+      "checked_against": []
+    }
+  },
+  "reflection": {
+    "id": "REF-1003",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-08T16:00:00Z",
+    "evaluation": "EVAL-1003",
+    "execution": "PR-6003",
+    "plan": "PLAN-1003",
+    "what_happened": "cart-resilience task failed the regression class and produced a new lesson.",
+    "root_cause": {
+      "category": "missing_experience",
+      "detail": "The cart-resilience failure class was not guarded; distilling a lesson to prevent recurrence.",
+      "confidence": 0.75
+    },
+    "lessons": [
+      {
+        "create_experience": "EXP-207"
+      }
+    ],
+    "policy_updates": [
+      {
+        "context": "raise retrieval priority of cart-resilience rules"
+      },
+      {
+        "planning": "add regression assertion for this failure class"
+      }
+    ]
+  },
+  "experience_update": {
+    "action": "created",
+    "experience": "EXP-207",
+    "delta": {
+      "reason": "distilled from first cart-resilience run"
+    }
+  },
+  "confidence": {
+    "context_coverage": 0.52,
+    "knowledge_authority": 0.68,
+    "experience_applicability": 0.0,
+    "evaluation_outcome": 0.55,
+    "evaluation_judgment": 0.71,
+    "fused": 0.58
+  },
+  "outcome": "fail"
+}

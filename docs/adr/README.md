@@ -77,6 +77,7 @@ catalog and are cross-referenced throughout.
 | ADR-0048 | Benchmark Reproducibility Is Mandatory | Accepted |
 | ADR-0049 | Apache-2.0 License and Synthetic-Only Content | Accepted |
 | ADR-0050 | Canon Supremacy — Changes via ADR Only | Accepted |
+| ADR-0051 | Extend ID Namespaces for the Reference Learning Corpus (RUN, DEC, EXE) | Accepted |
 
 ## Related
 

@@ -18,7 +18,7 @@ from __future__ import annotations
 import json, re, sys, os, glob
 
 HOME = os.path.expanduser("~/EnterpriseSim")
-SCHEMA_DIRS = ["schemas", "benchmarks/schemas", "enterprise/schemas"]
+SCHEMA_DIRS = ["schemas", "benchmarks/schemas", "enterprise/schemas", "corpus/schemas"]
 
 by_file, by_id = {}, {}
 for d in SCHEMA_DIRS:

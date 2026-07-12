@@ -1,0 +1,1476 @@
+[
+  {
+    "run_id": "RUN-0001",
+    "family": "guest-checkout",
+    "task": "CHK-1421",
+    "app": "APP-003",
+    "sprint": 1,
+    "outcome": "fail",
+    "fused_confidence": 0.55,
+    "score": 0.58,
+    "experience_update": "created",
+    "experience": "EXP-090",
+    "prior_executions": []
+  },
+  {
+    "run_id": "RUN-0002",
+    "family": "guest-checkout",
+    "task": "CHK-1421",
+    "app": "APP-003",
+    "sprint": 1,
+    "outcome": "pass",
+    "fused_confidence": 0.89,
+    "score": 0.91,
+    "experience_update": "reinforced",
+    "experience": "EXP-090",
+    "prior_executions": [
+      "RUN-0001"
+    ]
+  },
+  {
+    "run_id": "RUN-0003",
+    "family": "cart-resilience",
+    "task": "CRT-554",
+    "app": "APP-004",
+    "sprint": 1,
+    "outcome": "fail",
+    "fused_confidence": 0.58,
+    "score": 0.55,
+    "experience_update": "created",
+    "experience": "EXP-207",
+    "prior_executions": []
+  },
+  {
+    "run_id": "RUN-0004",
+    "family": "cart-resilience",
+    "task": "CRT-555",
+    "app": "APP-004",
+    "sprint": 2,
+    "outcome": "partial",
+    "fused_confidence": 0.63,
+    "score": 0.57,
+    "experience_update": "reinforced",
+    "experience": "EXP-207",
+    "prior_executions": [
+      "RUN-0003"
+    ]
+  },
+  {
+    "run_id": "RUN-0005",
+    "family": "catalog-freshness",
+    "task": "CAT-943",
+    "app": "APP-005",
+    "sprint": 2,
+    "outcome": "fail",
+    "fused_confidence": 0.6,
+    "score": 0.6,
+    "experience_update": "created",
+    "experience": "EXP-210",
+    "prior_executions": []
+  },
+  {
+    "run_id": "RUN-0006",
+    "family": "search-relevance",
+    "task": "SRCH-747",
+    "app": "APP-006",
+    "sprint": 2,
+    "outcome": "fail",
+    "fused_confidence": 0.61,
+    "score": 0.54,
+    "experience_update": "created",
+    "experience": "EXP-204",
+    "prior_executions": []
+  },
+  {
+    "run_id": "RUN-0007",
+    "family": "cart-resilience",
+    "task": "CRT-551",
+    "app": "APP-004",
+    "sprint": 3,
+    "outcome": "partial",
+    "fused_confidence": 0.71,
+    "score": 0.68,
+    "experience_update": "reinforced",
+    "experience": "EXP-207",
+    "prior_executions": [
+      "RUN-0004"
+    ]
+  },
+  {
+    "run_id": "RUN-0008",
+    "family": "catalog-freshness",
+    "task": "CAT-940",
+    "app": "APP-005",
+    "sprint": 3,
+    "outcome": "partial",
+    "fused_confidence": 0.65,
+    "score": 0.58,
+    "experience_update": "reinforced",
+    "experience": "EXP-210",
+    "prior_executions": [
+      "RUN-0005"
+    ]
+  },
+  {
+    "run_id": "RUN-0009",
+    "family": "guest-checkout",
+    "task": "CHK-1432",
+    "app": "APP-003",
+    "sprint": 3,
+    "outcome": "partial",
+    "fused_confidence": 0.69,
+    "score": 0.69,
+    "experience_update": "reinforced",
+    "experience": "EXP-090",
+    "prior_executions": [
+      "RUN-0002"
+    ]
+  },
+  {
+    "run_id": "RUN-0010",
+    "family": "pricing-regional",
+    "task": "PRC-1164",
+    "app": "APP-007",
+    "sprint": 3,
+    "outcome": "fail",
+    "fused_confidence": 0.6,
+    "score": 0.56,
+    "experience_update": "created",
+    "experience": "EXP-201",
+    "prior_executions": []
+  },
+  {
+    "run_id": "RUN-0011",
+    "family": "search-relevance",
+    "task": "SRCH-747",
+    "app": "APP-006",
+    "sprint": 3,
+    "outcome": "partial",
+    "fused_confidence": 0.65,
+    "score": 0.61,
+    "experience_update": "reinforced",
+    "experience": "EXP-204",
+    "prior_executions": [
+      "RUN-0006"
+    ]
+  },
+  {
+    "run_id": "RUN-0012",
+    "family": "test-authoring",
+    "task": "SRCH-727",
+    "app": "APP-006",
+    "sprint": 3,
+    "outcome": "fail",
+    "fused_confidence": 0.62,
+    "score": 0.59,
+    "experience_update": "created",
+    "experience": "EXP-142",
+    "prior_executions": []
+  },
+  {
+    "run_id": "RUN-0013",
+    "family": "cart-resilience",
+    "task": "CRT-555",
+    "app": "APP-004",
+    "sprint": 4,
+    "outcome": "pass",
+    "fused_confidence": 0.79,
+    "score": 0.82,
+    "experience_update": "reinforced",
+    "experience": "EXP-207",
+    "prior_executions": [
+      "RUN-0007"
+    ]
+  },
+  {
+    "run_id": "RUN-0014",
+    "family": "catalog-freshness",
+    "task": "CAT-940",
+    "app": "APP-005",
+    "sprint": 4,
+    "outcome": "partial",
+    "fused_confidence": 0.72,
+    "score": 0.66,
+    "experience_update": "reinforced",
+    "experience": "EXP-210",
+    "prior_executions": [
+      "RUN-0008"
+    ]
+  },
+  {
+    "run_id": "RUN-0015",
+    "family": "guest-checkout",
+    "task": "CHK-1422",
+    "app": "APP-003",
+    "sprint": 4,
+    "outcome": "pass",
+    "fused_confidence": 0.74,
+    "score": 0.72,
+    "experience_update": "reinforced",
+    "experience": "EXP-090",
+    "prior_executions": [
+      "RUN-0009"
+    ]
+  },
+  {
+    "run_id": "RUN-0016",
+    "family": "pricing-regional",
+    "task": "PRC-1152",
+    "app": "APP-007",
+    "sprint": 4,
+    "outcome": "partial",
+    "fused_confidence": 0.66,
+    "score": 0.64,
+    "experience_update": "reinforced",
+    "experience": "EXP-201",
+    "prior_executions": [
+      "RUN-0010"
+    ]
+  },
+  {
+    "run_id": "RUN-0017",
+    "family": "promo-cache",
+    "task": "PRM-1018",
+    "app": "APP-008",
+    "sprint": 4,
+    "outcome": "fail",
+    "fused_confidence": 0.59,
+    "score": 0.5,
+    "experience_update": "created",
+    "experience": "EXP-055",
+    "prior_executions": []
+  },
+  {
+    "run_id": "RUN-0018",
+    "family": "search-relevance",
+    "task": "SRCH-727",
+    "app": "APP-006",
+    "sprint": 4,
+    "outcome": "partial",
+    "fused_confidence": 0.69,
+    "score": 0.67,
+    "experience_update": "reinforced",
+    "experience": "EXP-204",
+    "prior_executions": [
+      "RUN-0011"
+    ]
+  },
+  {
+    "run_id": "RUN-0019",
+    "family": "test-authoring",
+    "task": "SRCH-731",
+    "app": "APP-006",
+    "sprint": 4,
+    "outcome": "partial",
+    "fused_confidence": 0.66,
+    "score": 0.66,
+    "experience_update": "reinforced",
+    "experience": "EXP-142",
+    "prior_executions": [
+      "RUN-0012"
+    ]
+  },
+  {
+    "run_id": "RUN-0020",
+    "family": "cart-resilience",
+    "task": "CRT-543",
+    "app": "APP-004",
+    "sprint": 5,
+    "outcome": "pass",
+    "fused_confidence": 0.82,
+    "score": 0.8,
+    "experience_update": "reinforced",
+    "experience": "EXP-207",
+    "prior_executions": [
+      "RUN-0013"
+    ]
+  },
+  {
+    "run_id": "RUN-0021",
+    "family": "catalog-freshness",
+    "task": "CAT-936",
+    "app": "APP-005",
+    "sprint": 5,
+    "outcome": "pass",
+    "fused_confidence": 0.74,
+    "score": 0.75,
+    "experience_update": "reinforced",
+    "experience": "EXP-210",
+    "prior_executions": [
+      "RUN-0014"
+    ]
+  },
+  {
+    "run_id": "RUN-0022",
+    "family": "guest-checkout",
+    "task": "CHK-1411",
+    "app": "APP-003",
+    "sprint": 5,
+    "outcome": "pass",
+    "fused_confidence": 0.77,
+    "score": 0.77,
+    "experience_update": "reinforced",
+    "experience": "EXP-090",
+    "prior_executions": [
+      "RUN-0015"
+    ]
+  },
+  {
+    "run_id": "RUN-0023",
+    "family": "payments-3ds",
+    "task": "PAY-991",
+    "app": "APP-012",
+    "sprint": 5,
+    "outcome": "fail",
+    "fused_confidence": 0.6,
+    "score": 0.57,
+    "experience_update": "created",
+    "experience": "EXP-202",
+    "prior_executions": []
+  },
+  {
+    "run_id": "RUN-0024",
+    "family": "pricing-regional",
+    "task": "PRC-1154",
+    "app": "APP-007",
+    "sprint": 5,
+    "outcome": "pass",
+    "fused_confidence": 0.72,
+    "score": 0.73,
+    "experience_update": "reinforced",
+    "experience": "EXP-201",
+    "prior_executions": [
+      "RUN-0016"
+    ]
+  },
+  {
+    "run_id": "RUN-0025",
+    "family": "promo-cache",
+    "task": "PRM-1017",
+    "app": "APP-008",
+    "sprint": 5,
+    "outcome": "partial",
+    "fused_confidence": 0.62,
+    "score": 0.58,
+    "experience_update": "reinforced",
+    "experience": "EXP-055",
+    "prior_executions": [
+      "RUN-0017"
+    ]
+  },
+  {
+    "run_id": "RUN-0026",
+    "family": "search-relevance",
+    "task": "SRCH-724",
+    "app": "APP-006",
+    "sprint": 5,
+    "outcome": "pass",
+    "fused_confidence": 0.75,
+    "score": 0.75,
+    "experience_update": "reinforced",
+    "experience": "EXP-204",
+    "prior_executions": [
+      "RUN-0018"
+    ]
+  },
+  {
+    "run_id": "RUN-0027",
+    "family": "test-authoring",
+    "task": "SRCH-747",
+    "app": "APP-006",
+    "sprint": 5,
+    "outcome": "partial",
+    "fused_confidence": 0.7,
+    "score": 0.65,
+    "experience_update": "reinforced",
+    "experience": "EXP-142",
+    "prior_executions": [
+      "RUN-0019"
+    ]
+  },
+  {
+    "run_id": "RUN-0028",
+    "family": "cart-resilience",
+    "task": "CRT-555",
+    "app": "APP-004",
+    "sprint": 6,
+    "outcome": "pass",
+    "fused_confidence": 0.9,
+    "score": 0.93,
+    "experience_update": "reinforced",
+    "experience": "EXP-207",
+    "prior_executions": [
+      "RUN-0020"
+    ]
+  },
+  {
+    "run_id": "RUN-0029",
+    "family": "catalog-freshness",
+    "task": "CAT-940",
+    "app": "APP-005",
+    "sprint": 6,
+    "outcome": "pass",
+    "fused_confidence": 0.81,
+    "score": 0.78,
+    "experience_update": "reinforced",
+    "experience": "EXP-210",
+    "prior_executions": [
+      "RUN-0021"
+    ]
+  },
+  {
+    "run_id": "RUN-0030",
+    "family": "guest-checkout",
+    "task": "CHK-1438",
+    "app": "APP-003",
+    "sprint": 6,
+    "outcome": "pass",
+    "fused_confidence": 0.83,
+    "score": 0.84,
+    "experience_update": "reinforced",
+    "experience": "EXP-090",
+    "prior_executions": [
+      "RUN-0022"
+    ]
+  },
+  {
+    "run_id": "RUN-0031",
+    "family": "inventory-atp",
+    "task": "INV-1242",
+    "app": "APP-010",
+    "sprint": 6,
+    "outcome": "fail",
+    "fused_confidence": 0.59,
+    "score": 0.58,
+    "experience_update": "created",
+    "experience": "EXP-203",
+    "prior_executions": []
+  },
+  {
+    "run_id": "RUN-0032",
+    "family": "order-saga",
+    "task": "OMS-1355",
+    "app": "APP-009",
+    "sprint": 6,
+    "outcome": "fail",
+    "fused_confidence": 0.57,
+    "score": 0.5,
+    "experience_update": "created",
+    "experience": "EXP-206",
+    "prior_executions": []
+  },
+  {
+    "run_id": "RUN-0033",
+    "family": "payments-3ds",
+    "task": "PAY-991",
+    "app": "APP-012",
+    "sprint": 6,
+    "outcome": "partial",
+    "fused_confidence": 0.63,
+    "score": 0.61,
+    "experience_update": "reinforced",
+    "experience": "EXP-202",
+    "prior_executions": [
+      "RUN-0023"
+    ]
+  },
+  {
+    "run_id": "RUN-0034",
+    "family": "pricing-regional",
+    "task": "PRC-1133",
+    "app": "APP-007",
+    "sprint": 6,
+    "outcome": "pass",
+    "fused_confidence": 0.74,
+    "score": 0.72,
+    "experience_update": "reinforced",
+    "experience": "EXP-201",
+    "prior_executions": [
+      "RUN-0024"
+    ]
+  },
+  {
+    "run_id": "RUN-0035",
+    "family": "promo-cache",
+    "task": "PRM-1022",
+    "app": "APP-008",
+    "sprint": 6,
+    "outcome": "partial",
+    "fused_confidence": 0.66,
+    "score": 0.66,
+    "experience_update": "reinforced",
+    "experience": "EXP-055",
+    "prior_executions": [
+      "RUN-0025"
+    ]
+  },
+  {
+    "run_id": "RUN-0036",
+    "family": "search-relevance",
+    "task": "SRCH-734",
+    "app": "APP-006",
+    "sprint": 6,
+    "outcome": "pass",
+    "fused_confidence": 0.8,
+    "score": 0.8,
+    "experience_update": "reinforced",
+    "experience": "EXP-204",
+    "prior_executions": [
+      "RUN-0026"
+    ]
+  },
+  {
+    "run_id": "RUN-0037",
+    "family": "test-authoring",
+    "task": "SRCH-741",
+    "app": "APP-006",
+    "sprint": 6,
+    "outcome": "pass",
+    "fused_confidence": 0.78,
+    "score": 0.8,
+    "experience_update": "reinforced",
+    "experience": "EXP-142",
+    "prior_executions": [
+      "RUN-0027"
+    ]
+  },
+  {
+    "run_id": "RUN-0038",
+    "family": "cart-resilience",
+    "task": "CRT-554",
+    "app": "APP-004",
+    "sprint": 7,
+    "outcome": "pass",
+    "fused_confidence": 0.91,
+    "score": 0.91,
+    "experience_update": "reinforced",
+    "experience": "EXP-207",
+    "prior_executions": [
+      "RUN-0028"
+    ]
+  },
+  {
+    "run_id": "RUN-0039",
+    "family": "catalog-freshness",
+    "task": "CAT-945",
+    "app": "APP-005",
+    "sprint": 7,
+    "outcome": "pass",
+    "fused_confidence": 0.88,
+    "score": 0.92,
+    "experience_update": "reinforced",
+    "experience": "EXP-210",
+    "prior_executions": [
+      "RUN-0029"
+    ]
+  },
+  {
+    "run_id": "RUN-0040",
+    "family": "gateway-ratelimit",
+    "task": "GW-444",
+    "app": "APP-024",
+    "sprint": 7,
+    "outcome": "fail",
+    "fused_confidence": 0.58,
+    "score": 0.52,
+    "experience_update": "created",
+    "experience": "EXP-205",
+    "prior_executions": []
+  },
+  {
+    "run_id": "RUN-0041",
+    "family": "guest-checkout",
+    "task": "CHK-1423",
+    "app": "APP-003",
+    "sprint": 7,
+    "outcome": "pass",
+    "fused_confidence": 0.89,
+    "score": 0.87,
+    "experience_update": "reinforced",
+    "experience": "EXP-090",
+    "prior_executions": [
+      "RUN-0030"
+    ]
+  },
+  {
+    "run_id": "RUN-0042",
+    "family": "inventory-atp",
+    "task": "INV-1245",
+    "app": "APP-010",
+    "sprint": 7,
+    "outcome": "partial",
+    "fused_confidence": 0.66,
+    "score": 0.67,
+    "experience_update": "reinforced",
+    "experience": "EXP-203",
+    "prior_executions": [
+      "RUN-0031"
+    ]
+  },
+  {
+    "run_id": "RUN-0043",
+    "family": "order-saga",
+    "task": "OMS-1342",
+    "app": "APP-009",
+    "sprint": 7,
+    "outcome": "partial",
+    "fused_confidence": 0.63,
+    "score": 0.58,
+    "experience_update": "reinforced",
+    "experience": "EXP-206",
+    "prior_executions": [
+      "RUN-0032"
+    ]
+  },
+  {
+    "run_id": "RUN-0044",
+    "family": "payments-3ds",
+    "task": "PAY-987",
+    "app": "APP-012",
+    "sprint": 7,
+    "outcome": "partial",
+    "fused_confidence": 0.67,
+    "score": 0.64,
+    "experience_update": "reinforced",
+    "experience": "EXP-202",
+    "prior_executions": [
+      "RUN-0033"
+    ]
+  },
+  {
+    "run_id": "RUN-0045",
+    "family": "pricing-regional",
+    "task": "PRC-1164",
+    "app": "APP-007",
+    "sprint": 7,
+    "outcome": "pass",
+    "fused_confidence": 0.78,
+    "score": 0.74,
+    "experience_update": "reinforced",
+    "experience": "EXP-201",
+    "prior_executions": [
+      "RUN-0034"
+    ]
+  },
+  {
+    "run_id": "RUN-0046",
+    "family": "promo-cache",
+    "task": "PRM-1015",
+    "app": "APP-008",
+    "sprint": 7,
+    "outcome": "partial",
+    "fused_confidence": 0.7,
+    "score": 0.64,
+    "experience_update": "reinforced",
+    "experience": "EXP-055",
+    "prior_executions": [
+      "RUN-0035"
+    ]
+  },
+  {
+    "run_id": "RUN-0047",
+    "family": "search-relevance",
+    "task": "SRCH-737",
+    "app": "APP-006",
+    "sprint": 7,
+    "outcome": "pass",
+    "fused_confidence": 0.83,
+    "score": 0.84,
+    "experience_update": "reinforced",
+    "experience": "EXP-204",
+    "prior_executions": [
+      "RUN-0036"
+    ]
+  },
+  {
+    "run_id": "RUN-0048",
+    "family": "test-authoring",
+    "task": "SRCH-724",
+    "app": "APP-006",
+    "sprint": 7,
+    "outcome": "pass",
+    "fused_confidence": 0.84,
+    "score": 0.84,
+    "experience_update": "reinforced",
+    "experience": "EXP-142",
+    "prior_executions": [
+      "RUN-0037"
+    ]
+  },
+  {
+    "run_id": "RUN-0049",
+    "family": "catalog-freshness",
+    "task": "CAT-949",
+    "app": "APP-005",
+    "sprint": 8,
+    "outcome": "pass",
+    "fused_confidence": 0.92,
+    "score": 0.92,
+    "experience_update": "reinforced",
+    "experience": "EXP-210",
+    "prior_executions": [
+      "RUN-0039"
+    ]
+  },
+  {
+    "run_id": "RUN-0050",
+    "family": "gateway-ratelimit",
+    "task": "GW-468",
+    "app": "APP-024",
+    "sprint": 8,
+    "outcome": "partial",
+    "fused_confidence": 0.67,
+    "score": 0.65,
+    "experience_update": "reinforced",
+    "experience": "EXP-205",
+    "prior_executions": [
+      "RUN-0040"
+    ]
+  },
+  {
+    "run_id": "RUN-0051",
+    "family": "guest-checkout",
+    "task": "CHK-1438",
+    "app": "APP-003",
+    "sprint": 8,
+    "outcome": "pass",
+    "fused_confidence": 0.91,
+    "score": 0.93,
+    "experience_update": "reinforced",
+    "experience": "EXP-090",
+    "prior_executions": [
+      "RUN-0041"
+    ]
+  },
+  {
+    "run_id": "RUN-0052",
+    "family": "inventory-atp",
+    "task": "INV-1245",
+    "app": "APP-010",
+    "sprint": 8,
+    "outcome": "partial",
+    "fused_confidence": 0.72,
+    "score": 0.71,
+    "experience_update": "reinforced",
+    "experience": "EXP-203",
+    "prior_executions": [
+      "RUN-0042"
+    ]
+  },
+  {
+    "run_id": "RUN-0053",
+    "family": "order-saga",
+    "task": "OMS-1336",
+    "app": "APP-009",
+    "sprint": 8,
+    "outcome": "partial",
+    "fused_confidence": 0.68,
+    "score": 0.69,
+    "experience_update": "reinforced",
+    "experience": "EXP-206",
+    "prior_executions": [
+      "RUN-0043"
+    ]
+  },
+  {
+    "run_id": "RUN-0054",
+    "family": "payments-3ds",
+    "task": "PAY-975",
+    "app": "APP-012",
+    "sprint": 8,
+    "outcome": "pass",
+    "fused_confidence": 0.75,
+    "score": 0.76,
+    "experience_update": "reinforced",
+    "experience": "EXP-202",
+    "prior_executions": [
+      "RUN-0044"
+    ]
+  },
+  {
+    "run_id": "RUN-0055",
+    "family": "pricing-regional",
+    "task": "PRC-1137",
+    "app": "APP-007",
+    "sprint": 8,
+    "outcome": "pass",
+    "fused_confidence": 0.81,
+    "score": 0.8,
+    "experience_update": "reinforced",
+    "experience": "EXP-201",
+    "prior_executions": [
+      "RUN-0045"
+    ]
+  },
+  {
+    "run_id": "RUN-0056",
+    "family": "promo-cache",
+    "task": "PRM-1030",
+    "app": "APP-008",
+    "sprint": 8,
+    "outcome": "partial",
+    "fused_confidence": 0.75,
+    "score": 0.7,
+    "experience_update": "reinforced",
+    "experience": "EXP-055",
+    "prior_executions": [
+      "RUN-0046"
+    ]
+  },
+  {
+    "run_id": "RUN-0057",
+    "family": "returns-portal",
+    "task": "POR-640",
+    "app": "APP-021",
+    "sprint": 8,
+    "outcome": "fail",
+    "fused_confidence": 0.6,
+    "score": 0.51,
+    "experience_update": "created",
+    "experience": "EXP-208",
+    "prior_executions": []
+  },
+  {
+    "run_id": "RUN-0058",
+    "family": "search-relevance",
+    "task": "SRCH-736",
+    "app": "APP-006",
+    "sprint": 8,
+    "outcome": "pass",
+    "fused_confidence": 0.86,
+    "score": 0.84,
+    "experience_update": "reinforced",
+    "experience": "EXP-204",
+    "prior_executions": [
+      "RUN-0047"
+    ]
+  },
+  {
+    "run_id": "RUN-0059",
+    "family": "test-authoring",
+    "task": "SRCH-736",
+    "app": "APP-006",
+    "sprint": 8,
+    "outcome": "pass",
+    "fused_confidence": 0.87,
+    "score": 0.88,
+    "experience_update": "reinforced",
+    "experience": "EXP-142",
+    "prior_executions": [
+      "RUN-0048"
+    ]
+  },
+  {
+    "run_id": "RUN-0060",
+    "family": "checkout-latency",
+    "task": "CHK-1421",
+    "app": "APP-003",
+    "sprint": 9,
+    "outcome": "fail",
+    "fused_confidence": 0.63,
+    "score": 0.61,
+    "experience_update": "created",
+    "experience": "EXP-209",
+    "prior_executions": []
+  },
+  {
+    "run_id": "RUN-0061",
+    "family": "gateway-ratelimit",
+    "task": "GW-459",
+    "app": "APP-024",
+    "sprint": 9,
+    "outcome": "partial",
+    "fused_confidence": 0.7,
+    "score": 0.69,
+    "experience_update": "reinforced",
+    "experience": "EXP-205",
+    "prior_executions": [
+      "RUN-0050"
+    ]
+  },
+  {
+    "run_id": "RUN-0062",
+    "family": "inventory-atp",
+    "task": "INV-1234",
+    "app": "APP-010",
+    "sprint": 9,
+    "outcome": "pass",
+    "fused_confidence": 0.77,
+    "score": 0.76,
+    "experience_update": "reinforced",
+    "experience": "EXP-203",
+    "prior_executions": [
+      "RUN-0052"
+    ]
+  },
+  {
+    "run_id": "RUN-0063",
+    "family": "order-saga",
+    "task": "OMS-1313",
+    "app": "APP-009",
+    "sprint": 9,
+    "outcome": "pass",
+    "fused_confidence": 0.74,
+    "score": 0.74,
+    "experience_update": "reinforced",
+    "experience": "EXP-206",
+    "prior_executions": [
+      "RUN-0053"
+    ]
+  },
+  {
+    "run_id": "RUN-0064",
+    "family": "payments-3ds",
+    "task": "PAY-976",
+    "app": "APP-012",
+    "sprint": 9,
+    "outcome": "pass",
+    "fused_confidence": 0.76,
+    "score": 0.72,
+    "experience_update": "reinforced",
+    "experience": "EXP-202",
+    "prior_executions": [
+      "RUN-0054"
+    ]
+  },
+  {
+    "run_id": "RUN-0065",
+    "family": "pricing-regional",
+    "task": "PRC-1161",
+    "app": "APP-007",
+    "sprint": 9,
+    "outcome": "pass",
+    "fused_confidence": 0.88,
+    "score": 0.88,
+    "experience_update": "reinforced",
+    "experience": "EXP-201",
+    "prior_executions": [
+      "RUN-0055"
+    ]
+  },
+  {
+    "run_id": "RUN-0066",
+    "family": "promo-cache",
+    "task": "PRM-1040",
+    "app": "APP-008",
+    "sprint": 9,
+    "outcome": "pass",
+    "fused_confidence": 0.77,
+    "score": 0.77,
+    "experience_update": "reinforced",
+    "experience": "EXP-055",
+    "prior_executions": [
+      "RUN-0056"
+    ]
+  },
+  {
+    "run_id": "RUN-0067",
+    "family": "returns-portal",
+    "task": "POR-640",
+    "app": "APP-021",
+    "sprint": 9,
+    "outcome": "partial",
+    "fused_confidence": 0.66,
+    "score": 0.62,
+    "experience_update": "reinforced",
+    "experience": "EXP-208",
+    "prior_executions": [
+      "RUN-0057"
+    ]
+  },
+  {
+    "run_id": "RUN-0068",
+    "family": "search-relevance",
+    "task": "SRCH-747",
+    "app": "APP-006",
+    "sprint": 9,
+    "outcome": "pass",
+    "fused_confidence": 0.9,
+    "score": 0.91,
+    "experience_update": "reinforced",
+    "experience": "EXP-204",
+    "prior_executions": [
+      "RUN-0058"
+    ]
+  },
+  {
+    "run_id": "RUN-0069",
+    "family": "test-authoring",
+    "task": "SRCH-727",
+    "app": "APP-006",
+    "sprint": 9,
+    "outcome": "pass",
+    "fused_confidence": 0.91,
+    "score": 0.95,
+    "experience_update": "reinforced",
+    "experience": "EXP-142",
+    "prior_executions": [
+      "RUN-0059"
+    ]
+  },
+  {
+    "run_id": "RUN-0070",
+    "family": "checkout-latency",
+    "task": "CHK-1403",
+    "app": "APP-003",
+    "sprint": 10,
+    "outcome": "partial",
+    "fused_confidence": 0.66,
+    "score": 0.6,
+    "experience_update": "reinforced",
+    "experience": "EXP-209",
+    "prior_executions": [
+      "RUN-0060"
+    ]
+  },
+  {
+    "run_id": "RUN-0071",
+    "family": "gateway-ratelimit",
+    "task": "GW-464",
+    "app": "APP-024",
+    "sprint": 10,
+    "outcome": "pass",
+    "fused_confidence": 0.78,
+    "score": 0.8,
+    "experience_update": "reinforced",
+    "experience": "EXP-205",
+    "prior_executions": [
+      "RUN-0061"
+    ]
+  },
+  {
+    "run_id": "RUN-0072",
+    "family": "inventory-atp",
+    "task": "INV-1238",
+    "app": "APP-010",
+    "sprint": 10,
+    "outcome": "pass",
+    "fused_confidence": 0.78,
+    "score": 0.73,
+    "experience_update": "reinforced",
+    "experience": "EXP-203",
+    "prior_executions": [
+      "RUN-0062"
+    ]
+  },
+  {
+    "run_id": "RUN-0073",
+    "family": "order-saga",
+    "task": "OMS-1342",
+    "app": "APP-009",
+    "sprint": 10,
+    "outcome": "pass",
+    "fused_confidence": 0.77,
+    "score": 0.74,
+    "experience_update": "reinforced",
+    "experience": "EXP-206",
+    "prior_executions": [
+      "RUN-0063"
+    ]
+  },
+  {
+    "run_id": "RUN-0074",
+    "family": "payments-3ds",
+    "task": "PAY-991",
+    "app": "APP-012",
+    "sprint": 10,
+    "outcome": "pass",
+    "fused_confidence": 0.84,
+    "score": 0.87,
+    "experience_update": "reinforced",
+    "experience": "EXP-202",
+    "prior_executions": [
+      "RUN-0064"
+    ]
+  },
+  {
+    "run_id": "RUN-0075",
+    "family": "pricing-regional",
+    "task": "PRC-1133",
+    "app": "APP-007",
+    "sprint": 10,
+    "outcome": "pass",
+    "fused_confidence": 0.95,
+    "score": 1.0,
+    "experience_update": "reinforced",
+    "experience": "EXP-201",
+    "prior_executions": [
+      "RUN-0065"
+    ]
+  },
+  {
+    "run_id": "RUN-0076",
+    "family": "promo-cache",
+    "task": "PRM-1024",
+    "app": "APP-008",
+    "sprint": 10,
+    "outcome": "pass",
+    "fused_confidence": 0.79,
+    "score": 0.77,
+    "experience_update": "reinforced",
+    "experience": "EXP-055",
+    "prior_executions": [
+      "RUN-0066"
+    ]
+  },
+  {
+    "run_id": "RUN-0077",
+    "family": "returns-portal",
+    "task": "POR-643",
+    "app": "APP-021",
+    "sprint": 10,
+    "outcome": "pass",
+    "fused_confidence": 0.72,
+    "score": 0.74,
+    "experience_update": "reinforced",
+    "experience": "EXP-208",
+    "prior_executions": [
+      "RUN-0067"
+    ]
+  },
+  {
+    "run_id": "RUN-0078",
+    "family": "checkout-latency",
+    "task": "CHK-1415",
+    "app": "APP-003",
+    "sprint": 11,
+    "outcome": "partial",
+    "fused_confidence": 0.72,
+    "score": 0.67,
+    "experience_update": "reinforced",
+    "experience": "EXP-209",
+    "prior_executions": [
+      "RUN-0070"
+    ]
+  },
+  {
+    "run_id": "RUN-0079",
+    "family": "gateway-ratelimit",
+    "task": "GW-468",
+    "app": "APP-024",
+    "sprint": 11,
+    "outcome": "pass",
+    "fused_confidence": 0.83,
+    "score": 0.82,
+    "experience_update": "reinforced",
+    "experience": "EXP-205",
+    "prior_executions": [
+      "RUN-0071"
+    ]
+  },
+  {
+    "run_id": "RUN-0080",
+    "family": "inventory-atp",
+    "task": "INV-1234",
+    "app": "APP-010",
+    "sprint": 11,
+    "outcome": "pass",
+    "fused_confidence": 0.86,
+    "score": 0.9,
+    "experience_update": "reinforced",
+    "experience": "EXP-203",
+    "prior_executions": [
+      "RUN-0072"
+    ]
+  },
+  {
+    "run_id": "RUN-0081",
+    "family": "order-saga",
+    "task": "OMS-1349",
+    "app": "APP-009",
+    "sprint": 11,
+    "outcome": "pass",
+    "fused_confidence": 0.85,
+    "score": 0.88,
+    "experience_update": "reinforced",
+    "experience": "EXP-206",
+    "prior_executions": [
+      "RUN-0073"
+    ]
+  },
+  {
+    "run_id": "RUN-0082",
+    "family": "payments-3ds",
+    "task": "PAY-993",
+    "app": "APP-012",
+    "sprint": 11,
+    "outcome": "pass",
+    "fused_confidence": 0.88,
+    "score": 0.92,
+    "experience_update": "reinforced",
+    "experience": "EXP-202",
+    "prior_executions": [
+      "RUN-0074"
+    ]
+  },
+  {
+    "run_id": "RUN-0083",
+    "family": "promo-cache",
+    "task": "PRM-1018",
+    "app": "APP-008",
+    "sprint": 11,
+    "outcome": "pass",
+    "fused_confidence": 0.83,
+    "score": 0.82,
+    "experience_update": "reinforced",
+    "experience": "EXP-055",
+    "prior_executions": [
+      "RUN-0076"
+    ]
+  },
+  {
+    "run_id": "RUN-0084",
+    "family": "returns-portal",
+    "task": "POR-640",
+    "app": "APP-021",
+    "sprint": 11,
+    "outcome": "pass",
+    "fused_confidence": 0.79,
+    "score": 0.79,
+    "experience_update": "reinforced",
+    "experience": "EXP-208",
+    "prior_executions": [
+      "RUN-0077"
+    ]
+  },
+  {
+    "run_id": "RUN-0085",
+    "family": "checkout-latency",
+    "task": "CHK-1421",
+    "app": "APP-003",
+    "sprint": 12,
+    "outcome": "pass",
+    "fused_confidence": 0.8,
+    "score": 0.83,
+    "experience_update": "reinforced",
+    "experience": "EXP-209",
+    "prior_executions": [
+      "RUN-0078"
+    ]
+  },
+  {
+    "run_id": "RUN-0086",
+    "family": "gateway-ratelimit",
+    "task": "GW-450",
+    "app": "APP-024",
+    "sprint": 12,
+    "outcome": "pass",
+    "fused_confidence": 0.89,
+    "score": 0.91,
+    "experience_update": "reinforced",
+    "experience": "EXP-205",
+    "prior_executions": [
+      "RUN-0079"
+    ]
+  },
+  {
+    "run_id": "RUN-0087",
+    "family": "inventory-atp",
+    "task": "INV-1242",
+    "app": "APP-010",
+    "sprint": 12,
+    "outcome": "pass",
+    "fused_confidence": 0.9,
+    "score": 0.91,
+    "experience_update": "reinforced",
+    "experience": "EXP-203",
+    "prior_executions": [
+      "RUN-0080"
+    ]
+  },
+  {
+    "run_id": "RUN-0088",
+    "family": "order-saga",
+    "task": "OMS-1323",
+    "app": "APP-009",
+    "sprint": 12,
+    "outcome": "pass",
+    "fused_confidence": 0.91,
+    "score": 0.96,
+    "experience_update": "reinforced",
+    "experience": "EXP-206",
+    "prior_executions": [
+      "RUN-0081"
+    ]
+  },
+  {
+    "run_id": "RUN-0089",
+    "family": "payments-3ds",
+    "task": "PAY-991",
+    "app": "APP-012",
+    "sprint": 12,
+    "outcome": "pass",
+    "fused_confidence": 0.89,
+    "score": 0.97,
+    "experience_update": "reinforced",
+    "experience": "EXP-202",
+    "prior_executions": [
+      "RUN-0082"
+    ]
+  },
+  {
+    "run_id": "RUN-0090",
+    "family": "promo-cache",
+    "task": "PRM-1014",
+    "app": "APP-008",
+    "sprint": 12,
+    "outcome": "pass",
+    "fused_confidence": 0.9,
+    "score": 0.96,
+    "experience_update": "reinforced",
+    "experience": "EXP-055",
+    "prior_executions": [
+      "RUN-0083"
+    ]
+  },
+  {
+    "run_id": "RUN-0091",
+    "family": "returns-portal",
+    "task": "POR-636",
+    "app": "APP-021",
+    "sprint": 12,
+    "outcome": "pass",
+    "fused_confidence": 0.8,
+    "score": 0.82,
+    "experience_update": "reinforced",
+    "experience": "EXP-208",
+    "prior_executions": [
+      "RUN-0084"
+    ]
+  },
+  {
+    "run_id": "RUN-0092",
+    "family": "checkout-latency",
+    "task": "CHK-1415",
+    "app": "APP-003",
+    "sprint": 13,
+    "outcome": "pass",
+    "fused_confidence": 0.86,
+    "score": 0.86,
+    "experience_update": "reinforced",
+    "experience": "EXP-209",
+    "prior_executions": [
+      "RUN-0085"
+    ]
+  },
+  {
+    "run_id": "RUN-0093",
+    "family": "checkout-latency",
+    "task": "CHK-1409",
+    "app": "APP-003",
+    "sprint": 13,
+    "outcome": "pass",
+    "fused_confidence": 0.93,
+    "score": 0.95,
+    "experience_update": "reinforced",
+    "experience": "EXP-209",
+    "prior_executions": [
+      "RUN-0092"
+    ]
+  },
+  {
+    "run_id": "RUN-0094",
+    "family": "gateway-ratelimit",
+    "task": "GW-450",
+    "app": "APP-024",
+    "sprint": 13,
+    "outcome": "pass",
+    "fused_confidence": 0.95,
+    "score": 0.99,
+    "experience_update": "reinforced",
+    "experience": "EXP-205",
+    "prior_executions": [
+      "RUN-0086"
+    ]
+  },
+  {
+    "run_id": "RUN-0095",
+    "family": "inventory-atp",
+    "task": "INV-1234",
+    "app": "APP-010",
+    "sprint": 13,
+    "outcome": "pass",
+    "fused_confidence": 0.94,
+    "score": 0.96,
+    "experience_update": "reinforced",
+    "experience": "EXP-203",
+    "prior_executions": [
+      "RUN-0087"
+    ]
+  },
+  {
+    "run_id": "RUN-0096",
+    "family": "order-saga",
+    "task": "OMS-1352",
+    "app": "APP-009",
+    "sprint": 13,
+    "outcome": "pass",
+    "fused_confidence": 0.96,
+    "score": 1.0,
+    "experience_update": "reinforced",
+    "experience": "EXP-206",
+    "prior_executions": [
+      "RUN-0088"
+    ]
+  },
+  {
+    "run_id": "RUN-0097",
+    "family": "payments-3ds",
+    "task": "PAY-976",
+    "app": "APP-012",
+    "sprint": 13,
+    "outcome": "pass",
+    "fused_confidence": 0.91,
+    "score": 0.91,
+    "experience_update": "reinforced",
+    "experience": "EXP-202",
+    "prior_executions": [
+      "RUN-0089"
+    ]
+  },
+  {
+    "run_id": "RUN-0098",
+    "family": "promo-cache",
+    "task": "PRM-1030",
+    "app": "APP-008",
+    "sprint": 13,
+    "outcome": "pass",
+    "fused_confidence": 0.94,
+    "score": 0.98,
+    "experience_update": "reinforced",
+    "experience": "EXP-055",
+    "prior_executions": [
+      "RUN-0090"
+    ]
+  },
+  {
+    "run_id": "RUN-0099",
+    "family": "returns-portal",
+    "task": "POR-647",
+    "app": "APP-021",
+    "sprint": 13,
+    "outcome": "pass",
+    "fused_confidence": 0.88,
+    "score": 0.9,
+    "experience_update": "reinforced",
+    "experience": "EXP-208",
+    "prior_executions": [
+      "RUN-0091"
+    ]
+  },
+  {
+    "run_id": "RUN-0100",
+    "family": "returns-portal",
+    "task": "POR-647",
+    "app": "APP-021",
+    "sprint": 13,
+    "outcome": "pass",
+    "fused_confidence": 0.94,
+    "score": 0.98,
+    "experience_update": "reinforced",
+    "experience": "EXP-208",
+    "prior_executions": [
+      "RUN-0099"
+    ]
+  }
+]

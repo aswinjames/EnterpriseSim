@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/worker_execution_bundle.schema.json",
+  "title": "WorkerExecutionBundle",
+  "description": "One complete Enterprise Worker execution: the full ECL loop for a single task (RUN-####). Embeds schema-valid ECL objects for every lifecycle stage and records the knowledge/experience retrieved, prior executions referenced, and the evolving confidence. Realizes CANON-001 §9 / ARCH-07 end to end.",
+  "type": "object",
+  "required": ["run_id", "schema_version", "created_at", "worker", "task", "knowledge_retrieved", "experience_retrieved", "context", "decision", "plan", "execution", "evaluation", "reflection", "experience_update", "confidence", "outcome"],
+  "properties": {
+    "run_id": { "type": "string", "pattern": "^RUN-\\d{4}$" },
+    "schema_version": { "type": "string", "pattern": "^2020-12\\.v\\d+$" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "worker": { "type": "string", "description": "Worker type name, e.g. software-engineering-worker, incident-response-worker." },
+    "task": {
+      "type": "object",
+      "required": ["type", "ref", "app"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string", "enum": ["feature", "bugfix", "incident_response", "test_authoring", "refactor", "hardening"] },
+        "ref": { "$ref": "common.schema.json#/$defs/canonicalId" },
+        "app": { "$ref": "common.schema.json#/$defs/appId" },
+        "repo": { "type": "string", "pattern": "^mcg-[a-z0-9-]+$" },
+        "sprint": { "type": "integer", "minimum": 1, "maximum": 13 },
+        "family": { "type": "string", "description": "Task family (recurring situation class) used to track learning over time." }
+      }
+    },
+    "knowledge_retrieved": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/canonicalId" } },
+    "experience_retrieved": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/experienceId" } },
+    "prior_executions": { "type": "array", "items": { "type": "string", "pattern": "^RUN-\\d{4}$" } },
+    "context": { "$ref": "context_object.schema.json" },
+    "decision": { "$ref": "worker_decision.schema.json" },
+    "plan": { "$ref": "planning_object.schema.json" },
+    "execution": { "$ref": "worker_execution.schema.json" },
+    "evaluation": { "$ref": "evaluation_object.schema.json" },
+    "reflection": { "$ref": "reflection_object.schema.json" },
+    "experience_update": {
+      "type": "object",
+      "required": ["action", "experience"],
+      "additionalProperties": false,
+      "properties": {
+        "action": { "type": "string", "enum": ["created", "reinforced", "downweighted", "none"] },
+        "experience": { "$ref": "common.schema.json#/$defs/experienceId" },
+        "delta": { "type": "object", "description": "Change to the experience's value (e.g. application_frequency, outcome_lift)." },
+        "learning_event": { "$ref": "learning_event.schema.json" }
+      }
+    },
+    "confidence": {
+      "type": "object",
+      "required": ["context_coverage", "evaluation_outcome", "fused"],
+      "additionalProperties": false,
+      "properties": {
+        "context_coverage": { "$ref": "common.schema.json#/$defs/confidence" },
+        "knowledge_authority": { "$ref": "common.schema.json#/$defs/confidence" },
+        "experience_applicability": { "$ref": "common.schema.json#/$defs/confidence" },
+        "evaluation_outcome": { "$ref": "common.schema.json#/$defs/confidence" },
+        "evaluation_judgment": { "$ref": "common.schema.json#/$defs/confidence" },
+        "fused": { "$ref": "common.schema.json#/$defs/confidence" }
+      }
+    },
+    "outcome": { "type": "string", "enum": ["pass", "partial", "fail"] }
+  },
+  "unevaluatedProperties": false
+}

@@ -1,0 +1,256 @@
+{
+  "run_id": "RUN-0020",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-03-03T09:00:00Z",
+  "worker": "reliability-worker",
+  "task": {
+    "type": "hardening",
+    "ref": "CRT-543",
+    "app": "APP-004",
+    "repo": "mcg-cart-service",
+    "sprint": 5,
+    "family": "cart-resilience"
+  },
+  "knowledge_retrieved": [
+    "KN-300",
+    "KN-207"
+  ],
+  "experience_retrieved": [
+    "EXP-207"
+  ],
+  "prior_executions": [
+    "RUN-0013"
+  ],
+  "context": {
+    "id": "CTX-1020",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-03T09:00:00Z",
+    "task": {
+      "type": "jira_story",
+      "ref": "CRT-543",
+      "app": "APP-004",
+      "repo": "mcg-cart-service"
+    },
+    "intent_ref": "PLAN-1020",
+    "model_budget": {
+      "window_tokens": 200000,
+      "reserved_output": 8000
+    },
+    "included": [
+      {
+        "source": "KN-300",
+        "kind": "knowledge",
+        "reason": "relevant cart-resilience rule/doc",
+        "score": 0.87
+      },
+      {
+        "source": "KN-207",
+        "kind": "knowledge",
+        "reason": "relevant cart-resilience rule/doc",
+        "score": 0.87
+      },
+      {
+        "source": "EXP-207",
+        "kind": "experience",
+        "reason": "prior cart-resilience lesson",
+        "score": 0.85
+      }
+    ],
+    "excluded": [],
+    "coverage_confidence": 0.84,
+    "signals": {
+      "hit_ratio": 0.78,
+      "budget_utilization": 0.5,
+      "staleness_index": 0.1
+    }
+  },
+  "decision": {
+    "id": "DEC-0020",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-03T11:00:00Z",
+    "plan": "PLAN-1020",
+    "choice": "proceed",
+    "rationale": "Applied EXP-207; fused confidence adequate.",
+    "fused_confidence": 0.82,
+    "inputs": {
+      "context": 0.84,
+      "knowledge": 0.84,
+      "experience": 0.8,
+      "evaluation": 0.8
+    },
+    "worker": "reliability-worker",
+    "trace_seq": 1
+  },
+  "plan": {
+    "id": "PLAN-1020",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-03T10:00:00Z",
+    "task": "CRT-543",
+    "app": "APP-004",
+    "intent": "Hardening for cart-resilience: Cart writes need optimistic concurrency plus Redis failover ",
+    "success_criteria": [
+      "Task acceptance criteria met.",
+      "No regression of the known failure class.",
+      "Applies prior lesson EXP-207"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "action": "analyze cart-resilience change site",
+        "tool": "repo"
+      },
+      {
+        "n": 2,
+        "action": "implement cart-resilience change",
+        "tool": "repo"
+      },
+      {
+        "n": 3,
+        "action": "add regression test for Cart writes need optimistic concurrency ",
+        "tool": "repo"
+      },
+      {
+        "n": 4,
+        "action": "run tests",
+        "tool": "ci",
+        "expect": "TR pass"
+      },
+      {
+        "n": 5,
+        "action": "open PR",
+        "tool": "github"
+      }
+    ],
+    "rollback": "Feature-flag or revert; expand-contract migration if schema touched.",
+    "risk_tier": 0,
+    "routing": {
+      "model_class": "high-reasoning",
+      "reason": "tier 0 cart-resilience change"
+    },
+    "applied_experience": [
+      "EXP-207"
+    ]
+  },
+  "execution": {
+    "id": "EXE-0020",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-04T14:00:00Z",
+    "plan": "PLAN-1020",
+    "step": 5,
+    "tool": "github",
+    "directives": {
+      "open_pr": true
+    },
+    "artifacts": [
+      {
+        "id": "PR-6020",
+        "schema_version": "2020-12.v1",
+        "created_at": "2026-03-04T14:00:00Z",
+        "artifact_type": "pull_request",
+        "ref": "PR-6020",
+        "uri": "mcg-cart-service#6020",
+        "repo": "mcg-cart-service"
+      }
+    ],
+    "status": "succeeded",
+    "worker": "reliability-worker",
+    "run_id": "RUN-0020"
+  },
+  "evaluation": {
+    "id": "EVAL-1020",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-05T12:00:00Z",
+    "execution": "PR-6020",
+    "plan": "PLAN-1020",
+    "task": "CRT-543",
+    "rubric": {
+      "id": "RUBRIC-hardening",
+      "version": 2
+    },
+    "objective": [
+      {
+        "gate": "unit_tests",
+        "result": "pass",
+        "evidence": "TR-7020",
+        "weight": 0.3
+      },
+      {
+        "gate": "coverage",
+        "result": "pass",
+        "value": 0.85,
+        "threshold": 0.8,
+        "evidence": "TR-7020",
+        "weight": 0.2
+      },
+      {
+        "gate": "dependency_rule",
+        "result": "pass",
+        "weight": 0.2
+      },
+      {
+        "gate": "security_scan",
+        "result": "pass",
+        "weight": 0.15
+      },
+      {
+        "gate": "regression_check",
+        "result": "pass",
+        "weight": 0.15
+      }
+    ],
+    "rubric_items": [
+      {
+        "item": "cart-resilience change is correct and maintainable",
+        "result": "pass",
+        "evidence": "reviewer notes",
+        "judgment_confidence": 0.86
+      }
+    ],
+    "verdict": {
+      "outcome": "pass",
+      "score": 0.8,
+      "outcome_confidence": 0.82,
+      "judgment_confidence": 0.86
+    },
+    "regression_check": {
+      "reintroduced_defect": false,
+      "checked_against": [
+        "EXP-207"
+      ]
+    }
+  },
+  "reflection": {
+    "id": "REF-1020",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-05T16:00:00Z",
+    "evaluation": "EVAL-1020",
+    "execution": "PR-6020",
+    "plan": "PLAN-1020",
+    "what_happened": "cart-resilience task succeeded, applying accumulated experience.",
+    "root_cause": {
+      "category": "missing_experience",
+      "detail": "Applying EXP-207 kept the cart-resilience failure class from recurring; loop closed.",
+      "confidence": 0.87
+    },
+    "lessons": [],
+    "policy_updates": [],
+    "loop_closed_by": "PR-6020"
+  },
+  "experience_update": {
+    "action": "reinforced",
+    "experience": "EXP-207",
+    "delta": {
+      "application_frequency_inc": 1,
+      "outcome": "pass"
+    }
+  },
+  "confidence": {
+    "context_coverage": 0.84,
+    "knowledge_authority": 0.84,
+    "experience_applicability": 0.8,
+    "evaluation_outcome": 0.8,
+    "evaluation_judgment": 0.86,
+    "fused": 0.82
+  },
+  "outcome": "pass"
+}

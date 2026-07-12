@@ -1,0 +1,237 @@
+{
+  "run_id": "RUN-0001",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-01-07T10:00:00Z",
+  "worker": "software-engineering-worker",
+  "task": {
+    "type": "feature",
+    "ref": "CHK-1421",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "sprint": 1,
+    "family": "guest-checkout"
+  },
+  "knowledge_retrieved": [
+    "KN-045",
+    "KN-052"
+  ],
+  "experience_retrieved": [],
+  "prior_executions": [],
+  "context": {
+    "id": "CTX-0091",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-07T10:00:00Z",
+    "task": {
+      "type": "jira_story",
+      "ref": "CHK-1421",
+      "app": "APP-003",
+      "repo": "mcg-checkout-service"
+    },
+    "intent_ref": "PLAN-0051",
+    "model_budget": {
+      "window_tokens": 200000,
+      "reserved_output": 8000
+    },
+    "included": [
+      {
+        "source": "KN-052",
+        "kind": "knowledge",
+        "reason": "idempotency requirement for order placement",
+        "score": 0.87
+      }
+    ],
+    "excluded": [
+      {
+        "source": "KN-045",
+        "kind": "knowledge",
+        "reason": "checkout domain rules (incl. no-loyalty invariant) dropped for budget",
+        "score": 0.63
+      }
+    ],
+    "coverage_confidence": 0.58,
+    "signals": {
+      "hit_ratio": 0.55,
+      "budget_utilization": 0.72,
+      "staleness_index": 0.1
+    }
+  },
+  "decision": {
+    "id": "DEC-0001",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-07T12:00:00Z",
+    "plan": "PLAN-0051",
+    "choice": "proceed",
+    "rationale": "Context appeared sufficient; loyalty side-effect risk not surfaced (no prior experience).",
+    "fused_confidence": 0.62,
+    "inputs": {
+      "context": 0.58,
+      "knowledge": 0.7,
+      "experience": 0.0,
+      "evaluation": 0.6
+    },
+    "worker": "software-engineering-worker",
+    "trace_seq": 1
+  },
+  "plan": {
+    "id": "PLAN-0051",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-07T11:00:00Z",
+    "task": "CHK-1421",
+    "app": "APP-003",
+    "intent": "Implement guest checkout end to end.",
+    "success_criteria": [
+      "Guest can place an order end to end.",
+      "Idempotency preserved (KN-052)."
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "action": "implement guest order path",
+        "tool": "repo"
+      },
+      {
+        "n": 2,
+        "action": "run unit + contract tests",
+        "tool": "ci",
+        "expect": "TR pass"
+      },
+      {
+        "n": 3,
+        "action": "open PR",
+        "tool": "github"
+      }
+    ],
+    "rollback": "Revert the guest-path change; no schema migration involved.",
+    "risk_tier": 0,
+    "routing": {
+      "model_class": "high-reasoning",
+      "reason": "Tier 0 checkout change"
+    }
+  },
+  "execution": {
+    "id": "EXE-0001",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-10T14:00:00Z",
+    "plan": "PLAN-0051",
+    "step": 3,
+    "tool": "github",
+    "directives": {
+      "open_pr": true
+    },
+    "artifacts": [
+      {
+        "id": "PR-0207",
+        "schema_version": "2020-12.v1",
+        "created_at": "2026-01-10T14:00:00Z",
+        "artifact_type": "pull_request",
+        "ref": "PR-0207",
+        "uri": "mcg-checkout-service#207",
+        "repo": "mcg-checkout-service"
+      }
+    ],
+    "status": "succeeded",
+    "worker": "software-engineering-worker",
+    "run_id": "RUN-0001"
+  },
+  "evaluation": {
+    "id": "EVAL-0044",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-11T12:00:00Z",
+    "execution": "PR-0207",
+    "plan": "PLAN-0051",
+    "task": "CHK-1421",
+    "rubric": {
+      "id": "RUBRIC-feature-change",
+      "version": 3
+    },
+    "objective": [
+      {
+        "gate": "unit_tests",
+        "result": "pass",
+        "evidence": "TR-0440",
+        "weight": 0.25
+      },
+      {
+        "gate": "coverage",
+        "result": "pass",
+        "value": 0.81,
+        "threshold": 0.8,
+        "evidence": "TR-0440",
+        "weight": 0.15
+      },
+      {
+        "gate": "side_effect_check",
+        "result": "fail",
+        "note": "created APP-015 loyalty account for guests",
+        "weight": 0.3
+      },
+      {
+        "gate": "dependency_rule",
+        "result": "pass",
+        "weight": 0.1
+      }
+    ],
+    "rubric_items": [
+      {
+        "item": "guest flow avoids unintended side effects",
+        "result": "fail",
+        "evidence": "post-incident review INC-2026-002",
+        "judgment_confidence": 0.9
+      }
+    ],
+    "verdict": {
+      "outcome": "fail",
+      "score": 0.58,
+      "outcome_confidence": 0.6,
+      "judgment_confidence": 0.88
+    },
+    "regression_check": {
+      "reintroduced_defect": false,
+      "checked_against": []
+    }
+  },
+  "reflection": {
+    "id": "REF-0019",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-11T16:00:00Z",
+    "evaluation": "EVAL-0044",
+    "execution": "PR-0207",
+    "plan": "PLAN-0051",
+    "what_happened": "Guest checkout implementation created a Loyalty (APP-015) account for every guest order, producing orphaned accounts. Tests passed because none asserted the negative case.",
+    "root_cause": {
+      "category": "missing_experience_and_test_gap",
+      "detail": "No prior experience warned about the APP-003 -> APP-015 side effect, and the plan did not include a negative assertion. Context CTX-0091 did NOT include the loyalty domain rules (dropped for budget).",
+      "confidence": 0.88
+    },
+    "lessons": [
+      {
+        "create_experience": "EXP-090"
+      }
+    ],
+    "policy_updates": [
+      {
+        "context": "for APP-003 feature changes, always retrieve APP-015 domain rules (raise priority)"
+      },
+      {
+        "planning": "feature-change plans must include negative-side-effect assertions"
+      }
+    ],
+    "loop_closed_by": "PR-0312"
+  },
+  "experience_update": {
+    "action": "created",
+    "experience": "EXP-090",
+    "delta": {
+      "reason": "distilled from the orphaned-loyalty failure (INC-2026-002)"
+    }
+  },
+  "confidence": {
+    "context_coverage": 0.58,
+    "knowledge_authority": 0.7,
+    "experience_applicability": 0.0,
+    "evaluation_outcome": 0.58,
+    "evaluation_judgment": 0.88,
+    "fused": 0.55
+  },
+  "outcome": "fail"
+}

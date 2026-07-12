@@ -1,0 +1,429 @@
+[
+  {
+    "id": "EXP-055",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-19T16:00:00Z",
+    "title": "Pricing/promotion changes during a promo window require a wr",
+    "situation": {
+      "task_type": "bugfix",
+      "apps": [
+        "APP-008"
+      ],
+      "failure_class": "promo-cache-regression"
+    },
+    "lesson": "Pricing/promotion changes during a promo window require a write-through APP-008 cache flush.",
+    "evidence": {
+      "origin_execution": "PR-6017",
+      "evaluation": "EVAL-1017",
+      "reflection": "REF-1017",
+      "prevented_regressions": [
+        "PR-6066",
+        "PR-6076",
+        "PR-6083",
+        "PR-6090",
+        "PR-6098"
+      ]
+    },
+    "value": {
+      "application_frequency": 9,
+      "outcome_lift": 0.4,
+      "corroboration": "strong",
+      "contradiction_rate": 0.0
+    },
+    "status": "promotion_candidate"
+  },
+  {
+    "id": "EXP-090",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-11T16:00:00Z",
+    "title": "Guest carts must not create loyalty accounts",
+    "situation": {
+      "task_type": "feature_change",
+      "apps": [
+        "APP-003",
+        "APP-015"
+      ],
+      "failure_class": "unintended_side_effect"
+    },
+    "lesson": "When implementing guest flows in Checkout (APP-003), ensure no code path provisions a Loyalty (APP-015) account. A prior change created orphaned loyalty accounts for guests, triggering a data-cleanup incident.",
+    "evidence": {
+      "origin_execution": "PR-0207",
+      "evaluation": "EVAL-0044",
+      "reflection": "REF-0019",
+      "prevented_regressions": [
+        "PR-0312",
+        "PR-6015",
+        "PR-6022",
+        "PR-6030",
+        "PR-6041",
+        "PR-6051"
+      ]
+    },
+    "value": {
+      "application_frequency": 7,
+      "outcome_lift": 0.4,
+      "corroboration": "strong",
+      "contradiction_rate": 0.0
+    },
+    "status": "promotion_candidate"
+  },
+  {
+    "id": "EXP-142",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-05T16:00:00Z",
+    "title": "Async webhook tests need deterministic clocks or they flake.",
+    "situation": {
+      "task_type": "test_authoring",
+      "apps": [
+        "APP-006"
+      ],
+      "failure_class": "test-authoring-regression"
+    },
+    "lesson": "Async webhook tests need deterministic clocks or they flake.",
+    "evidence": {
+      "origin_execution": "TR-7012",
+      "evaluation": "EVAL-1012",
+      "reflection": "REF-1012",
+      "prevented_regressions": [
+        "TR-7037",
+        "TR-7048",
+        "TR-7059",
+        "TR-7069"
+      ]
+    },
+    "value": {
+      "application_frequency": 6,
+      "outcome_lift": 0.3,
+      "corroboration": "strong",
+      "contradiction_rate": 0.0
+    },
+    "status": "promotion_candidate"
+  },
+  {
+    "id": "EXP-201",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-05T16:00:00Z",
+    "title": "Regional rounding rules must be validated per-currency befor",
+    "situation": {
+      "task_type": "feature",
+      "apps": [
+        "APP-007"
+      ],
+      "failure_class": "pricing-regional-regression"
+    },
+    "lesson": "Regional rounding rules must be validated per-currency before rollout.",
+    "evidence": {
+      "origin_execution": "PR-6010",
+      "evaluation": "EVAL-1010",
+      "reflection": "REF-1010",
+      "prevented_regressions": [
+        "PR-6024",
+        "PR-6034",
+        "PR-6045",
+        "PR-6055",
+        "PR-6065",
+        "PR-6075"
+      ]
+    },
+    "value": {
+      "application_frequency": 7,
+      "outcome_lift": 0.35,
+      "corroboration": "strong",
+      "contradiction_rate": 0.0
+    },
+    "status": "promotion_candidate"
+  },
+  {
+    "id": "EXP-202",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-05T16:00:00Z",
+    "title": "3DS challenge flows need PSP-sandbox contract tests to preve",
+    "situation": {
+      "task_type": "feature",
+      "apps": [
+        "APP-012"
+      ],
+      "failure_class": "payments-3ds-regression"
+    },
+    "lesson": "3DS challenge flows need PSP-sandbox contract tests to prevent auth regressions.",
+    "evidence": {
+      "origin_execution": "PR-6023",
+      "evaluation": "EVAL-1023",
+      "reflection": "REF-1023",
+      "prevented_regressions": [
+        "PR-6054",
+        "PR-6064",
+        "PR-6074",
+        "PR-6082",
+        "PR-6089",
+        "PR-6097"
+      ]
+    },
+    "value": {
+      "application_frequency": 8,
+      "outcome_lift": 0.4,
+      "corroboration": "strong",
+      "contradiction_rate": 0.0
+    },
+    "status": "promotion_candidate"
+  },
+  {
+    "id": "EXP-203",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-19T16:00:00Z",
+    "title": "Multi-warehouse ATP requires reservation locks to prevent ov",
+    "situation": {
+      "task_type": "bugfix",
+      "apps": [
+        "APP-010"
+      ],
+      "failure_class": "inventory-atp-regression"
+    },
+    "lesson": "Multi-warehouse ATP requires reservation locks to prevent oversell.",
+    "evidence": {
+      "origin_execution": "PR-6031",
+      "evaluation": "EVAL-1031",
+      "reflection": "REF-1031",
+      "prevented_regressions": [
+        "PR-6062",
+        "PR-6072",
+        "PR-6080",
+        "PR-6087",
+        "PR-6095"
+      ]
+    },
+    "value": {
+      "application_frequency": 7,
+      "outcome_lift": 0.35,
+      "corroboration": "strong",
+      "contradiction_rate": 0.0
+    },
+    "status": "promotion_candidate"
+  },
+  {
+    "id": "EXP-204",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-22T16:00:00Z",
+    "title": "Relevance changes need offline judgment-set evaluation befor",
+    "situation": {
+      "task_type": "feature",
+      "apps": [
+        "APP-006"
+      ],
+      "failure_class": "search-relevance-regression"
+    },
+    "lesson": "Relevance changes need offline judgment-set evaluation before shipping.",
+    "evidence": {
+      "origin_execution": "PR-6006",
+      "evaluation": "EVAL-1006",
+      "reflection": "REF-1006",
+      "prevented_regressions": [
+        "PR-6026",
+        "PR-6036",
+        "PR-6047",
+        "PR-6058",
+        "PR-6068"
+      ]
+    },
+    "value": {
+      "application_frequency": 7,
+      "outcome_lift": 0.35,
+      "corroboration": "strong",
+      "contradiction_rate": 0.0
+    },
+    "status": "promotion_candidate"
+  },
+  {
+    "id": "EXP-205",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-02T16:00:00Z",
+    "title": "Rate-limit thresholds must be load-tested against realistic ",
+    "situation": {
+      "task_type": "hardening",
+      "apps": [
+        "APP-024"
+      ],
+      "failure_class": "gateway-ratelimit-regression"
+    },
+    "lesson": "Rate-limit thresholds must be load-tested against realistic traffic shapes.",
+    "evidence": {
+      "origin_execution": "PR-6040",
+      "evaluation": "EVAL-1040",
+      "reflection": "REF-1040",
+      "prevented_regressions": [
+        "PR-6071",
+        "PR-6079",
+        "PR-6086",
+        "PR-6094"
+      ]
+    },
+    "value": {
+      "application_frequency": 6,
+      "outcome_lift": 0.3,
+      "corroboration": "strong",
+      "contradiction_rate": 0.0
+    },
+    "status": "promotion_candidate"
+  },
+  {
+    "id": "EXP-206",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-19T16:00:00Z",
+    "title": "Saga compensations must be idempotent and tested for partial",
+    "situation": {
+      "task_type": "feature",
+      "apps": [
+        "APP-009"
+      ],
+      "failure_class": "order-saga-regression"
+    },
+    "lesson": "Saga compensations must be idempotent and tested for partial failure.",
+    "evidence": {
+      "origin_execution": "PR-6032",
+      "evaluation": "EVAL-1032",
+      "reflection": "REF-1032",
+      "prevented_regressions": [
+        "PR-6063",
+        "PR-6073",
+        "PR-6081",
+        "PR-6088",
+        "PR-6096"
+      ]
+    },
+    "value": {
+      "application_frequency": 7,
+      "outcome_lift": 0.35,
+      "corroboration": "strong",
+      "contradiction_rate": 0.0
+    },
+    "status": "promotion_candidate"
+  },
+  {
+    "id": "EXP-207",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-08T16:00:00Z",
+    "title": "Cart writes need optimistic concurrency plus Redis failover ",
+    "situation": {
+      "task_type": "hardening",
+      "apps": [
+        "APP-004"
+      ],
+      "failure_class": "cart-resilience-regression"
+    },
+    "lesson": "Cart writes need optimistic concurrency plus Redis failover drills.",
+    "evidence": {
+      "origin_execution": "PR-6003",
+      "evaluation": "EVAL-1003",
+      "reflection": "REF-1003",
+      "prevented_regressions": [
+        "PR-6013",
+        "PR-6020",
+        "PR-6028",
+        "PR-6038"
+      ]
+    },
+    "value": {
+      "application_frequency": 6,
+      "outcome_lift": 0.3,
+      "corroboration": "strong",
+      "contradiction_rate": 0.0
+    },
+    "status": "promotion_candidate"
+  },
+  {
+    "id": "EXP-208",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-16T16:00:00Z",
+    "title": "Returns-eligibility rules need a golden-case suite across or",
+    "situation": {
+      "task_type": "feature",
+      "apps": [
+        "APP-021"
+      ],
+      "failure_class": "returns-portal-regression"
+    },
+    "lesson": "Returns-eligibility rules need a golden-case suite across order states.",
+    "evidence": {
+      "origin_execution": "PR-6057",
+      "evaluation": "EVAL-1057",
+      "reflection": "REF-1057",
+      "prevented_regressions": [
+        "PR-6077",
+        "PR-6084",
+        "PR-6091",
+        "PR-6099",
+        "PR-6100"
+      ]
+    },
+    "value": {
+      "application_frequency": 6,
+      "outcome_lift": 0.3,
+      "corroboration": "strong",
+      "contradiction_rate": 0.0
+    },
+    "status": "promotion_candidate"
+  },
+  {
+    "id": "EXP-209",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-30T16:00:00Z",
+    "title": "Synchronous promo calls on the checkout path must be made as",
+    "situation": {
+      "task_type": "hardening",
+      "apps": [
+        "APP-003"
+      ],
+      "failure_class": "checkout-latency-regression"
+    },
+    "lesson": "Synchronous promo calls on the checkout path must be made async or cached.",
+    "evidence": {
+      "origin_execution": "PR-6060",
+      "evaluation": "EVAL-1060",
+      "reflection": "REF-1060",
+      "prevented_regressions": [
+        "PR-6085",
+        "PR-6092",
+        "PR-6093"
+      ]
+    },
+    "value": {
+      "application_frequency": 5,
+      "outcome_lift": 0.25,
+      "corroboration": "strong",
+      "contradiction_rate": 0.0
+    },
+    "status": "promotion_candidate"
+  },
+  {
+    "id": "EXP-210",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-22T16:00:00Z",
+    "title": "Catalog ingestion needs backpressure and data-platform outag",
+    "situation": {
+      "task_type": "feature",
+      "apps": [
+        "APP-005"
+      ],
+      "failure_class": "catalog-freshness-regression"
+    },
+    "lesson": "Catalog ingestion needs backpressure and data-platform outage handling.",
+    "evidence": {
+      "origin_execution": "PR-6005",
+      "evaluation": "EVAL-1005",
+      "reflection": "REF-1005",
+      "prevented_regressions": [
+        "PR-6021",
+        "PR-6029",
+        "PR-6039",
+        "PR-6049"
+      ]
+    },
+    "value": {
+      "application_frequency": 6,
+      "outcome_lift": 0.3,
+      "corroboration": "strong",
+      "contradiction_rate": 0.0
+    },
+    "status": "promotion_candidate"
+  }
+]

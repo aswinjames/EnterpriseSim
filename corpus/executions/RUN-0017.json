@@ -1,0 +1,252 @@
+{
+  "run_id": "RUN-0017",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-02-17T09:00:00Z",
+  "worker": "software-engineering-worker",
+  "task": {
+    "type": "bugfix",
+    "ref": "PRM-1018",
+    "app": "APP-008",
+    "repo": "mcg-promotions-engine",
+    "sprint": 4,
+    "family": "promo-cache"
+  },
+  "knowledge_retrieved": [
+    "KN-063",
+    "KN-304"
+  ],
+  "experience_retrieved": [],
+  "prior_executions": [],
+  "context": {
+    "id": "CTX-1017",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-17T09:00:00Z",
+    "task": {
+      "type": "jira_story",
+      "ref": "PRM-1018",
+      "app": "APP-008",
+      "repo": "mcg-promotions-engine"
+    },
+    "intent_ref": "PLAN-1017",
+    "model_budget": {
+      "window_tokens": 200000,
+      "reserved_output": 8000
+    },
+    "included": [
+      {
+        "source": "KN-063",
+        "kind": "knowledge",
+        "reason": "relevant promo-cache rule/doc",
+        "score": 0.8
+      },
+      {
+        "source": "KN-304",
+        "kind": "knowledge",
+        "reason": "relevant promo-cache rule/doc",
+        "score": 0.8
+      }
+    ],
+    "excluded": [
+      {
+        "source": "KN-047",
+        "kind": "knowledge",
+        "reason": "lower-relevance doc dropped for budget",
+        "score": 0.4
+      }
+    ],
+    "coverage_confidence": 0.57,
+    "signals": {
+      "hit_ratio": 0.55,
+      "budget_utilization": 0.6,
+      "staleness_index": 0.1
+    }
+  },
+  "decision": {
+    "id": "DEC-0017",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-17T11:00:00Z",
+    "plan": "PLAN-1017",
+    "choice": "proceed",
+    "rationale": "Cold start for this family; limited prior experience.",
+    "fused_confidence": 0.59,
+    "inputs": {
+      "context": 0.57,
+      "knowledge": 0.7,
+      "experience": 0.0,
+      "evaluation": 0.5
+    },
+    "worker": "software-engineering-worker",
+    "trace_seq": 1
+  },
+  "plan": {
+    "id": "PLAN-1017",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-17T10:00:00Z",
+    "task": "PRM-1018",
+    "app": "APP-008",
+    "intent": "Bugfix for promo-cache: Pricing/promotion changes during a promo window require a wr",
+    "success_criteria": [
+      "Task acceptance criteria met.",
+      "No regression of the known failure class."
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "action": "analyze promo-cache change site",
+        "tool": "repo"
+      },
+      {
+        "n": 2,
+        "action": "implement promo-cache change",
+        "tool": "repo"
+      },
+      {
+        "n": 3,
+        "action": "run tests",
+        "tool": "ci",
+        "expect": "TR pass"
+      },
+      {
+        "n": 4,
+        "action": "open PR",
+        "tool": "github"
+      }
+    ],
+    "rollback": "Feature-flag or revert; expand-contract migration if schema touched.",
+    "risk_tier": 1,
+    "routing": {
+      "model_class": "balanced",
+      "reason": "tier 1 promo-cache change"
+    }
+  },
+  "execution": {
+    "id": "EXE-0017",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-18T14:00:00Z",
+    "plan": "PLAN-1017",
+    "step": 4,
+    "tool": "github",
+    "directives": {
+      "open_pr": true
+    },
+    "artifacts": [
+      {
+        "id": "PR-6017",
+        "schema_version": "2020-12.v1",
+        "created_at": "2026-02-18T14:00:00Z",
+        "artifact_type": "pull_request",
+        "ref": "PR-6017",
+        "uri": "mcg-promotions-engine#6017",
+        "repo": "mcg-promotions-engine"
+      }
+    ],
+    "status": "partial",
+    "worker": "software-engineering-worker",
+    "run_id": "RUN-0017"
+  },
+  "evaluation": {
+    "id": "EVAL-1017",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-19T12:00:00Z",
+    "execution": "PR-6017",
+    "plan": "PLAN-1017",
+    "task": "PRM-1018",
+    "rubric": {
+      "id": "RUBRIC-bugfix",
+      "version": 2
+    },
+    "objective": [
+      {
+        "gate": "unit_tests",
+        "result": "fail",
+        "evidence": "TR-7017",
+        "weight": 0.3
+      },
+      {
+        "gate": "coverage",
+        "result": "fail",
+        "value": 0.78,
+        "threshold": 0.8,
+        "evidence": "TR-7017",
+        "weight": 0.2
+      },
+      {
+        "gate": "dependency_rule",
+        "result": "pass",
+        "weight": 0.2
+      },
+      {
+        "gate": "security_scan",
+        "result": "pass",
+        "weight": 0.15
+      },
+      {
+        "gate": "regression_check",
+        "result": "fail",
+        "note": "promo-cache failure class not yet guarded",
+        "weight": 0.15
+      }
+    ],
+    "rubric_items": [
+      {
+        "item": "promo-cache change is correct and maintainable",
+        "result": "fail",
+        "evidence": "reviewer notes",
+        "judgment_confidence": 0.71
+      }
+    ],
+    "verdict": {
+      "outcome": "fail",
+      "score": 0.5,
+      "outcome_confidence": 0.52,
+      "judgment_confidence": 0.71
+    },
+    "regression_check": {
+      "reintroduced_defect": true,
+      "checked_against": []
+    }
+  },
+  "reflection": {
+    "id": "REF-1017",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-19T16:00:00Z",
+    "evaluation": "EVAL-1017",
+    "execution": "PR-6017",
+    "plan": "PLAN-1017",
+    "what_happened": "promo-cache task failed the regression class and produced a new lesson.",
+    "root_cause": {
+      "category": "missing_experience",
+      "detail": "The promo-cache failure class was not guarded; distilling a lesson to prevent recurrence.",
+      "confidence": 0.75
+    },
+    "lessons": [
+      {
+        "create_experience": "EXP-055"
+      }
+    ],
+    "policy_updates": [
+      {
+        "context": "raise retrieval priority of promo-cache rules"
+      },
+      {
+        "planning": "add regression assertion for this failure class"
+      }
+    ]
+  },
+  "experience_update": {
+    "action": "created",
+    "experience": "EXP-055",
+    "delta": {
+      "reason": "distilled from first promo-cache run"
+    }
+  },
+  "confidence": {
+    "context_coverage": 0.57,
+    "knowledge_authority": 0.7,
+    "experience_applicability": 0.0,
+    "evaluation_outcome": 0.5,
+    "evaluation_judgment": 0.71,
+    "fused": 0.59
+  },
+  "outcome": "fail"
+}

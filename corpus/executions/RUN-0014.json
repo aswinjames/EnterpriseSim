@@ -1,0 +1,263 @@
+{
+  "run_id": "RUN-0014",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-02-17T09:00:00Z",
+  "worker": "software-engineering-worker",
+  "task": {
+    "type": "feature",
+    "ref": "CAT-940",
+    "app": "APP-005",
+    "repo": "mcg-catalog-service",
+    "sprint": 4,
+    "family": "catalog-freshness"
+  },
+  "knowledge_retrieved": [
+    "KN-314",
+    "KN-205"
+  ],
+  "experience_retrieved": [
+    "EXP-210"
+  ],
+  "prior_executions": [
+    "RUN-0008"
+  ],
+  "context": {
+    "id": "CTX-1014",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-17T09:00:00Z",
+    "task": {
+      "type": "jira_story",
+      "ref": "CAT-940",
+      "app": "APP-005",
+      "repo": "mcg-catalog-service"
+    },
+    "intent_ref": "PLAN-1014",
+    "model_budget": {
+      "window_tokens": 200000,
+      "reserved_output": 8000
+    },
+    "included": [
+      {
+        "source": "KN-314",
+        "kind": "knowledge",
+        "reason": "relevant catalog-freshness rule/doc",
+        "score": 0.83
+      },
+      {
+        "source": "KN-205",
+        "kind": "knowledge",
+        "reason": "relevant catalog-freshness rule/doc",
+        "score": 0.83
+      },
+      {
+        "source": "EXP-210",
+        "kind": "experience",
+        "reason": "prior catalog-freshness lesson",
+        "score": 0.8
+      }
+    ],
+    "excluded": [
+      {
+        "source": "KN-047",
+        "kind": "knowledge",
+        "reason": "lower-relevance doc dropped for budget",
+        "score": 0.4
+      }
+    ],
+    "coverage_confidence": 0.71,
+    "signals": {
+      "hit_ratio": 0.67,
+      "budget_utilization": 0.55,
+      "staleness_index": 0.1
+    }
+  },
+  "decision": {
+    "id": "DEC-0014",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-17T11:00:00Z",
+    "plan": "PLAN-1014",
+    "choice": "proceed",
+    "rationale": "Applied EXP-210; fused confidence adequate.",
+    "fused_confidence": 0.72,
+    "inputs": {
+      "context": 0.71,
+      "knowledge": 0.8,
+      "experience": 0.73,
+      "evaluation": 0.66
+    },
+    "worker": "software-engineering-worker",
+    "trace_seq": 1
+  },
+  "plan": {
+    "id": "PLAN-1014",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-17T10:00:00Z",
+    "task": "CAT-940",
+    "app": "APP-005",
+    "intent": "Feature for catalog-freshness: Catalog ingestion needs backpressure and data-platform outag",
+    "success_criteria": [
+      "Task acceptance criteria met.",
+      "No regression of the known failure class.",
+      "Applies prior lesson EXP-210"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "action": "analyze catalog-freshness change site",
+        "tool": "repo"
+      },
+      {
+        "n": 2,
+        "action": "implement catalog-freshness change",
+        "tool": "repo"
+      },
+      {
+        "n": 3,
+        "action": "add regression test for Catalog ingestion needs backpressure and",
+        "tool": "repo"
+      },
+      {
+        "n": 4,
+        "action": "run tests",
+        "tool": "ci",
+        "expect": "TR pass"
+      },
+      {
+        "n": 5,
+        "action": "open PR",
+        "tool": "github"
+      }
+    ],
+    "rollback": "Feature-flag or revert; expand-contract migration if schema touched.",
+    "risk_tier": 0,
+    "routing": {
+      "model_class": "high-reasoning",
+      "reason": "tier 0 catalog-freshness change"
+    },
+    "applied_experience": [
+      "EXP-210"
+    ]
+  },
+  "execution": {
+    "id": "EXE-0014",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-18T14:00:00Z",
+    "plan": "PLAN-1014",
+    "step": 5,
+    "tool": "github",
+    "directives": {
+      "open_pr": true
+    },
+    "artifacts": [
+      {
+        "id": "PR-6014",
+        "schema_version": "2020-12.v1",
+        "created_at": "2026-02-18T14:00:00Z",
+        "artifact_type": "pull_request",
+        "ref": "PR-6014",
+        "uri": "mcg-catalog-service#6014",
+        "repo": "mcg-catalog-service"
+      }
+    ],
+    "status": "succeeded",
+    "worker": "software-engineering-worker",
+    "run_id": "RUN-0014"
+  },
+  "evaluation": {
+    "id": "EVAL-1014",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-19T12:00:00Z",
+    "execution": "PR-6014",
+    "plan": "PLAN-1014",
+    "task": "CAT-940",
+    "rubric": {
+      "id": "RUBRIC-feature",
+      "version": 2
+    },
+    "objective": [
+      {
+        "gate": "unit_tests",
+        "result": "pass",
+        "evidence": "TR-7014",
+        "weight": 0.3
+      },
+      {
+        "gate": "coverage",
+        "result": "pass",
+        "value": 0.81,
+        "threshold": 0.8,
+        "evidence": "TR-7014",
+        "weight": 0.2
+      },
+      {
+        "gate": "dependency_rule",
+        "result": "pass",
+        "weight": 0.2
+      },
+      {
+        "gate": "security_scan",
+        "result": "pass",
+        "weight": 0.15
+      },
+      {
+        "gate": "regression_check",
+        "result": "pass",
+        "weight": 0.15
+      }
+    ],
+    "rubric_items": [
+      {
+        "item": "catalog-freshness change is correct and maintainable",
+        "result": "partial",
+        "evidence": "reviewer notes",
+        "judgment_confidence": 0.81
+      }
+    ],
+    "verdict": {
+      "outcome": "partial",
+      "score": 0.66,
+      "outcome_confidence": 0.68,
+      "judgment_confidence": 0.81
+    },
+    "regression_check": {
+      "reintroduced_defect": false,
+      "checked_against": [
+        "EXP-210"
+      ]
+    }
+  },
+  "reflection": {
+    "id": "REF-1014",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-19T16:00:00Z",
+    "evaluation": "EVAL-1014",
+    "execution": "PR-6014",
+    "plan": "PLAN-1014",
+    "what_happened": "catalog-freshness task succeeded, applying accumulated experience.",
+    "root_cause": {
+      "category": "missing_experience",
+      "detail": "Applying EXP-210 kept the catalog-freshness failure class from recurring; loop closed.",
+      "confidence": 0.83
+    },
+    "lessons": [],
+    "policy_updates": [],
+    "loop_closed_by": "PR-6014"
+  },
+  "experience_update": {
+    "action": "reinforced",
+    "experience": "EXP-210",
+    "delta": {
+      "application_frequency_inc": 1,
+      "outcome": "partial"
+    }
+  },
+  "confidence": {
+    "context_coverage": 0.71,
+    "knowledge_authority": 0.8,
+    "experience_applicability": 0.73,
+    "evaluation_outcome": 0.66,
+    "evaluation_judgment": 0.81,
+    "fused": 0.72
+  },
+  "outcome": "partial"
+}

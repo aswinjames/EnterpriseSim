@@ -1,0 +1,244 @@
+{
+  "run_id": "RUN-0012",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-02-03T09:00:00Z",
+  "worker": "qa-worker",
+  "task": {
+    "type": "test_authoring",
+    "ref": "SRCH-727",
+    "app": "APP-006",
+    "repo": "mcg-search-service",
+    "sprint": 3,
+    "family": "test-authoring"
+  },
+  "knowledge_retrieved": [
+    "KN-204"
+  ],
+  "experience_retrieved": [],
+  "prior_executions": [],
+  "context": {
+    "id": "CTX-1012",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-03T09:00:00Z",
+    "task": {
+      "type": "jira_story",
+      "ref": "SRCH-727",
+      "app": "APP-006",
+      "repo": "mcg-search-service"
+    },
+    "intent_ref": "PLAN-1012",
+    "model_budget": {
+      "window_tokens": 200000,
+      "reserved_output": 8000
+    },
+    "included": [
+      {
+        "source": "KN-204",
+        "kind": "knowledge",
+        "reason": "relevant test-authoring rule/doc",
+        "score": 0.8
+      }
+    ],
+    "excluded": [
+      {
+        "source": "KN-047",
+        "kind": "knowledge",
+        "reason": "lower-relevance doc dropped for budget",
+        "score": 0.4
+      }
+    ],
+    "coverage_confidence": 0.53,
+    "signals": {
+      "hit_ratio": 0.55,
+      "budget_utilization": 0.6,
+      "staleness_index": 0.1
+    }
+  },
+  "decision": {
+    "id": "DEC-0012",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-03T11:00:00Z",
+    "plan": "PLAN-1012",
+    "choice": "proceed",
+    "rationale": "Cold start for this family; limited prior experience.",
+    "fused_confidence": 0.62,
+    "inputs": {
+      "context": 0.53,
+      "knowledge": 0.73,
+      "experience": 0.0,
+      "evaluation": 0.59
+    },
+    "worker": "qa-worker",
+    "trace_seq": 1
+  },
+  "plan": {
+    "id": "PLAN-1012",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-03T10:00:00Z",
+    "task": "SRCH-727",
+    "app": "APP-006",
+    "intent": "Test_authoring for test-authoring: Async webhook tests need deterministic clocks or they flake.",
+    "success_criteria": [
+      "Task acceptance criteria met.",
+      "No regression of the known failure class."
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "action": "analyze test-authoring change site",
+        "tool": "repo"
+      },
+      {
+        "n": 2,
+        "action": "implement test-authoring change",
+        "tool": "repo"
+      },
+      {
+        "n": 3,
+        "action": "run tests",
+        "tool": "ci",
+        "expect": "TR pass"
+      },
+      {
+        "n": 4,
+        "action": "open PR",
+        "tool": "github"
+      }
+    ],
+    "rollback": "Feature-flag or revert; expand-contract migration if schema touched.",
+    "risk_tier": 0,
+    "routing": {
+      "model_class": "high-reasoning",
+      "reason": "tier 0 test-authoring change"
+    }
+  },
+  "execution": {
+    "id": "EXE-0012",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-04T14:00:00Z",
+    "plan": "PLAN-1012",
+    "step": 4,
+    "tool": "github",
+    "directives": {
+      "open_pr": true
+    },
+    "artifacts": [
+      {
+        "id": "TR-7012",
+        "schema_version": "2020-12.v1",
+        "created_at": "2026-02-04T14:00:00Z",
+        "artifact_type": "test_run",
+        "ref": "TR-7012",
+        "uri": "testrail/runs/7012"
+      }
+    ],
+    "status": "partial",
+    "worker": "qa-worker",
+    "run_id": "RUN-0012"
+  },
+  "evaluation": {
+    "id": "EVAL-1012",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-05T12:00:00Z",
+    "execution": "TR-7012",
+    "plan": "PLAN-1012",
+    "task": "SRCH-727",
+    "rubric": {
+      "id": "RUBRIC-test_authoring",
+      "version": 2
+    },
+    "objective": [
+      {
+        "gate": "unit_tests",
+        "result": "fail",
+        "evidence": "TR-7012",
+        "weight": 0.3
+      },
+      {
+        "gate": "coverage",
+        "result": "fail",
+        "value": 0.78,
+        "threshold": 0.8,
+        "evidence": "TR-7012",
+        "weight": 0.2
+      },
+      {
+        "gate": "dependency_rule",
+        "result": "pass",
+        "weight": 0.2
+      },
+      {
+        "gate": "security_scan",
+        "result": "pass",
+        "weight": 0.15
+      },
+      {
+        "gate": "regression_check",
+        "result": "fail",
+        "note": "test-authoring failure class not yet guarded",
+        "weight": 0.15
+      }
+    ],
+    "rubric_items": [
+      {
+        "item": "test-authoring change is correct and maintainable",
+        "result": "fail",
+        "evidence": "reviewer notes",
+        "judgment_confidence": 0.72
+      }
+    ],
+    "verdict": {
+      "outcome": "fail",
+      "score": 0.59,
+      "outcome_confidence": 0.61,
+      "judgment_confidence": 0.72
+    },
+    "regression_check": {
+      "reintroduced_defect": true,
+      "checked_against": []
+    }
+  },
+  "reflection": {
+    "id": "REF-1012",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-05T16:00:00Z",
+    "evaluation": "EVAL-1012",
+    "execution": "TR-7012",
+    "plan": "PLAN-1012",
+    "what_happened": "test-authoring task failed the regression class and produced a new lesson.",
+    "root_cause": {
+      "category": "missing_experience",
+      "detail": "The test-authoring failure class was not guarded; distilling a lesson to prevent recurrence.",
+      "confidence": 0.75
+    },
+    "lessons": [
+      {
+        "create_experience": "EXP-142"
+      }
+    ],
+    "policy_updates": [
+      {
+        "context": "raise retrieval priority of test-authoring rules"
+      },
+      {
+        "planning": "add regression assertion for this failure class"
+      }
+    ]
+  },
+  "experience_update": {
+    "action": "created",
+    "experience": "EXP-142",
+    "delta": {
+      "reason": "distilled from first test-authoring run"
+    }
+  },
+  "confidence": {
+    "context_coverage": 0.53,
+    "knowledge_authority": 0.73,
+    "experience_applicability": 0.0,
+    "evaluation_outcome": 0.59,
+    "evaluation_judgment": 0.72,
+    "fused": 0.62
+  },
+  "outcome": "fail"
+}

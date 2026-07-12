@@ -1,0 +1,279 @@
+{
+  "run_id": "RUN-0002",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-01-12T10:00:00Z",
+  "worker": "software-engineering-worker",
+  "task": {
+    "type": "feature",
+    "ref": "CHK-1421",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "sprint": 1,
+    "family": "guest-checkout"
+  },
+  "knowledge_retrieved": [
+    "KN-045",
+    "KN-052",
+    "KN-063"
+  ],
+  "experience_retrieved": [
+    "EXP-090"
+  ],
+  "prior_executions": [
+    "RUN-0001"
+  ],
+  "context": {
+    "id": "CTX-0118",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-12T10:00:00Z",
+    "task": {
+      "type": "jira_story",
+      "ref": "CHK-1421",
+      "app": "APP-003",
+      "repo": "mcg-checkout-service"
+    },
+    "intent_ref": "PLAN-0072",
+    "model_budget": {
+      "window_tokens": 200000,
+      "reserved_output": 8000
+    },
+    "included": [
+      {
+        "source": "KN-045",
+        "kind": "knowledge",
+        "reason": "defines order-placement invariants",
+        "score": 0.94
+      },
+      {
+        "source": "KN-052",
+        "kind": "knowledge",
+        "reason": "guest orders need idempotency keys",
+        "score": 0.88
+      },
+      {
+        "source": "EXP-090",
+        "kind": "experience",
+        "reason": "prior regression on APP-015",
+        "score": 0.91
+      }
+    ],
+    "excluded": [
+      {
+        "source": "KN-047",
+        "kind": "knowledge",
+        "reason": "dropped for budget; flagged",
+        "score": 0.61
+      }
+    ],
+    "coverage_confidence": 0.86,
+    "signals": {
+      "hit_ratio": 0.83,
+      "budget_utilization": 0.41,
+      "staleness_index": 0.12
+    }
+  },
+  "decision": {
+    "id": "DEC-0002",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-12T12:00:00Z",
+    "plan": "PLAN-0072",
+    "choice": "proceed",
+    "rationale": "EXP-090 surfaced the loyalty side-effect risk; plan now includes a negative assertion. Fused confidence high.",
+    "fused_confidence": 0.89,
+    "inputs": {
+      "context": 0.86,
+      "knowledge": 0.92,
+      "experience": 0.91,
+      "evaluation": 0.9
+    },
+    "worker": "software-engineering-worker",
+    "trace_seq": 1
+  },
+  "plan": {
+    "id": "PLAN-0072",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-12T11:00:00Z",
+    "task": "CHK-1421",
+    "app": "APP-003",
+    "intent": "Add guest checkout without creating a Loyalty (APP-015) account.",
+    "success_criteria": [
+      "Guest can place an order end to end.",
+      "No APP-015 account created for guests (negative test).",
+      "Idempotency preserved (KN-052)."
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "action": "read PlaceOrder.java + guest-flow tests",
+        "tool": "repo"
+      },
+      {
+        "n": 2,
+        "action": "implement guest path; guard APP-015 provisioning",
+        "tool": "repo"
+      },
+      {
+        "n": 3,
+        "action": "add GuestNoLoyaltyTest (negative assertion)",
+        "tool": "repo"
+      },
+      {
+        "n": 4,
+        "action": "run unit + contract tests",
+        "tool": "ci",
+        "expect": "TR-#### pass"
+      },
+      {
+        "n": 5,
+        "action": "open PR with rollback plan",
+        "tool": "github"
+      }
+    ],
+    "rollback": "Feature-flag guest checkout; disable flag to revert with no schema change.",
+    "risk_tier": 0,
+    "applied_experience": [
+      "EXP-090"
+    ],
+    "routing": {
+      "model_class": "high-reasoning",
+      "reason": "Tier 0 change with subtle side-effect risk"
+    }
+  },
+  "execution": {
+    "id": "EXE-0002",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-13T14:00:00Z",
+    "plan": "PLAN-0072",
+    "step": 5,
+    "tool": "github",
+    "directives": {
+      "open_pr": true,
+      "feature_flag": "guest_checkout"
+    },
+    "artifacts": [
+      {
+        "id": "PR-0312",
+        "schema_version": "2020-12.v1",
+        "created_at": "2026-01-13T15:00:00Z",
+        "artifact_type": "pull_request",
+        "ref": "PR-0312",
+        "uri": "mcg-checkout-service#312",
+        "repo": "mcg-checkout-service"
+      },
+      {
+        "id": "TC-10001",
+        "schema_version": "2020-12.v1",
+        "created_at": "2026-01-13T13:00:00Z",
+        "artifact_type": "test_run",
+        "ref": "TR-0442",
+        "uri": "testrail/runs/442"
+      }
+    ],
+    "status": "succeeded",
+    "worker": "software-engineering-worker",
+    "run_id": "RUN-0002"
+  },
+  "evaluation": {
+    "id": "EVAL-0061",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-13T16:00:00Z",
+    "execution": "PR-0312",
+    "plan": "PLAN-0072",
+    "task": "CHK-1421",
+    "rubric": {
+      "id": "RUBRIC-feature-change",
+      "version": 3
+    },
+    "objective": [
+      {
+        "gate": "unit_tests",
+        "result": "pass",
+        "evidence": "TR-0442",
+        "weight": 0.25
+      },
+      {
+        "gate": "coverage",
+        "result": "pass",
+        "value": 0.84,
+        "threshold": 0.8,
+        "evidence": "TR-0442",
+        "weight": 0.15
+      },
+      {
+        "gate": "contract_tests",
+        "result": "pass",
+        "evidence": "TR-0443",
+        "weight": 0.15
+      },
+      {
+        "gate": "dependency_rule",
+        "result": "pass",
+        "note": "no reverse dep APP-012->APP-003",
+        "weight": 0.1
+      }
+    ],
+    "rubric_items": [
+      {
+        "item": "guest flow avoids APP-015 side effect",
+        "result": "pass",
+        "evidence": "test GuestNoLoyaltyTest",
+        "judgment_confidence": 0.98
+      },
+      {
+        "item": "code clarity / maintainability",
+        "result": "partial",
+        "evidence": "reviewer notes",
+        "judgment_confidence": 0.62
+      }
+    ],
+    "verdict": {
+      "outcome": "pass",
+      "score": 0.91,
+      "outcome_confidence": 0.9,
+      "judgment_confidence": 0.88
+    },
+    "regression_check": {
+      "reintroduced_defect": false,
+      "checked_against": [
+        "EXP-090"
+      ]
+    }
+  },
+  "reflection": {
+    "id": "REF-1002",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-14T10:00:00Z",
+    "evaluation": "EVAL-0061",
+    "execution": "PR-0312",
+    "plan": "PLAN-0072",
+    "what_happened": "Guest checkout shipped with a negative test asserting no loyalty account is created; the prior failure did not recur.",
+    "root_cause": {
+      "category": "missing_experience",
+      "detail": "Applying EXP-090 and the updated retrieval policy closed the loop opened by REF-0019.",
+      "confidence": 0.9
+    },
+    "lessons": [],
+    "policy_updates": [],
+    "loop_closed_by": "PR-0312"
+  },
+  "experience_update": {
+    "action": "reinforced",
+    "experience": "EXP-090",
+    "delta": {
+      "application_frequency": 1,
+      "outcome_lift": 0.23,
+      "prevented_regressions": [
+        "PR-0312"
+      ]
+    }
+  },
+  "confidence": {
+    "context_coverage": 0.86,
+    "knowledge_authority": 0.92,
+    "experience_applicability": 0.91,
+    "evaluation_outcome": 0.9,
+    "evaluation_judgment": 0.88,
+    "fused": 0.89
+  },
+  "outcome": "pass"
+}
