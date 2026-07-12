@@ -1,0 +1,252 @@
+{
+  "run_id": "RUN-0040",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-03-31T09:00:00Z",
+  "worker": "reliability-worker",
+  "task": {
+    "type": "hardening",
+    "ref": "GW-444",
+    "app": "APP-024",
+    "repo": "mcg-api-gateway",
+    "sprint": 7,
+    "family": "gateway-ratelimit"
+  },
+  "knowledge_retrieved": [
+    "KN-308",
+    "KN-225"
+  ],
+  "experience_retrieved": [],
+  "prior_executions": [],
+  "context": {
+    "id": "CTX-1040",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-31T09:00:00Z",
+    "task": {
+      "type": "jira_story",
+      "ref": "GW-444",
+      "app": "APP-024",
+      "repo": "mcg-api-gateway"
+    },
+    "intent_ref": "PLAN-1040",
+    "model_budget": {
+      "window_tokens": 200000,
+      "reserved_output": 8000
+    },
+    "included": [
+      {
+        "source": "KN-308",
+        "kind": "knowledge",
+        "reason": "relevant gateway-ratelimit rule/doc",
+        "score": 0.8
+      },
+      {
+        "source": "KN-225",
+        "kind": "knowledge",
+        "reason": "relevant gateway-ratelimit rule/doc",
+        "score": 0.8
+      }
+    ],
+    "excluded": [
+      {
+        "source": "KN-047",
+        "kind": "knowledge",
+        "reason": "lower-relevance doc dropped for budget",
+        "score": 0.4
+      }
+    ],
+    "coverage_confidence": 0.53,
+    "signals": {
+      "hit_ratio": 0.55,
+      "budget_utilization": 0.6,
+      "staleness_index": 0.1
+    }
+  },
+  "decision": {
+    "id": "DEC-0040",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-31T11:00:00Z",
+    "plan": "PLAN-1040",
+    "choice": "proceed",
+    "rationale": "Cold start for this family; limited prior experience.",
+    "fused_confidence": 0.58,
+    "inputs": {
+      "context": 0.53,
+      "knowledge": 0.67,
+      "experience": 0.0,
+      "evaluation": 0.52
+    },
+    "worker": "reliability-worker",
+    "trace_seq": 1
+  },
+  "plan": {
+    "id": "PLAN-1040",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-31T10:00:00Z",
+    "task": "GW-444",
+    "app": "APP-024",
+    "intent": "Hardening for gateway-ratelimit: Rate-limit thresholds must be load-tested against realistic ",
+    "success_criteria": [
+      "Task acceptance criteria met.",
+      "No regression of the known failure class."
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "action": "analyze gateway-ratelimit change site",
+        "tool": "repo"
+      },
+      {
+        "n": 2,
+        "action": "implement gateway-ratelimit change",
+        "tool": "repo"
+      },
+      {
+        "n": 3,
+        "action": "run tests",
+        "tool": "ci",
+        "expect": "TR pass"
+      },
+      {
+        "n": 4,
+        "action": "open PR",
+        "tool": "github"
+      }
+    ],
+    "rollback": "Feature-flag or revert; expand-contract migration if schema touched.",
+    "risk_tier": 0,
+    "routing": {
+      "model_class": "high-reasoning",
+      "reason": "tier 0 gateway-ratelimit change"
+    }
+  },
+  "execution": {
+    "id": "EXE-0040",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-01T14:00:00Z",
+    "plan": "PLAN-1040",
+    "step": 4,
+    "tool": "github",
+    "directives": {
+      "open_pr": true
+    },
+    "artifacts": [
+      {
+        "id": "PR-6040",
+        "schema_version": "2020-12.v1",
+        "created_at": "2026-04-01T14:00:00Z",
+        "artifact_type": "pull_request",
+        "ref": "PR-6040",
+        "uri": "mcg-api-gateway#6040",
+        "repo": "mcg-api-gateway"
+      }
+    ],
+    "status": "partial",
+    "worker": "reliability-worker",
+    "run_id": "RUN-0040"
+  },
+  "evaluation": {
+    "id": "EVAL-1040",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-02T12:00:00Z",
+    "execution": "PR-6040",
+    "plan": "PLAN-1040",
+    "task": "GW-444",
+    "rubric": {
+      "id": "RUBRIC-hardening",
+      "version": 2
+    },
+    "objective": [
+      {
+        "gate": "unit_tests",
+        "result": "fail",
+        "evidence": "TR-7040",
+        "weight": 0.3
+      },
+      {
+        "gate": "coverage",
+        "result": "fail",
+        "value": 0.78,
+        "threshold": 0.8,
+        "evidence": "TR-7040",
+        "weight": 0.2
+      },
+      {
+        "gate": "dependency_rule",
+        "result": "pass",
+        "weight": 0.2
+      },
+      {
+        "gate": "security_scan",
+        "result": "pass",
+        "weight": 0.15
+      },
+      {
+        "gate": "regression_check",
+        "result": "fail",
+        "note": "gateway-ratelimit failure class not yet guarded",
+        "weight": 0.15
+      }
+    ],
+    "rubric_items": [
+      {
+        "item": "gateway-ratelimit change is correct and maintainable",
+        "result": "fail",
+        "evidence": "reviewer notes",
+        "judgment_confidence": 0.73
+      }
+    ],
+    "verdict": {
+      "outcome": "fail",
+      "score": 0.52,
+      "outcome_confidence": 0.54,
+      "judgment_confidence": 0.73
+    },
+    "regression_check": {
+      "reintroduced_defect": true,
+      "checked_against": []
+    }
+  },
+  "reflection": {
+    "id": "REF-1040",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-02T16:00:00Z",
+    "evaluation": "EVAL-1040",
+    "execution": "PR-6040",
+    "plan": "PLAN-1040",
+    "what_happened": "gateway-ratelimit task failed the regression class and produced a new lesson.",
+    "root_cause": {
+      "category": "missing_experience",
+      "detail": "The gateway-ratelimit failure class was not guarded; distilling a lesson to prevent recurrence.",
+      "confidence": 0.75
+    },
+    "lessons": [
+      {
+        "create_experience": "EXP-205"
+      }
+    ],
+    "policy_updates": [
+      {
+        "context": "raise retrieval priority of gateway-ratelimit rules"
+      },
+      {
+        "planning": "add regression assertion for this failure class"
+      }
+    ]
+  },
+  "experience_update": {
+    "action": "created",
+    "experience": "EXP-205",
+    "delta": {
+      "reason": "distilled from first gateway-ratelimit run"
+    }
+  },
+  "confidence": {
+    "context_coverage": 0.53,
+    "knowledge_authority": 0.67,
+    "experience_applicability": 0.0,
+    "evaluation_outcome": 0.52,
+    "evaluation_judgment": 0.73,
+    "fused": 0.58
+  },
+  "outcome": "fail"
+}

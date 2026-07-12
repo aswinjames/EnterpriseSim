@@ -1,0 +1,263 @@
+{
+  "run_id": "RUN-0035",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-03-17T09:00:00Z",
+  "worker": "software-engineering-worker",
+  "task": {
+    "type": "bugfix",
+    "ref": "PRM-1022",
+    "app": "APP-008",
+    "repo": "mcg-promotions-engine",
+    "sprint": 6,
+    "family": "promo-cache"
+  },
+  "knowledge_retrieved": [
+    "KN-063",
+    "KN-304"
+  ],
+  "experience_retrieved": [
+    "EXP-055"
+  ],
+  "prior_executions": [
+    "RUN-0025"
+  ],
+  "context": {
+    "id": "CTX-1035",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-17T09:00:00Z",
+    "task": {
+      "type": "jira_story",
+      "ref": "PRM-1022",
+      "app": "APP-008",
+      "repo": "mcg-promotions-engine"
+    },
+    "intent_ref": "PLAN-1035",
+    "model_budget": {
+      "window_tokens": 200000,
+      "reserved_output": 8000
+    },
+    "included": [
+      {
+        "source": "KN-063",
+        "kind": "knowledge",
+        "reason": "relevant promo-cache rule/doc",
+        "score": 0.82
+      },
+      {
+        "source": "KN-304",
+        "kind": "knowledge",
+        "reason": "relevant promo-cache rule/doc",
+        "score": 0.82
+      },
+      {
+        "source": "EXP-055",
+        "kind": "experience",
+        "reason": "prior promo-cache lesson",
+        "score": 0.78
+      }
+    ],
+    "excluded": [
+      {
+        "source": "KN-047",
+        "kind": "knowledge",
+        "reason": "lower-relevance doc dropped for budget",
+        "score": 0.4
+      }
+    ],
+    "coverage_confidence": 0.67,
+    "signals": {
+      "hit_ratio": 0.63,
+      "budget_utilization": 0.57,
+      "staleness_index": 0.1
+    }
+  },
+  "decision": {
+    "id": "DEC-0035",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-17T11:00:00Z",
+    "plan": "PLAN-1035",
+    "choice": "proceed",
+    "rationale": "Applied EXP-055; fused confidence adequate.",
+    "fused_confidence": 0.66,
+    "inputs": {
+      "context": 0.67,
+      "knowledge": 0.71,
+      "experience": 0.63,
+      "evaluation": 0.66
+    },
+    "worker": "software-engineering-worker",
+    "trace_seq": 1
+  },
+  "plan": {
+    "id": "PLAN-1035",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-17T10:00:00Z",
+    "task": "PRM-1022",
+    "app": "APP-008",
+    "intent": "Bugfix for promo-cache: Pricing/promotion changes during a promo window require a wr",
+    "success_criteria": [
+      "Task acceptance criteria met.",
+      "No regression of the known failure class.",
+      "Applies prior lesson EXP-055"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "action": "analyze promo-cache change site",
+        "tool": "repo"
+      },
+      {
+        "n": 2,
+        "action": "implement promo-cache change",
+        "tool": "repo"
+      },
+      {
+        "n": 3,
+        "action": "add regression test for Pricing/promotion changes during a promo",
+        "tool": "repo"
+      },
+      {
+        "n": 4,
+        "action": "run tests",
+        "tool": "ci",
+        "expect": "TR pass"
+      },
+      {
+        "n": 5,
+        "action": "open PR",
+        "tool": "github"
+      }
+    ],
+    "rollback": "Feature-flag or revert; expand-contract migration if schema touched.",
+    "risk_tier": 1,
+    "routing": {
+      "model_class": "balanced",
+      "reason": "tier 1 promo-cache change"
+    },
+    "applied_experience": [
+      "EXP-055"
+    ]
+  },
+  "execution": {
+    "id": "EXE-0035",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-18T14:00:00Z",
+    "plan": "PLAN-1035",
+    "step": 5,
+    "tool": "github",
+    "directives": {
+      "open_pr": true
+    },
+    "artifacts": [
+      {
+        "id": "PR-6035",
+        "schema_version": "2020-12.v1",
+        "created_at": "2026-03-18T14:00:00Z",
+        "artifact_type": "pull_request",
+        "ref": "PR-6035",
+        "uri": "mcg-promotions-engine#6035",
+        "repo": "mcg-promotions-engine"
+      }
+    ],
+    "status": "succeeded",
+    "worker": "software-engineering-worker",
+    "run_id": "RUN-0035"
+  },
+  "evaluation": {
+    "id": "EVAL-1035",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-19T12:00:00Z",
+    "execution": "PR-6035",
+    "plan": "PLAN-1035",
+    "task": "PRM-1022",
+    "rubric": {
+      "id": "RUBRIC-bugfix",
+      "version": 2
+    },
+    "objective": [
+      {
+        "gate": "unit_tests",
+        "result": "pass",
+        "evidence": "TR-7035",
+        "weight": 0.3
+      },
+      {
+        "gate": "coverage",
+        "result": "pass",
+        "value": 0.8,
+        "threshold": 0.8,
+        "evidence": "TR-7035",
+        "weight": 0.2
+      },
+      {
+        "gate": "dependency_rule",
+        "result": "pass",
+        "weight": 0.2
+      },
+      {
+        "gate": "security_scan",
+        "result": "pass",
+        "weight": 0.15
+      },
+      {
+        "gate": "regression_check",
+        "result": "pass",
+        "weight": 0.15
+      }
+    ],
+    "rubric_items": [
+      {
+        "item": "promo-cache change is correct and maintainable",
+        "result": "partial",
+        "evidence": "reviewer notes",
+        "judgment_confidence": 0.76
+      }
+    ],
+    "verdict": {
+      "outcome": "partial",
+      "score": 0.66,
+      "outcome_confidence": 0.68,
+      "judgment_confidence": 0.76
+    },
+    "regression_check": {
+      "reintroduced_defect": false,
+      "checked_against": [
+        "EXP-055"
+      ]
+    }
+  },
+  "reflection": {
+    "id": "REF-1035",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-19T16:00:00Z",
+    "evaluation": "EVAL-1035",
+    "execution": "PR-6035",
+    "plan": "PLAN-1035",
+    "what_happened": "promo-cache task succeeded, applying accumulated experience.",
+    "root_cause": {
+      "category": "missing_experience",
+      "detail": "Applying EXP-055 kept the promo-cache failure class from recurring; loop closed.",
+      "confidence": 0.82
+    },
+    "lessons": [],
+    "policy_updates": [],
+    "loop_closed_by": "PR-6035"
+  },
+  "experience_update": {
+    "action": "reinforced",
+    "experience": "EXP-055",
+    "delta": {
+      "application_frequency_inc": 1,
+      "outcome": "partial"
+    }
+  },
+  "confidence": {
+    "context_coverage": 0.67,
+    "knowledge_authority": 0.71,
+    "experience_applicability": 0.63,
+    "evaluation_outcome": 0.66,
+    "evaluation_judgment": 0.76,
+    "fused": 0.66
+  },
+  "outcome": "partial"
+}
