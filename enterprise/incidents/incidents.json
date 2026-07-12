@@ -1,0 +1,401 @@
+[
+  {
+    "id": "INC-2026-001",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-14T18:00:00Z",
+    "title": "Cart Redis primary failover caused elevated errors",
+    "severity": "Sev2",
+    "apps": [
+      "APP-004"
+    ],
+    "teams": [
+      "TEAM-004"
+    ],
+    "detected_at": "2026-01-14T18:00:00Z",
+    "resolved_at": "2026-01-14T18:17:00Z",
+    "duration_min": 17,
+    "summary": "A Redis primary failover in cart caused a 9-minute spike in cart write errors before replica promotion completed.",
+    "trigger": "organic",
+    "root_cause_category": "capacity",
+    "impacted_regions": [
+      "NA"
+    ],
+    "postmortem": "KN-300",
+    "status": "resolved",
+    "related_release": "REL-2026-001"
+  },
+  {
+    "id": "INC-2026-002",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-09T07:00:00Z",
+    "title": "Guest checkout created orphaned loyalty accounts",
+    "severity": "Sev2",
+    "apps": [
+      "APP-003",
+      "APP-015"
+    ],
+    "teams": [
+      "TEAM-004"
+    ],
+    "detected_at": "2026-01-09T07:00:00Z",
+    "resolved_at": "2026-01-09T07:50:00Z",
+    "duration_min": 50,
+    "summary": "PR-0207 provisioned a Loyalty (APP-015) account for every guest order, creating orphaned accounts. Fixed by hotfix PR-0312.",
+    "trigger": "PR-0207",
+    "root_cause_category": "code_regression",
+    "impacted_regions": [
+      "NA",
+      "EU"
+    ],
+    "postmortem": "KN-301",
+    "status": "resolved",
+    "related_release": "REL-2026-001",
+    "hotfix_pr": "PR-0312",
+    "hotfix_story": "CHK-1421"
+  },
+  {
+    "id": "INC-2026-003",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-21T01:00:00Z",
+    "title": "Search reindex lag surfaced stale prices in results",
+    "severity": "Sev3",
+    "apps": [
+      "APP-006"
+    ],
+    "teams": [
+      "TEAM-003"
+    ],
+    "detected_at": "2026-01-21T01:00:00Z",
+    "resolved_at": "2026-01-21T01:13:00Z",
+    "duration_min": 13,
+    "summary": "Catalog-to-index propagation lag briefly showed stale prices in search results.",
+    "trigger": "REL-2026-002",
+    "root_cause_category": "data_issue",
+    "impacted_regions": [
+      "NA"
+    ],
+    "postmortem": "KN-302",
+    "status": "resolved",
+    "related_release": "REL-2026-002"
+  },
+  {
+    "id": "INC-2026-004",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-05T11:00:00Z",
+    "title": "Regional price rule misconfiguration in APAC",
+    "severity": "Sev2",
+    "apps": [
+      "APP-007"
+    ],
+    "teams": [
+      "TEAM-007"
+    ],
+    "detected_at": "2026-02-05T11:00:00Z",
+    "resolved_at": "2026-02-05T11:51:00Z",
+    "duration_min": 51,
+    "summary": "A regional rounding rule misconfiguration produced off-by-one currency rounding in APAC for 22 minutes.",
+    "trigger": "REL-2026-003",
+    "root_cause_category": "config_change",
+    "impacted_regions": [
+      "APAC"
+    ],
+    "postmortem": "KN-303",
+    "status": "resolved",
+    "related_release": "REL-2026-003"
+  },
+  {
+    "id": "INC-2026-007",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-26T12:00:00Z",
+    "title": "Promotion-window price change did not invalidate promo cache",
+    "severity": "Sev1",
+    "apps": [
+      "APP-008",
+      "APP-007",
+      "APP-003"
+    ],
+    "teams": [
+      "TEAM-004",
+      "TEAM-007",
+      "TEAM-008"
+    ],
+    "detected_at": "2026-02-26T12:00:00Z",
+    "resolved_at": "2026-02-26T12:45:00Z",
+    "duration_min": 45,
+    "summary": "A promotion-window pricing change was not reflected because the promotions cache (APP-008) was not invalidated, causing incorrect cart totals at checkout.",
+    "trigger": "REL-2026-004",
+    "root_cause_category": "cache_staleness",
+    "impacted_regions": [
+      "NA",
+      "EU"
+    ],
+    "postmortem": "KN-304",
+    "status": "resolved",
+    "related_release": "REL-2026-004"
+  },
+  {
+    "id": "INC-2026-009",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-04T20:00:00Z",
+    "title": "Primary PSP degraded; authorization latency spiked",
+    "severity": "Sev2",
+    "apps": [
+      "APP-012"
+    ],
+    "teams": [
+      "TEAM-009"
+    ],
+    "detected_at": "2026-03-04T20:00:00Z",
+    "resolved_at": "2026-03-04T20:50:00Z",
+    "duration_min": 50,
+    "summary": "The primary payment service provider degraded; authorization p99 spiked until failover routing engaged.",
+    "trigger": "organic",
+    "root_cause_category": "third_party",
+    "impacted_regions": [
+      "NA",
+      "LATAM"
+    ],
+    "postmortem": "KN-305",
+    "status": "resolved",
+    "related_release": "REL-2026-005"
+  },
+  {
+    "id": "INC-2026-011",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-18T01:00:00Z",
+    "title": "Promo cache staleness recurrence during flash sale",
+    "severity": "Sev2",
+    "apps": [
+      "APP-008",
+      "APP-003"
+    ],
+    "teams": [
+      "TEAM-004",
+      "TEAM-008"
+    ],
+    "detected_at": "2026-03-18T01:00:00Z",
+    "resolved_at": "2026-03-18T01:39:00Z",
+    "duration_min": 39,
+    "summary": "A recurrence of promo-cache staleness (cf. INC-2026-007) during a flash sale produced brief total mismatches.",
+    "trigger": "organic",
+    "root_cause_category": "cache_staleness",
+    "impacted_regions": [
+      "NA"
+    ],
+    "postmortem": "KN-306",
+    "status": "resolved",
+    "related_release": "REL-2026-006"
+  },
+  {
+    "id": "INC-2026-012",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-27T06:00:00Z",
+    "title": "ATP oversell on multi-warehouse SKUs",
+    "severity": "Sev2",
+    "apps": [
+      "APP-010",
+      "APP-009"
+    ],
+    "teams": [
+      "TEAM-006",
+      "TEAM-012"
+    ],
+    "detected_at": "2026-03-27T06:00:00Z",
+    "resolved_at": "2026-03-27T06:24:00Z",
+    "duration_min": 24,
+    "summary": "A reservation race across warehouses briefly allowed oversell on high-demand SKUs.",
+    "trigger": "REL-2026-006",
+    "root_cause_category": "data_issue",
+    "impacted_regions": [
+      "NA"
+    ],
+    "postmortem": "KN-307",
+    "status": "resolved",
+    "related_release": "REL-2026-006"
+  },
+  {
+    "id": "INC-2026-013",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-01T10:00:00Z",
+    "title": "Rate-limit threshold too aggressive after rollout",
+    "severity": "Sev3",
+    "apps": [
+      "APP-024"
+    ],
+    "teams": [
+      "TEAM-030"
+    ],
+    "detected_at": "2026-04-01T10:00:00Z",
+    "resolved_at": "2026-04-01T10:19:00Z",
+    "duration_min": 19,
+    "summary": "A too-aggressive token-bucket threshold rejected legitimate traffic for 14 minutes after rollout.",
+    "trigger": "REL-2026-007",
+    "root_cause_category": "config_change",
+    "impacted_regions": [
+      "EU"
+    ],
+    "postmortem": "KN-308",
+    "status": "resolved",
+    "related_release": "REL-2026-007"
+  },
+  {
+    "id": "INC-2026-014",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-10T10:00:00Z",
+    "title": "Edge OIDC verification rejected valid tokens",
+    "severity": "Sev2",
+    "apps": [
+      "APP-024",
+      "APP-014"
+    ],
+    "teams": [
+      "TEAM-030"
+    ],
+    "detected_at": "2026-04-10T10:00:00Z",
+    "resolved_at": "2026-04-10T10:58:00Z",
+    "duration_min": 58,
+    "summary": "A clock-skew tolerance bug in edge OIDC verification rejected valid tokens for a subset of users.",
+    "trigger": "REL-2026-007",
+    "root_cause_category": "deployment",
+    "impacted_regions": [
+      "NA",
+      "EU"
+    ],
+    "postmortem": "KN-309",
+    "status": "resolved",
+    "related_release": "REL-2026-007"
+  },
+  {
+    "id": "INC-2026-015",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-19T10:00:00Z",
+    "title": "Self-service returns showed incorrect eligibility",
+    "severity": "Sev3",
+    "apps": [
+      "APP-021"
+    ],
+    "teams": [
+      "TEAM-001"
+    ],
+    "detected_at": "2026-04-19T10:00:00Z",
+    "resolved_at": "2026-04-19T10:30:00Z",
+    "duration_min": 30,
+    "summary": "A returns-eligibility rule regression showed some delivered orders as ineligible.",
+    "trigger": "REL-2026-008",
+    "root_cause_category": "code_regression",
+    "impacted_regions": [
+      "NA"
+    ],
+    "postmortem": "KN-310",
+    "status": "resolved",
+    "related_release": "REL-2026-008"
+  },
+  {
+    "id": "INC-2026-016",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-03T09:00:00Z",
+    "title": "Storefront latency degradation under load test",
+    "severity": "Sev2",
+    "apps": [
+      "APP-001",
+      "APP-024"
+    ],
+    "teams": [
+      "TEAM-001",
+      "TEAM-030"
+    ],
+    "detected_at": "2026-05-03T09:00:00Z",
+    "resolved_at": "2026-05-03T09:25:00Z",
+    "duration_min": 25,
+    "summary": "A pre-peak load test revealed origin saturation; load-shedding at the edge was tuned in response.",
+    "trigger": "organic",
+    "root_cause_category": "capacity",
+    "impacted_regions": [
+      "NA"
+    ],
+    "postmortem": "KN-311",
+    "status": "resolved",
+    "related_release": "REL-2026-009"
+  },
+  {
+    "id": "INC-2026-018",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-12T10:00:00Z",
+    "title": "Third promo-cache staleness incident triggers systemic fix",
+    "severity": "Sev1",
+    "apps": [
+      "APP-008",
+      "APP-007",
+      "APP-003"
+    ],
+    "teams": [
+      "TEAM-004",
+      "TEAM-007",
+      "TEAM-008"
+    ],
+    "detected_at": "2026-05-12T10:00:00Z",
+    "resolved_at": "2026-05-12T11:21:00Z",
+    "duration_min": 81,
+    "summary": "The third promo-cache staleness incident (cf. INC-2026-007, INC-2026-011) drove a systemic write-through cache fix and a standing pre-release check.",
+    "trigger": "organic",
+    "root_cause_category": "cache_staleness",
+    "impacted_regions": [
+      "NA",
+      "EU"
+    ],
+    "postmortem": "KN-312",
+    "status": "resolved",
+    "related_release": "REL-2026-010"
+  },
+  {
+    "id": "INC-2026-019",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-16T02:00:00Z",
+    "title": "Checkout p99 latency regression from synchronous promo call",
+    "severity": "Sev3",
+    "apps": [
+      "APP-003"
+    ],
+    "teams": [
+      "TEAM-004"
+    ],
+    "detected_at": "2026-05-16T02:00:00Z",
+    "resolved_at": "2026-05-16T02:08:00Z",
+    "duration_min": 8,
+    "summary": "A synchronous promotions call on the checkout path regressed p99 latency until made asynchronous.",
+    "trigger": "REL-2026-010",
+    "root_cause_category": "capacity",
+    "impacted_regions": [
+      "NA"
+    ],
+    "postmortem": "KN-313",
+    "status": "resolved",
+    "related_release": "REL-2026-010"
+  },
+  {
+    "id": "INC-2026-021",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-09T04:00:00Z",
+    "title": "Catalog ingestion stalled on data-platform outage",
+    "severity": "Sev3",
+    "apps": [
+      "APP-005"
+    ],
+    "teams": [
+      "TEAM-005"
+    ],
+    "detected_at": "2026-06-09T04:00:00Z",
+    "resolved_at": "2026-06-09T04:14:00Z",
+    "duration_min": 14,
+    "summary": "A brief data-platform (APP-020) outage stalled catalog offer ingestion; caught up after recovery.",
+    "trigger": "organic",
+    "root_cause_category": "dependency_failure",
+    "impacted_regions": [
+      "NA",
+      "EU",
+      "APAC"
+    ],
+    "postmortem": "KN-314",
+    "status": "resolved"
+  }
+]

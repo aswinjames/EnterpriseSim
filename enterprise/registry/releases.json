@@ -1,12 +1,403 @@
 [
-  { "id": "REL-2026-001", "schema_version": "2020-12.v1", "created_at": "2026-01-13T00:00:00Z", "name": "Guest Checkout & Cart Resilience", "date": "2026-01-13T18:00:00Z", "sprint": 1, "theme": "Reduce friction for unauthenticated buyers and harden cart state under load.", "apps": ["APP-003", "APP-004"], "highlights": ["Guest checkout GA", "Cart Redis failover"], "status": "released" },
-  { "id": "REL-2026-002", "schema_version": "2020-12.v1", "created_at": "2026-01-27T00:00:00Z", "name": "Search Relevance & Catalog Freshness", "date": "2026-01-27T18:00:00Z", "sprint": 2, "theme": "Improve query relevance and shorten catalog-to-index propagation.", "apps": ["APP-005", "APP-006"], "highlights": ["Hybrid ranking v1", "Sub-minute catalog reindex"], "status": "released" },
-  { "id": "REL-2026-003", "schema_version": "2020-12.v1", "created_at": "2026-02-10T00:00:00Z", "name": "Dynamic Pricing Foundations", "date": "2026-02-10T18:00:00Z", "sprint": 3, "theme": "Regional price resolution and price-consistency guarantees.", "apps": ["APP-007"], "highlights": ["Regional price rules", "Price-consistency check"], "status": "released" },
-  { "id": "REL-2026-004", "schema_version": "2020-12.v1", "created_at": "2026-02-24T00:00:00Z", "name": "Promotions Engine Hardening", "date": "2026-02-24T18:00:00Z", "sprint": 4, "theme": "Correctness of stacked promotions and promotion-cache invalidation.", "apps": ["APP-008", "APP-007"], "highlights": ["Stacking rules v2", "Promo-cache TTL controls"], "status": "released" },
-  { "id": "REL-2026-005", "schema_version": "2020-12.v1", "created_at": "2026-03-10T00:00:00Z", "name": "Payments Reliability & 3DS", "date": "2026-03-10T18:00:00Z", "sprint": 5, "theme": "Authorization reliability and Strong Customer Authentication.", "apps": ["APP-012"], "highlights": ["3DS2 challenge flow", "PSP failover"], "status": "released" },
-  { "id": "REL-2026-006", "schema_version": "2020-12.v1", "created_at": "2026-03-24T00:00:00Z", "name": "Order Orchestration & Inventory ATP", "date": "2026-03-24T18:00:00Z", "sprint": 6, "theme": "Order lifecycle robustness and accurate available-to-promise.", "apps": ["APP-009", "APP-010"], "highlights": ["Saga-based fulfillment", "ATP reservation fix"], "status": "released" },
-  { "id": "REL-2026-007", "schema_version": "2020-12.v1", "created_at": "2026-04-07T00:00:00Z", "name": "Gateway Rate-Limiting & Edge Auth", "date": "2026-04-07T18:00:00Z", "sprint": 7, "theme": "Protect origin services and standardize edge authentication.", "apps": ["APP-024", "APP-014"], "highlights": ["Token-bucket rate limits", "Edge OIDC verification"], "status": "released" },
-  { "id": "REL-2026-008", "schema_version": "2020-12.v1", "created_at": "2026-04-21T00:00:00Z", "name": "Customer Portal Self-Service Returns", "date": "2026-04-21T18:00:00Z", "sprint": 8, "theme": "Let customers self-serve returns and track order state.", "apps": ["APP-021", "APP-009"], "highlights": ["Self-service returns", "Order timeline view"], "status": "released" },
-  { "id": "REL-2026-009", "schema_version": "2020-12.v1", "created_at": "2026-05-05T00:00:00Z", "name": "Peak-Readiness & Observability", "date": "2026-05-05T18:00:00Z", "sprint": 9, "theme": "Prepare the commerce path for peak traffic with SLO-driven observability.", "apps": ["APP-001", "APP-003", "APP-024"], "highlights": ["Golden-signal dashboards", "Load-shedding at edge"], "status": "released" },
-  { "id": "REL-2026-010", "schema_version": "2020-12.v1", "created_at": "2026-05-19T00:00:00Z", "name": "Checkout Latency & Promo Cache", "date": "2026-05-19T18:00:00Z", "sprint": 10, "theme": "Cut p99 checkout latency and eliminate promo-cache staleness at write time.", "apps": ["APP-003", "APP-008"], "highlights": ["Checkout p99 -35%", "Write-through promo cache"], "status": "released" }
+  {
+    "id": "REL-2026-001",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-13T00:00:00Z",
+    "name": "Guest Checkout & Cart Resilience",
+    "date": "2026-01-13T18:00:00Z",
+    "sprint": 1,
+    "theme": "Reduce friction for unauthenticated buyers and harden cart state under load.",
+    "apps": [
+      "APP-003",
+      "APP-004"
+    ],
+    "highlights": [
+      "Guest checkout GA",
+      "Cart Redis failover"
+    ],
+    "status": "released",
+    "included_stories": [
+      "CAT-936",
+      "CHK-1403",
+      "CHK-1405",
+      "CHK-1411",
+      "CHK-1421",
+      "CHK-1426",
+      "CHK-1438",
+      "CRT-555",
+      "INV-1241",
+      "SRCH-731"
+    ],
+    "included_prs": [
+      "PR-0106",
+      "PR-0111",
+      "PR-0207",
+      "PR-0312",
+      "PR-0428"
+    ],
+    "related_incidents": [
+      "INC-2026-001",
+      "INC-2026-002"
+    ]
+  },
+  {
+    "id": "REL-2026-002",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-27T00:00:00Z",
+    "name": "Search Relevance & Catalog Freshness",
+    "date": "2026-01-27T18:00:00Z",
+    "sprint": 2,
+    "theme": "Improve query relevance and shorten catalog-to-index propagation.",
+    "apps": [
+      "APP-005",
+      "APP-006"
+    ],
+    "highlights": [
+      "Hybrid ranking v1",
+      "Sub-minute catalog reindex"
+    ],
+    "status": "released",
+    "included_stories": [
+      "CAT-933",
+      "CRT-547",
+      "OMS-1318",
+      "OMS-1349",
+      "PRC-1165",
+      "SRCH-724",
+      "SRCH-727",
+      "SRCH-737",
+      "SRCH-738"
+    ],
+    "included_prs": [
+      "PR-0231",
+      "PR-0637"
+    ],
+    "related_incidents": [
+      "INC-2026-003"
+    ]
+  },
+  {
+    "id": "REL-2026-003",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-10T00:00:00Z",
+    "name": "Dynamic Pricing Foundations",
+    "date": "2026-02-10T18:00:00Z",
+    "sprint": 3,
+    "theme": "Regional price resolution and price-consistency guarantees.",
+    "apps": [
+      "APP-007"
+    ],
+    "highlights": [
+      "Regional price rules",
+      "Price-consistency check"
+    ],
+    "status": "released",
+    "included_stories": [
+      "PRC-1128",
+      "PRC-1133",
+      "PRC-1137",
+      "PRC-1149",
+      "PRC-1152",
+      "PRC-1169",
+      "PRM-1020",
+      "STF-825"
+    ],
+    "included_prs": [
+      "PR-0313",
+      "PR-0376",
+      "PR-0402",
+      "PR-0403"
+    ],
+    "related_incidents": [
+      "INC-2026-004"
+    ]
+  },
+  {
+    "id": "REL-2026-004",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-24T00:00:00Z",
+    "name": "Promotions Engine Hardening",
+    "date": "2026-02-24T18:00:00Z",
+    "sprint": 4,
+    "theme": "Correctness of stacked promotions and promotion-cache invalidation.",
+    "apps": [
+      "APP-008",
+      "APP-007"
+    ],
+    "highlights": [
+      "Stacking rules v2",
+      "Promo-cache TTL controls"
+    ],
+    "status": "released",
+    "included_stories": [
+      "CRT-558",
+      "INV-1237",
+      "PAY-987",
+      "PRC-1141",
+      "PRC-1146",
+      "PRC-1154",
+      "PRC-1164",
+      "PRM-1014",
+      "PRM-1017",
+      "PRM-1022",
+      "PRM-1034",
+      "PRM-1037",
+      "PRM-1040"
+    ],
+    "included_prs": [
+      "PR-0137",
+      "PR-0236",
+      "PR-0263",
+      "PR-0367"
+    ],
+    "related_incidents": [
+      "INC-2026-007"
+    ]
+  },
+  {
+    "id": "REL-2026-005",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-10T00:00:00Z",
+    "name": "Payments Reliability & 3DS",
+    "date": "2026-03-10T18:00:00Z",
+    "sprint": 5,
+    "theme": "Authorization reliability and Strong Customer Authentication.",
+    "apps": [
+      "APP-012"
+    ],
+    "highlights": [
+      "3DS2 challenge flow",
+      "PSP failover"
+    ],
+    "status": "released",
+    "included_stories": [
+      "CHK-1436",
+      "GW-464",
+      "OMS-1334",
+      "PAY-975",
+      "PAY-978",
+      "PAY-979",
+      "PAY-980",
+      "PAY-981",
+      "PAY-991",
+      "POR-636",
+      "PRC-1142"
+    ],
+    "included_prs": [
+      "PR-0286",
+      "PR-0295",
+      "PR-0463",
+      "PR-0503",
+      "PR-0594"
+    ],
+    "related_incidents": [
+      "INC-2026-009"
+    ]
+  },
+  {
+    "id": "REL-2026-006",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-24T00:00:00Z",
+    "name": "Order Orchestration & Inventory ATP",
+    "date": "2026-03-24T18:00:00Z",
+    "sprint": 6,
+    "theme": "Order lifecycle robustness and accurate available-to-promise.",
+    "apps": [
+      "APP-009",
+      "APP-010"
+    ],
+    "highlights": [
+      "Saga-based fulfillment",
+      "ATP reservation fix"
+    ],
+    "status": "released",
+    "included_stories": [
+      "CAT-945",
+      "CHK-1431",
+      "CRT-551",
+      "INV-1234",
+      "INV-1238",
+      "INV-1242",
+      "INV-1245",
+      "OMS-1323",
+      "OMS-1335",
+      "OMS-1342",
+      "OMS-1346",
+      "OMS-1350",
+      "PRC-1131"
+    ],
+    "included_prs": [
+      "PR-0321",
+      "PR-0447",
+      "PR-0462",
+      "PR-0466",
+      "PR-0606"
+    ],
+    "related_incidents": [
+      "INC-2026-011",
+      "INC-2026-012"
+    ]
+  },
+  {
+    "id": "REL-2026-007",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-07T00:00:00Z",
+    "name": "Gateway Rate-Limiting & Edge Auth",
+    "date": "2026-04-07T18:00:00Z",
+    "sprint": 7,
+    "theme": "Protect origin services and standardize edge authentication.",
+    "apps": [
+      "APP-024",
+      "APP-014"
+    ],
+    "highlights": [
+      "Token-bucket rate limits",
+      "Edge OIDC verification"
+    ],
+    "status": "released",
+    "included_stories": [
+      "CAT-949",
+      "CAT-950",
+      "GW-440",
+      "GW-446",
+      "GW-459",
+      "GW-460",
+      "GW-471",
+      "GW-472",
+      "OMS-1330",
+      "OMS-1355",
+      "PRM-1018",
+      "PRM-1024"
+    ],
+    "included_prs": [
+      "PR-0102",
+      "PR-0200",
+      "PR-0293",
+      "PR-0366",
+      "PR-0412"
+    ],
+    "related_incidents": [
+      "INC-2026-013",
+      "INC-2026-014"
+    ]
+  },
+  {
+    "id": "REL-2026-008",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-21T00:00:00Z",
+    "name": "Customer Portal Self-Service Returns",
+    "date": "2026-04-21T18:00:00Z",
+    "sprint": 8,
+    "theme": "Let customers self-serve returns and track order state.",
+    "apps": [
+      "APP-021",
+      "APP-009"
+    ],
+    "highlights": [
+      "Self-service returns",
+      "Order timeline view"
+    ],
+    "status": "released",
+    "included_stories": [
+      "OMS-1336",
+      "OMS-1338",
+      "POR-625",
+      "POR-643",
+      "PRC-1161",
+      "STF-828"
+    ],
+    "included_prs": [
+      "PR-0181",
+      "PR-0257",
+      "PR-0449",
+      "PR-0588",
+      "PR-0608"
+    ],
+    "related_incidents": [
+      "INC-2026-015"
+    ]
+  },
+  {
+    "id": "REL-2026-009",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-05T00:00:00Z",
+    "name": "Peak-Readiness & Observability",
+    "date": "2026-05-05T18:00:00Z",
+    "sprint": 9,
+    "theme": "Prepare the commerce path for peak traffic with SLO-driven observability.",
+    "apps": [
+      "APP-001",
+      "APP-003",
+      "APP-024"
+    ],
+    "highlights": [
+      "Golden-signal dashboards",
+      "Load-shedding at edge"
+    ],
+    "status": "released",
+    "included_stories": [
+      "CAT-940",
+      "CHK-1409",
+      "CHK-1417",
+      "CHK-1419",
+      "CHK-1422",
+      "CHK-1423",
+      "CHK-1432",
+      "CHK-1433",
+      "CRT-554",
+      "GW-437",
+      "GW-443",
+      "GW-450",
+      "GW-453",
+      "GW-457",
+      "GW-468",
+      "SRCH-734"
+    ],
+    "included_prs": [
+      "PR-0143",
+      "PR-0278",
+      "PR-0290",
+      "PR-0590"
+    ],
+    "related_incidents": [
+      "INC-2026-016"
+    ]
+  },
+  {
+    "id": "REL-2026-010",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-19T00:00:00Z",
+    "name": "Checkout Latency & Promo Cache",
+    "date": "2026-05-19T18:00:00Z",
+    "sprint": 10,
+    "theme": "Cut p99 checkout latency and eliminate promo-cache staleness at write time.",
+    "apps": [
+      "APP-003",
+      "APP-008"
+    ],
+    "highlights": [
+      "Checkout p99 -35%",
+      "Write-through promo cache"
+    ],
+    "status": "released",
+    "included_stories": [
+      "CAT-941",
+      "CHK-1415",
+      "CHK-1427",
+      "PAY-985",
+      "POR-632",
+      "PRM-1015",
+      "PRM-1027",
+      "PRM-1030",
+      "PRM-1041"
+    ],
+    "included_prs": [
+      "PR-0347",
+      "PR-0502"
+    ],
+    "related_incidents": [
+      "INC-2026-018",
+      "INC-2026-019"
+    ]
+  }
 ]

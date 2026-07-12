@@ -1,0 +1,3234 @@
+[
+  {
+    "id": "CHK-1421",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-06T09:00:00Z",
+    "type": "story",
+    "title": "Support guest checkout in the Checkout Service",
+    "description": "Allow unauthenticated buyers to place an order end to end. Guest checkout MUST NOT create a Loyalty (APP-015) account, and MUST preserve idempotency (KN-052).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 1,
+    "points": 8,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-01-14T16:00:00Z",
+    "release": "REL-2026-001",
+    "labels": [
+      "guest-checkout",
+      "conversion"
+    ],
+    "prs": [
+      "PR-0207",
+      "PR-0312"
+    ]
+  },
+  {
+    "id": "PAY-980",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-03T10:00:00Z",
+    "type": "story",
+    "title": "Implement 3DS2 challenge flow for card authorization",
+    "description": "Add Strong Customer Authentication (3DS2) challenge handling to Payments within the PCI boundary (APP-012).",
+    "app": "APP-012",
+    "repo": "mcg-payments-service",
+    "team": "TEAM-009",
+    "sprint": 5,
+    "points": 13,
+    "status": "done",
+    "priority": "P0",
+    "resolved_at": "2026-03-13T15:00:00Z",
+    "release": "REL-2026-005",
+    "labels": [
+      "pci",
+      "3ds",
+      "sca"
+    ],
+    "prs": [
+      "PR-0503"
+    ]
+  },
+  {
+    "id": "CHK-1401",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-05T08:00:00Z",
+    "type": "epic",
+    "title": "[Epic] Add idempotency keys to order placement initiative",
+    "description": "Sprint 1 initiative for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 1,
+    "points": 13,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-01-17T17:00:00Z",
+    "release": "REL-2026-001",
+    "labels": [
+      "epic"
+    ]
+  },
+  {
+    "id": "CAT-931",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-19T08:00:00Z",
+    "type": "epic",
+    "title": "[Epic] Bulk offer ingestion from data platform initiative",
+    "description": "Sprint 2 initiative for Product Catalog (APP-005).",
+    "app": "APP-005",
+    "repo": "mcg-catalog-service",
+    "team": "TEAM-005",
+    "sprint": 2,
+    "points": 13,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-01-31T17:00:00Z",
+    "release": "REL-2026-002",
+    "labels": [
+      "epic"
+    ]
+  },
+  {
+    "id": "PRC-1123",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-02T08:00:00Z",
+    "type": "epic",
+    "title": "[Epic] Currency rounding rules initiative",
+    "description": "Sprint 3 initiative for Pricing Service (APP-007).",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "team": "TEAM-007",
+    "sprint": 3,
+    "points": 13,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-02-14T17:00:00Z",
+    "release": "REL-2026-003",
+    "labels": [
+      "epic"
+    ]
+  },
+  {
+    "id": "PRM-1011",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-16T08:00:00Z",
+    "type": "epic",
+    "title": "[Epic] Budget caps per campaign initiative",
+    "description": "Sprint 4 initiative for Promotions Engine (APP-008).",
+    "app": "APP-008",
+    "repo": "mcg-promotions-engine",
+    "team": "TEAM-008",
+    "sprint": 4,
+    "points": 13,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-02-28T17:00:00Z",
+    "release": "REL-2026-004",
+    "labels": [
+      "epic"
+    ]
+  },
+  {
+    "id": "PAY-971",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-02T08:00:00Z",
+    "type": "epic",
+    "title": "[Epic] Partial capture support initiative",
+    "description": "Sprint 5 initiative for Payments Service (APP-012).",
+    "app": "APP-012",
+    "repo": "mcg-payments-service",
+    "team": "TEAM-009",
+    "sprint": 5,
+    "points": 13,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-03-14T17:00:00Z",
+    "release": "REL-2026-005",
+    "labels": [
+      "epic"
+    ]
+  },
+  {
+    "id": "OMS-1311",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-16T08:00:00Z",
+    "type": "epic",
+    "title": "[Epic] Saga-based fulfillment orchestration initiative",
+    "description": "Sprint 6 initiative for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 6,
+    "points": 13,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-03-28T17:00:00Z",
+    "release": "REL-2026-006",
+    "labels": [
+      "epic"
+    ]
+  },
+  {
+    "id": "GW-434",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-30T08:00:00Z",
+    "type": "epic",
+    "title": "[Epic] Edge oidc verification initiative",
+    "description": "Sprint 7 initiative for API Gateway / Edge (APP-024).",
+    "app": "APP-024",
+    "repo": "mcg-api-gateway",
+    "team": "TEAM-030",
+    "sprint": 7,
+    "points": 13,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-04-11T17:00:00Z",
+    "release": "REL-2026-007",
+    "labels": [
+      "epic"
+    ]
+  },
+  {
+    "id": "POR-621",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-13T08:00:00Z",
+    "type": "epic",
+    "title": "[Epic] Saved payment methods ui initiative",
+    "description": "Sprint 8 initiative for Customer Portal (APP-021).",
+    "app": "APP-021",
+    "repo": "mcg-customer-portal",
+    "team": "TEAM-001",
+    "sprint": 8,
+    "points": 13,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-04-25T17:00:00Z",
+    "release": "REL-2026-008",
+    "labels": [
+      "epic"
+    ]
+  },
+  {
+    "id": "STF-812",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-27T08:00:00Z",
+    "type": "epic",
+    "title": "[Epic] Hydrate cart badge without full reload initiative",
+    "description": "Sprint 9 initiative for Storefront Web (APP-001).",
+    "app": "APP-001",
+    "repo": "mcg-storefront-web",
+    "team": "TEAM-001",
+    "sprint": 9,
+    "points": 13,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-05-09T17:00:00Z",
+    "release": "REL-2026-009",
+    "labels": [
+      "epic"
+    ]
+  },
+  {
+    "id": "CHK-1402",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-11T08:00:00Z",
+    "type": "epic",
+    "title": "[Epic] Graceful degradation when promotions unavailable initiative",
+    "description": "Sprint 10 initiative for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 10,
+    "points": 13,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-05-23T17:00:00Z",
+    "release": "REL-2026-010",
+    "labels": [
+      "epic"
+    ]
+  },
+  {
+    "id": "SRCH-721",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-25T08:00:00Z",
+    "type": "epic",
+    "title": "[Epic] Synonym dictionary management initiative",
+    "description": "Sprint 11 initiative for Search & Browse (APP-006).",
+    "app": "APP-006",
+    "repo": "mcg-search-service",
+    "team": "TEAM-003",
+    "sprint": 11,
+    "points": 13,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-06-06T17:00:00Z",
+    "labels": [
+      "epic"
+    ]
+  },
+  {
+    "id": "PAY-974",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-08T08:00:00Z",
+    "type": "epic",
+    "title": "[Epic] 3ds2 challenge flow initiative",
+    "description": "Sprint 12 initiative for Payments Service (APP-012).",
+    "app": "APP-012",
+    "repo": "mcg-payments-service",
+    "team": "TEAM-009",
+    "sprint": 12,
+    "points": 13,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-06-20T17:00:00Z",
+    "labels": [
+      "epic"
+    ]
+  },
+  {
+    "id": "STF-815",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-22T08:00:00Z",
+    "type": "epic",
+    "title": "[Epic] Lazy-load below-the-fold imagery initiative",
+    "description": "Sprint 13 initiative for Storefront Web (APP-001).",
+    "app": "APP-001",
+    "repo": "mcg-storefront-web",
+    "team": "TEAM-001",
+    "sprint": 13,
+    "points": 13,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-07-04T17:00:00Z",
+    "labels": [
+      "epic"
+    ]
+  },
+  {
+    "id": "GW-437",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-02T09:00:00Z",
+    "type": "story",
+    "title": "Edge oidc verification",
+    "description": "Edge oidc verification for API Gateway / Edge (APP-024).",
+    "app": "APP-024",
+    "repo": "mcg-api-gateway",
+    "team": "TEAM-030",
+    "sprint": 9,
+    "points": 8,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-05-03T16:00:00Z",
+    "release": "REL-2026-009",
+    "labels": [
+      "perf"
+    ]
+  },
+  {
+    "id": "PRM-1014",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-21T09:00:00Z",
+    "type": "story",
+    "title": "Budget caps per campaign",
+    "description": "Budget caps per campaign for Promotions Engine (APP-008).",
+    "app": "APP-008",
+    "repo": "mcg-promotions-engine",
+    "team": "TEAM-008",
+    "sprint": 4,
+    "points": 3,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-02-26T16:00:00Z",
+    "epic": "PRM-1011",
+    "release": "REL-2026-004",
+    "labels": [
+      "tech-debt"
+    ]
+  },
+  {
+    "id": "STF-819",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-07-02T09:00:00Z",
+    "type": "story",
+    "title": "Hydrate cart badge without full reload",
+    "description": "Hydrate cart badge without full reload for Storefront Web (APP-001).",
+    "app": "APP-001",
+    "repo": "mcg-storefront-web",
+    "team": "TEAM-001",
+    "sprint": 13,
+    "points": 8,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-07-05T16:00:00Z",
+    "epic": "STF-815",
+    "labels": [
+      "tech-debt",
+      "observability"
+    ]
+  },
+  {
+    "id": "STF-822",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-24T09:00:00Z",
+    "type": "story",
+    "title": "Server-side render product detail pages",
+    "description": "Server-side render product detail pages for Storefront Web (APP-001).",
+    "app": "APP-001",
+    "repo": "mcg-storefront-web",
+    "team": "TEAM-001",
+    "sprint": 13,
+    "points": 2,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-06-25T16:00:00Z",
+    "epic": "STF-815",
+    "labels": [
+      "security"
+    ],
+    "prs": [
+      "PR-0309"
+    ]
+  },
+  {
+    "id": "PAY-975",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-11T09:00:00Z",
+    "type": "story",
+    "title": "Tokenized card vault",
+    "description": "Tokenized card vault for Payments Service (APP-012).",
+    "app": "APP-012",
+    "repo": "mcg-payments-service",
+    "team": "TEAM-009",
+    "sprint": 5,
+    "points": 5,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-03-14T16:00:00Z",
+    "epic": "PAY-971",
+    "release": "REL-2026-005",
+    "labels": [
+      "observability",
+      "perf"
+    ],
+    "prs": [
+      "PR-0463"
+    ]
+  },
+  {
+    "id": "POR-625",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-20T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: address book management",
+    "description": "Refactor: address book management for Customer Portal (APP-021).",
+    "app": "APP-021",
+    "repo": "mcg-customer-portal",
+    "team": "TEAM-001",
+    "sprint": 8,
+    "points": 2,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-04-21T16:00:00Z",
+    "epic": "POR-621",
+    "release": "REL-2026-008",
+    "labels": [
+      "observability",
+      "ux"
+    ],
+    "prs": [
+      "PR-0257"
+    ]
+  },
+  {
+    "id": "CAT-933",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-24T09:00:00Z",
+    "type": "story",
+    "title": "Category taxonomy versioning",
+    "description": "Category taxonomy versioning for Product Catalog (APP-005).",
+    "app": "APP-005",
+    "repo": "mcg-catalog-service",
+    "team": "TEAM-005",
+    "sprint": 2,
+    "points": 3,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-01-28T16:00:00Z",
+    "epic": "CAT-931",
+    "release": "REL-2026-002",
+    "labels": [
+      "reliability"
+    ]
+  },
+  {
+    "id": "PRC-1124",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-03T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: markdown scheduling",
+    "description": "Refactor: markdown scheduling for Pricing Service (APP-007).",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "team": "TEAM-007",
+    "sprint": 11,
+    "points": 5,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-06-06T16:00:00Z",
+    "labels": [
+      "observability"
+    ]
+  },
+  {
+    "id": "CRT-543",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-22T09:00:00Z",
+    "type": "story",
+    "title": "Cart-level price preview",
+    "description": "Cart-level price preview for Cart Service (APP-004).",
+    "app": "APP-004",
+    "repo": "mcg-cart-service",
+    "team": "TEAM-004",
+    "sprint": 13,
+    "points": 5,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-06-25T16:00:00Z",
+    "labels": [
+      "perf",
+      "tech-debt"
+    ],
+    "prs": [
+      "PR-0636"
+    ]
+  },
+  {
+    "id": "GW-440",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-09T09:00:00Z",
+    "type": "story",
+    "title": "Token-bucket rate limiting",
+    "description": "Token-bucket rate limiting for API Gateway / Edge (APP-024).",
+    "app": "APP-024",
+    "repo": "mcg-api-gateway",
+    "team": "TEAM-030",
+    "sprint": 7,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-04-12T16:00:00Z",
+    "epic": "GW-434",
+    "release": "REL-2026-007",
+    "labels": [
+      "tech-debt",
+      "observability"
+    ],
+    "prs": [
+      "PR-0102"
+    ]
+  },
+  {
+    "id": "STF-825",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-05T09:00:00Z",
+    "type": "story",
+    "title": "Server-side render product detail pages",
+    "description": "Server-side render product detail pages for Storefront Web (APP-001).",
+    "app": "APP-001",
+    "repo": "mcg-storefront-web",
+    "team": "TEAM-001",
+    "sprint": 3,
+    "points": 2,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-02-08T16:00:00Z",
+    "release": "REL-2026-003",
+    "labels": [
+      "security",
+      "observability"
+    ]
+  },
+  {
+    "id": "CHK-1403",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-08T09:00:00Z",
+    "type": "story",
+    "title": "Split-tender payment support",
+    "description": "Split-tender payment support for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 1,
+    "points": 1,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-01-09T16:00:00Z",
+    "epic": "CHK-1401",
+    "release": "REL-2026-001",
+    "labels": [
+      "perf",
+      "reliability"
+    ]
+  },
+  {
+    "id": "GW-443",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-01T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in load-shedding under pressure",
+    "description": "Fix incorrect behavior in load-shedding under pressure for API Gateway / Edge (APP-024).",
+    "app": "APP-024",
+    "repo": "mcg-api-gateway",
+    "team": "TEAM-030",
+    "sprint": 9,
+    "points": 1,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-05-05T16:00:00Z",
+    "release": "REL-2026-009",
+    "labels": [
+      "reliability",
+      "observability"
+    ]
+  },
+  {
+    "id": "PAY-976",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-19T09:00:00Z",
+    "type": "story",
+    "title": "Partial capture support",
+    "description": "Partial capture support for Payments Service (APP-012).",
+    "app": "APP-012",
+    "repo": "mcg-payments-service",
+    "team": "TEAM-009",
+    "sprint": 12,
+    "points": 5,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-06-21T16:00:00Z",
+    "epic": "PAY-974",
+    "labels": [
+      "perf"
+    ],
+    "prs": [
+      "PR-0192"
+    ]
+  },
+  {
+    "id": "PRM-1015",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-18T09:00:00Z",
+    "type": "story",
+    "title": "Exclusion-list handling",
+    "description": "Exclusion-list handling for Promotions Engine (APP-008).",
+    "app": "APP-008",
+    "repo": "mcg-promotions-engine",
+    "team": "TEAM-008",
+    "sprint": 10,
+    "points": 3,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-05-23T16:00:00Z",
+    "release": "REL-2026-010",
+    "labels": [
+      "reliability",
+      "perf"
+    ]
+  },
+  {
+    "id": "INV-1234",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-16T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in stock reconciliation job",
+    "description": "Fix incorrect behavior in stock reconciliation job for Inventory Service (APP-010).",
+    "app": "APP-010",
+    "repo": "mcg-inventory-service",
+    "team": "TEAM-012",
+    "sprint": 6,
+    "points": 3,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-03-17T16:00:00Z",
+    "release": "REL-2026-006",
+    "labels": [
+      "observability"
+    ]
+  },
+  {
+    "id": "OMS-1313",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-09T09:00:00Z",
+    "type": "story",
+    "title": "Backorder handling",
+    "description": "Backorder handling for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 12,
+    "points": 5,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-06-12T16:00:00Z",
+    "labels": [
+      "security",
+      "observability"
+    ]
+  },
+  {
+    "id": "CAT-936",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-14T09:00:00Z",
+    "type": "story",
+    "title": "Sub-minute catalog reindex",
+    "description": "Sub-minute catalog reindex for Product Catalog (APP-005).",
+    "app": "APP-005",
+    "repo": "mcg-catalog-service",
+    "team": "TEAM-005",
+    "sprint": 1,
+    "points": 5,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-01-18T16:00:00Z",
+    "release": "REL-2026-001",
+    "labels": [
+      "security",
+      "tech-debt"
+    ]
+  },
+  {
+    "id": "INV-1237",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-16T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: stock reconciliation job",
+    "description": "Refactor: stock reconciliation job for Inventory Service (APP-010).",
+    "app": "APP-010",
+    "repo": "mcg-inventory-service",
+    "team": "TEAM-012",
+    "sprint": 4,
+    "points": 2,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-02-21T16:00:00Z",
+    "release": "REL-2026-004",
+    "labels": [
+      "observability",
+      "reliability"
+    ]
+  },
+  {
+    "id": "STF-826",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-27T09:00:00Z",
+    "type": "story",
+    "title": "Lazy-load below-the-fold imagery",
+    "description": "Lazy-load below-the-fold imagery for Storefront Web (APP-001).",
+    "app": "APP-001",
+    "repo": "mcg-storefront-web",
+    "team": "TEAM-001",
+    "sprint": 13,
+    "points": 3,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-07-01T16:00:00Z",
+    "epic": "STF-815",
+    "labels": [
+      "perf",
+      "observability"
+    ],
+    "prs": [
+      "PR-0250"
+    ]
+  },
+  {
+    "id": "PRC-1128",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-04T09:00:00Z",
+    "type": "story",
+    "title": "Regional price resolution",
+    "description": "Regional price resolution for Pricing Service (APP-007).",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "team": "TEAM-007",
+    "sprint": 3,
+    "points": 2,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-02-05T16:00:00Z",
+    "epic": "PRC-1123",
+    "release": "REL-2026-003",
+    "labels": [
+      "reliability",
+      "perf"
+    ],
+    "prs": [
+      "PR-0402"
+    ]
+  },
+  {
+    "id": "SRCH-724",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-30T09:00:00Z",
+    "type": "story",
+    "title": "Reduce reindex propagation lag",
+    "description": "Reduce reindex propagation lag for Search & Browse (APP-006).",
+    "app": "APP-006",
+    "repo": "mcg-search-service",
+    "team": "TEAM-003",
+    "sprint": 2,
+    "points": 5,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-02-01T16:00:00Z",
+    "release": "REL-2026-002",
+    "labels": [
+      "security",
+      "tech-debt"
+    ]
+  },
+  {
+    "id": "STF-828",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-15T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: localize currency and units per region",
+    "description": "Refactor: localize currency and units per region for Storefront Web (APP-001).",
+    "app": "APP-001",
+    "repo": "mcg-storefront-web",
+    "team": "TEAM-001",
+    "sprint": 8,
+    "points": 8,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-04-16T16:00:00Z",
+    "release": "REL-2026-008",
+    "labels": [
+      "ux",
+      "security"
+    ],
+    "prs": [
+      "PR-0588"
+    ]
+  },
+  {
+    "id": "CAT-940",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-30T09:00:00Z",
+    "type": "story",
+    "title": "Sub-minute catalog reindex",
+    "description": "Sub-minute catalog reindex for Product Catalog (APP-005).",
+    "app": "APP-005",
+    "repo": "mcg-catalog-service",
+    "team": "TEAM-005",
+    "sprint": 9,
+    "points": 8,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-05-02T16:00:00Z",
+    "release": "REL-2026-009",
+    "labels": [
+      "perf"
+    ]
+  },
+  {
+    "id": "SRCH-727",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-20T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in personalized recommendations sidebar",
+    "description": "Fix incorrect behavior in personalized recommendations sidebar for Search & Browse (APP-006).",
+    "app": "APP-006",
+    "repo": "mcg-search-service",
+    "team": "TEAM-003",
+    "sprint": 2,
+    "points": 1,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-01-24T16:00:00Z",
+    "release": "REL-2026-002",
+    "labels": [
+      "security"
+    ],
+    "prs": [
+      "PR-0637"
+    ]
+  },
+  {
+    "id": "PAY-978",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-03T09:00:00Z",
+    "type": "spike",
+    "title": "Investigate approach for tokenized card vault",
+    "description": "Investigate approach for tokenized card vault for Payments Service (APP-012).",
+    "app": "APP-012",
+    "repo": "mcg-payments-service",
+    "team": "TEAM-009",
+    "sprint": 5,
+    "points": 3,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-03-05T16:00:00Z",
+    "epic": "PAY-971",
+    "release": "REL-2026-005",
+    "labels": [
+      "reliability"
+    ]
+  },
+  {
+    "id": "SRCH-729",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-27T09:00:00Z",
+    "type": "spike",
+    "title": "Investigate approach for faceted filter performance",
+    "description": "Investigate approach for faceted filter performance for Search & Browse (APP-006).",
+    "app": "APP-006",
+    "repo": "mcg-search-service",
+    "team": "TEAM-003",
+    "sprint": 11,
+    "points": 1,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-05-31T16:00:00Z",
+    "epic": "SRCH-721",
+    "labels": [
+      "security",
+      "perf"
+    ]
+  },
+  {
+    "id": "OMS-1315",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-17T09:00:00Z",
+    "type": "story",
+    "title": "Backorder handling",
+    "description": "Backorder handling for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 12,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-06-21T16:00:00Z",
+    "labels": [
+      "observability",
+      "security"
+    ]
+  },
+  {
+    "id": "GW-444",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-04T09:00:00Z",
+    "type": "story",
+    "title": "Edge oidc verification",
+    "description": "Edge oidc verification for API Gateway / Edge (APP-024).",
+    "app": "APP-024",
+    "repo": "mcg-api-gateway",
+    "team": "TEAM-030",
+    "sprint": 11,
+    "points": 1,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-06-07T16:00:00Z",
+    "labels": [
+      "tech-debt"
+    ],
+    "prs": [
+      "PR-0113"
+    ]
+  },
+  {
+    "id": "GW-446",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-08T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in canary routing",
+    "description": "Fix incorrect behavior in canary routing for API Gateway / Edge (APP-024).",
+    "app": "APP-024",
+    "repo": "mcg-api-gateway",
+    "team": "TEAM-030",
+    "sprint": 7,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-04-12T16:00:00Z",
+    "epic": "GW-434",
+    "release": "REL-2026-007",
+    "labels": [
+      "ux",
+      "tech-debt"
+    ],
+    "prs": [
+      "PR-0293"
+    ]
+  },
+  {
+    "id": "GW-450",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-28T09:00:00Z",
+    "type": "story",
+    "title": "Token-bucket rate limiting",
+    "description": "Token-bucket rate limiting for API Gateway / Edge (APP-024).",
+    "app": "APP-024",
+    "repo": "mcg-api-gateway",
+    "team": "TEAM-030",
+    "sprint": 9,
+    "points": 2,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-04-29T16:00:00Z",
+    "release": "REL-2026-009",
+    "labels": [
+      "tech-debt"
+    ],
+    "prs": [
+      "PR-0143"
+    ]
+  },
+  {
+    "id": "PRM-1017",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-17T09:00:00Z",
+    "type": "story",
+    "title": "Write-through promo cache",
+    "description": "Write-through promo cache for Promotions Engine (APP-008).",
+    "app": "APP-008",
+    "repo": "mcg-promotions-engine",
+    "team": "TEAM-008",
+    "sprint": 4,
+    "points": 3,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-02-19T16:00:00Z",
+    "epic": "PRM-1011",
+    "release": "REL-2026-004",
+    "labels": [
+      "reliability"
+    ]
+  },
+  {
+    "id": "PRC-1131",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-23T09:00:00Z",
+    "type": "story",
+    "title": "Price change audit trail",
+    "description": "Price change audit trail for Pricing Service (APP-007).",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "team": "TEAM-007",
+    "sprint": 6,
+    "points": 8,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-03-27T16:00:00Z",
+    "release": "REL-2026-006",
+    "labels": [
+      "perf",
+      "security"
+    ]
+  },
+  {
+    "id": "PRC-1133",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-13T09:00:00Z",
+    "type": "story",
+    "title": "Cost-plus margin guardrails",
+    "description": "Cost-plus margin guardrails for Pricing Service (APP-007).",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "team": "TEAM-007",
+    "sprint": 3,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-02-15T16:00:00Z",
+    "epic": "PRC-1123",
+    "release": "REL-2026-003",
+    "labels": [
+      "ux"
+    ]
+  },
+  {
+    "id": "POR-627",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-23T09:00:00Z",
+    "type": "spike",
+    "title": "Investigate approach for download invoice as PDF",
+    "description": "Investigate approach for download invoice as PDF for Customer Portal (APP-021).",
+    "app": "APP-021",
+    "repo": "mcg-customer-portal",
+    "team": "TEAM-001",
+    "sprint": 13,
+    "points": 8,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-06-27T16:00:00Z",
+    "labels": [
+      "perf"
+    ]
+  },
+  {
+    "id": "PRC-1137",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-08T09:00:00Z",
+    "type": "story",
+    "title": "Currency rounding rules",
+    "description": "Currency rounding rules for Pricing Service (APP-007).",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "team": "TEAM-007",
+    "sprint": 3,
+    "points": 8,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-02-12T16:00:00Z",
+    "epic": "PRC-1123",
+    "release": "REL-2026-003",
+    "labels": [
+      "ux"
+    ],
+    "prs": [
+      "PR-0313"
+    ]
+  },
+  {
+    "id": "CRT-547",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-20T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: cap line-item quantity",
+    "description": "Refactor: cap line-item quantity for Cart Service (APP-004).",
+    "app": "APP-004",
+    "repo": "mcg-cart-service",
+    "team": "TEAM-004",
+    "sprint": 2,
+    "points": 2,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-01-25T16:00:00Z",
+    "release": "REL-2026-002",
+    "labels": [
+      "observability"
+    ]
+  },
+  {
+    "id": "SRCH-731",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-12T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in synonym dictionary management",
+    "description": "Fix incorrect behavior in synonym dictionary management for Search & Browse (APP-006).",
+    "app": "APP-006",
+    "repo": "mcg-search-service",
+    "team": "TEAM-003",
+    "sprint": 1,
+    "points": 8,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-01-16T16:00:00Z",
+    "release": "REL-2026-001",
+    "labels": [
+      "perf"
+    ]
+  },
+  {
+    "id": "PRC-1141",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-19T09:00:00Z",
+    "type": "spike",
+    "title": "Investigate approach for markdown scheduling",
+    "description": "Investigate approach for markdown scheduling for Pricing Service (APP-007).",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "team": "TEAM-007",
+    "sprint": 4,
+    "points": 5,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-02-20T16:00:00Z",
+    "release": "REL-2026-004",
+    "labels": [
+      "security",
+      "perf"
+    ]
+  },
+  {
+    "id": "PRC-1142",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-09T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in price-consistency verification job",
+    "description": "Fix incorrect behavior in price-consistency verification job for Pricing Service (APP-007).",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "team": "TEAM-007",
+    "sprint": 5,
+    "points": 3,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-03-14T16:00:00Z",
+    "release": "REL-2026-005",
+    "labels": [
+      "reliability",
+      "perf"
+    ]
+  },
+  {
+    "id": "PRM-1018",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-05T09:00:00Z",
+    "type": "story",
+    "title": "Exclusion-list handling",
+    "description": "Exclusion-list handling for Promotions Engine (APP-008).",
+    "app": "APP-008",
+    "repo": "mcg-promotions-engine",
+    "team": "TEAM-008",
+    "sprint": 7,
+    "points": 5,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-04-06T16:00:00Z",
+    "release": "REL-2026-007",
+    "labels": [
+      "observability"
+    ],
+    "prs": [
+      "PR-0366"
+    ]
+  },
+  {
+    "id": "CHK-1405",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-13T09:00:00Z",
+    "type": "story",
+    "title": "Graceful degradation when promotions unavailable",
+    "description": "Graceful degradation when promotions unavailable for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 1,
+    "points": 3,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-01-17T16:00:00Z",
+    "epic": "CHK-1401",
+    "release": "REL-2026-001",
+    "labels": [
+      "ux"
+    ],
+    "prs": [
+      "PR-0428"
+    ]
+  },
+  {
+    "id": "CHK-1409",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-03T09:00:00Z",
+    "type": "story",
+    "title": "Graceful degradation when promotions unavailable",
+    "description": "Graceful degradation when promotions unavailable for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 9,
+    "points": 1,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-05-04T16:00:00Z",
+    "release": "REL-2026-009",
+    "labels": [
+      "perf"
+    ]
+  },
+  {
+    "id": "CHK-1411",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-09T09:00:00Z",
+    "type": "story",
+    "title": "Add idempotency keys to order placement",
+    "description": "Add idempotency keys to order placement for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 1,
+    "points": 5,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-01-10T16:00:00Z",
+    "epic": "CHK-1401",
+    "release": "REL-2026-001",
+    "labels": [
+      "perf"
+    ]
+  },
+  {
+    "id": "OMS-1318",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-28T09:00:00Z",
+    "type": "story",
+    "title": "Idempotent event consumption",
+    "description": "Idempotent event consumption for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 2,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-01-29T16:00:00Z",
+    "release": "REL-2026-002",
+    "labels": [
+      "security",
+      "tech-debt"
+    ]
+  },
+  {
+    "id": "CAT-941",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-17T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in variant-level availability flags",
+    "description": "Fix incorrect behavior in variant-level availability flags for Product Catalog (APP-005).",
+    "app": "APP-005",
+    "repo": "mcg-catalog-service",
+    "team": "TEAM-005",
+    "sprint": 10,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-05-20T16:00:00Z",
+    "release": "REL-2026-010",
+    "labels": [
+      "perf"
+    ],
+    "prs": [
+      "PR-0502"
+    ]
+  },
+  {
+    "id": "PAY-979",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-07T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: tokenized card vault",
+    "description": "Refactor: tokenized card vault for Payments Service (APP-012).",
+    "app": "APP-012",
+    "repo": "mcg-payments-service",
+    "team": "TEAM-009",
+    "sprint": 5,
+    "points": 8,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-03-09T16:00:00Z",
+    "epic": "PAY-971",
+    "release": "REL-2026-005",
+    "labels": [
+      "reliability",
+      "security"
+    ]
+  },
+  {
+    "id": "POR-630",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-27T09:00:00Z",
+    "type": "spike",
+    "title": "Investigate approach for download invoice as PDF",
+    "description": "Investigate approach for download invoice as PDF for Customer Portal (APP-021).",
+    "app": "APP-021",
+    "repo": "mcg-customer-portal",
+    "team": "TEAM-001",
+    "sprint": 13,
+    "points": 3,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-07-02T16:00:00Z",
+    "labels": [
+      "reliability",
+      "observability"
+    ]
+  },
+  {
+    "id": "GW-453",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-04T09:00:00Z",
+    "type": "story",
+    "title": "Circuit breaker per upstream",
+    "description": "Circuit breaker per upstream for API Gateway / Edge (APP-024).",
+    "app": "APP-024",
+    "repo": "mcg-api-gateway",
+    "team": "TEAM-030",
+    "sprint": 9,
+    "points": 2,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-05-08T16:00:00Z",
+    "release": "REL-2026-009",
+    "labels": [
+      "security"
+    ],
+    "prs": [
+      "PR-0278"
+    ]
+  },
+  {
+    "id": "OMS-1319",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-25T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in cancellation and refund flow",
+    "description": "Fix incorrect behavior in cancellation and refund flow for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 11,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-05-30T16:00:00Z",
+    "labels": [
+      "security"
+    ]
+  },
+  {
+    "id": "OMS-1323",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-22T09:00:00Z",
+    "type": "story",
+    "title": "Cancellation and refund flow",
+    "description": "Cancellation and refund flow for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 6,
+    "points": 3,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-03-23T16:00:00Z",
+    "epic": "OMS-1311",
+    "release": "REL-2026-006",
+    "labels": [
+      "tech-debt",
+      "security"
+    ],
+    "prs": [
+      "PR-0606"
+    ]
+  },
+  {
+    "id": "GW-457",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-03T09:00:00Z",
+    "type": "story",
+    "title": "Token-bucket rate limiting",
+    "description": "Token-bucket rate limiting for API Gateway / Edge (APP-024).",
+    "app": "APP-024",
+    "repo": "mcg-api-gateway",
+    "team": "TEAM-030",
+    "sprint": 9,
+    "points": 2,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-05-06T16:00:00Z",
+    "release": "REL-2026-009",
+    "labels": [
+      "perf",
+      "observability"
+    ]
+  },
+  {
+    "id": "CHK-1415",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-11T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in add idempotency keys to order placement",
+    "description": "Fix incorrect behavior in add idempotency keys to order placement for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 10,
+    "points": 8,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-05-12T16:00:00Z",
+    "epic": "CHK-1402",
+    "release": "REL-2026-010",
+    "labels": [
+      "tech-debt",
+      "ux"
+    ]
+  },
+  {
+    "id": "GW-459",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-31T09:00:00Z",
+    "type": "story",
+    "title": "Edge oidc verification",
+    "description": "Edge oidc verification for API Gateway / Edge (APP-024).",
+    "app": "APP-024",
+    "repo": "mcg-api-gateway",
+    "team": "TEAM-030",
+    "sprint": 7,
+    "points": 1,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-04-04T16:00:00Z",
+    "epic": "GW-434",
+    "release": "REL-2026-007",
+    "labels": [
+      "ux",
+      "reliability"
+    ]
+  },
+  {
+    "id": "POR-632",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-19T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: saved payment methods UI",
+    "description": "Refactor: saved payment methods UI for Customer Portal (APP-021).",
+    "app": "APP-021",
+    "repo": "mcg-customer-portal",
+    "team": "TEAM-001",
+    "sprint": 10,
+    "points": 5,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-05-20T16:00:00Z",
+    "release": "REL-2026-010",
+    "labels": [
+      "perf"
+    ]
+  },
+  {
+    "id": "GW-460",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-10T09:00:00Z",
+    "type": "story",
+    "title": "Edge oidc verification",
+    "description": "Edge oidc verification for API Gateway / Edge (APP-024).",
+    "app": "APP-024",
+    "repo": "mcg-api-gateway",
+    "team": "TEAM-030",
+    "sprint": 7,
+    "points": 3,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-04-12T16:00:00Z",
+    "epic": "GW-434",
+    "release": "REL-2026-007",
+    "labels": [
+      "perf"
+    ]
+  },
+  {
+    "id": "CHK-1417",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-02T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: split-tender payment support",
+    "description": "Refactor: split-tender payment support for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 9,
+    "points": 5,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-05-04T16:00:00Z",
+    "release": "REL-2026-009",
+    "labels": [
+      "tech-debt"
+    ]
+  },
+  {
+    "id": "CRT-551",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-27T09:00:00Z",
+    "type": "story",
+    "title": "Redis failover for cart state",
+    "description": "Redis failover for cart state for Cart Service (APP-004).",
+    "app": "APP-004",
+    "repo": "mcg-cart-service",
+    "team": "TEAM-004",
+    "sprint": 6,
+    "points": 3,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-03-29T16:00:00Z",
+    "release": "REL-2026-006",
+    "labels": [
+      "tech-debt",
+      "perf"
+    ],
+    "prs": [
+      "PR-0447"
+    ]
+  },
+  {
+    "id": "CHK-1419",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-02T09:00:00Z",
+    "type": "story",
+    "title": "Support guest checkout",
+    "description": "Support guest checkout for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 9,
+    "points": 5,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-05-06T16:00:00Z",
+    "release": "REL-2026-009",
+    "labels": [
+      "ux",
+      "tech-debt"
+    ]
+  },
+  {
+    "id": "OMS-1327",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-18T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: order state machine hardening",
+    "description": "Refactor: order state machine hardening for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 12,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-06-21T16:00:00Z",
+    "labels": [
+      "perf"
+    ]
+  },
+  {
+    "id": "CRT-554",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-29T09:00:00Z",
+    "type": "story",
+    "title": "Redis failover for cart state",
+    "description": "Redis failover for cart state for Cart Service (APP-004).",
+    "app": "APP-004",
+    "repo": "mcg-cart-service",
+    "team": "TEAM-004",
+    "sprint": 9,
+    "points": 2,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-05-04T16:00:00Z",
+    "release": "REL-2026-009",
+    "labels": [
+      "perf"
+    ],
+    "prs": [
+      "PR-0290"
+    ]
+  },
+  {
+    "id": "POR-636",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-05T09:00:00Z",
+    "type": "story",
+    "title": "Order timeline view",
+    "description": "Order timeline view for Customer Portal (APP-021).",
+    "app": "APP-021",
+    "repo": "mcg-customer-portal",
+    "team": "TEAM-001",
+    "sprint": 5,
+    "points": 8,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-03-07T16:00:00Z",
+    "release": "REL-2026-005",
+    "labels": [
+      "perf"
+    ]
+  },
+  {
+    "id": "CAT-943",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-01T09:00:00Z",
+    "type": "story",
+    "title": "Product enrichment webhook",
+    "description": "Product enrichment webhook for Product Catalog (APP-005).",
+    "app": "APP-005",
+    "repo": "mcg-catalog-service",
+    "team": "TEAM-005",
+    "sprint": 11,
+    "points": 2,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-06-06T16:00:00Z",
+    "labels": [
+      "security",
+      "reliability"
+    ]
+  },
+  {
+    "id": "POR-640",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-07-03T09:00:00Z",
+    "type": "story",
+    "title": "Address book management",
+    "description": "Address book management for Customer Portal (APP-021).",
+    "app": "APP-021",
+    "repo": "mcg-customer-portal",
+    "team": "TEAM-001",
+    "sprint": 13,
+    "points": 8,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-07-05T16:00:00Z",
+    "labels": [
+      "perf"
+    ]
+  },
+  {
+    "id": "PRC-1146",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-27T09:00:00Z",
+    "type": "story",
+    "title": "Price-consistency verification job",
+    "description": "Price-consistency verification job for Pricing Service (APP-007).",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "team": "TEAM-007",
+    "sprint": 4,
+    "points": 5,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-03-01T16:00:00Z",
+    "release": "REL-2026-004",
+    "labels": [
+      "ux"
+    ]
+  },
+  {
+    "id": "SRCH-734",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-28T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in hybrid lexical+semantic ranking",
+    "description": "Fix incorrect behavior in hybrid lexical+semantic ranking for Search & Browse (APP-006).",
+    "app": "APP-006",
+    "repo": "mcg-search-service",
+    "team": "TEAM-003",
+    "sprint": 9,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-04-30T16:00:00Z",
+    "release": "REL-2026-009",
+    "labels": [
+      "ux"
+    ]
+  },
+  {
+    "id": "CHK-1422",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-06T09:00:00Z",
+    "type": "story",
+    "title": "Split-tender payment support",
+    "description": "Split-tender payment support for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 9,
+    "points": 1,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-05-08T16:00:00Z",
+    "release": "REL-2026-009",
+    "labels": [
+      "reliability"
+    ]
+  },
+  {
+    "id": "CHK-1423",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-30T09:00:00Z",
+    "type": "story",
+    "title": "Reduce p99 checkout latency",
+    "description": "Reduce p99 checkout latency for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 9,
+    "points": 2,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-05-05T16:00:00Z",
+    "release": "REL-2026-009",
+    "labels": [
+      "security",
+      "perf"
+    ],
+    "prs": [
+      "PR-0590"
+    ]
+  },
+  {
+    "id": "OMS-1329",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-14T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in idempotent event consumption",
+    "description": "Fix incorrect behavior in idempotent event consumption for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 12,
+    "points": 8,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-06-19T16:00:00Z",
+    "labels": [
+      "observability"
+    ],
+    "prs": [
+      "PR-0223"
+    ]
+  },
+  {
+    "id": "CHK-1426",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-14T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: reduce p99 checkout latency",
+    "description": "Refactor: reduce p99 checkout latency for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 1,
+    "points": 8,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-01-17T16:00:00Z",
+    "epic": "CHK-1401",
+    "release": "REL-2026-001",
+    "labels": [
+      "ux",
+      "tech-debt"
+    ],
+    "prs": [
+      "PR-0106"
+    ]
+  },
+  {
+    "id": "OMS-1330",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-31T09:00:00Z",
+    "type": "story",
+    "title": "Idempotent event consumption",
+    "description": "Idempotent event consumption for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 7,
+    "points": 3,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-04-04T16:00:00Z",
+    "release": "REL-2026-007",
+    "labels": [
+      "ux"
+    ]
+  },
+  {
+    "id": "POR-642",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-24T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in saved payment methods UI",
+    "description": "Fix incorrect behavior in saved payment methods UI for Customer Portal (APP-021).",
+    "app": "APP-021",
+    "repo": "mcg-customer-portal",
+    "team": "TEAM-001",
+    "sprint": 13,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-06-27T16:00:00Z",
+    "labels": [
+      "security",
+      "reliability"
+    ]
+  },
+  {
+    "id": "PRC-1149",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-12T09:00:00Z",
+    "type": "story",
+    "title": "Cost-plus margin guardrails",
+    "description": "Cost-plus margin guardrails for Pricing Service (APP-007).",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "team": "TEAM-007",
+    "sprint": 3,
+    "points": 3,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-02-13T16:00:00Z",
+    "epic": "PRC-1123",
+    "release": "REL-2026-003",
+    "labels": [
+      "observability"
+    ],
+    "prs": [
+      "PR-0376"
+    ]
+  },
+  {
+    "id": "OMS-1334",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-10T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: idempotent event consumption",
+    "description": "Refactor: idempotent event consumption for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 5,
+    "points": 5,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-03-12T16:00:00Z",
+    "release": "REL-2026-005",
+    "labels": [
+      "observability",
+      "security"
+    ],
+    "prs": [
+      "PR-0594"
+    ]
+  },
+  {
+    "id": "INV-1238",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-22T09:00:00Z",
+    "type": "story",
+    "title": "Multi-warehouse allocation",
+    "description": "Multi-warehouse allocation for Inventory Service (APP-010).",
+    "app": "APP-010",
+    "repo": "mcg-inventory-service",
+    "team": "TEAM-012",
+    "sprint": 6,
+    "points": 1,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-03-25T16:00:00Z",
+    "release": "REL-2026-006",
+    "labels": [
+      "observability",
+      "security"
+    ]
+  },
+  {
+    "id": "CHK-1427",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-22T09:00:00Z",
+    "type": "story",
+    "title": "Split-tender payment support",
+    "description": "Split-tender payment support for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 10,
+    "points": 1,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-05-23T16:00:00Z",
+    "epic": "CHK-1402",
+    "release": "REL-2026-010",
+    "labels": [
+      "observability",
+      "ux"
+    ]
+  },
+  {
+    "id": "SRCH-736",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-31T09:00:00Z",
+    "type": "story",
+    "title": "Hybrid lexical+semantic ranking",
+    "description": "Hybrid lexical+semantic ranking for Search & Browse (APP-006).",
+    "app": "APP-006",
+    "repo": "mcg-search-service",
+    "team": "TEAM-003",
+    "sprint": 11,
+    "points": 8,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-06-05T16:00:00Z",
+    "epic": "SRCH-721",
+    "labels": [
+      "security",
+      "ux"
+    ]
+  },
+  {
+    "id": "POR-643",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-20T09:00:00Z",
+    "type": "story",
+    "title": "Download invoice as pdf",
+    "description": "Download invoice as pdf for Customer Portal (APP-021).",
+    "app": "APP-021",
+    "repo": "mcg-customer-portal",
+    "team": "TEAM-001",
+    "sprint": 8,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-04-25T16:00:00Z",
+    "epic": "POR-621",
+    "release": "REL-2026-008",
+    "labels": [
+      "observability"
+    ],
+    "prs": [
+      "PR-0449"
+    ]
+  },
+  {
+    "id": "PAY-981",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-08T09:00:00Z",
+    "type": "story",
+    "title": "Tokenized card vault",
+    "description": "Tokenized card vault for Payments Service (APP-012).",
+    "app": "APP-012",
+    "repo": "mcg-payments-service",
+    "team": "TEAM-009",
+    "sprint": 5,
+    "points": 3,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-03-13T16:00:00Z",
+    "epic": "PAY-971",
+    "release": "REL-2026-005",
+    "labels": [
+      "reliability"
+    ],
+    "prs": [
+      "PR-0295"
+    ]
+  },
+  {
+    "id": "PRM-1020",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-08T09:00:00Z",
+    "type": "story",
+    "title": "Write-through promo cache",
+    "description": "Write-through promo cache for Promotions Engine (APP-008).",
+    "app": "APP-008",
+    "repo": "mcg-promotions-engine",
+    "team": "TEAM-008",
+    "sprint": 3,
+    "points": 2,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-02-09T16:00:00Z",
+    "release": "REL-2026-003",
+    "labels": [
+      "reliability"
+    ]
+  },
+  {
+    "id": "CRT-555",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-05T09:00:00Z",
+    "type": "story",
+    "title": "Expire abandoned carts",
+    "description": "Expire abandoned carts for Cart Service (APP-004).",
+    "app": "APP-004",
+    "repo": "mcg-cart-service",
+    "team": "TEAM-004",
+    "sprint": 1,
+    "points": 8,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-01-10T16:00:00Z",
+    "release": "REL-2026-001",
+    "labels": [
+      "security"
+    ]
+  },
+  {
+    "id": "PRM-1022",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-21T09:00:00Z",
+    "type": "story",
+    "title": "Coupon eligibility engine",
+    "description": "Coupon eligibility engine for Promotions Engine (APP-008).",
+    "app": "APP-008",
+    "repo": "mcg-promotions-engine",
+    "team": "TEAM-008",
+    "sprint": 4,
+    "points": 5,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-02-24T16:00:00Z",
+    "epic": "PRM-1011",
+    "release": "REL-2026-004",
+    "labels": [
+      "ux",
+      "reliability"
+    ],
+    "prs": [
+      "PR-0263"
+    ]
+  },
+  {
+    "id": "PRC-1152",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-13T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in cost-plus margin guardrails",
+    "description": "Fix incorrect behavior in cost-plus margin guardrails for Pricing Service (APP-007).",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "team": "TEAM-007",
+    "sprint": 3,
+    "points": 8,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-02-14T16:00:00Z",
+    "epic": "PRC-1123",
+    "release": "REL-2026-003",
+    "labels": [
+      "observability",
+      "tech-debt"
+    ],
+    "prs": [
+      "PR-0403"
+    ]
+  },
+  {
+    "id": "CRT-558",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-27T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: merge guest cart on sign-in",
+    "description": "Refactor: merge guest cart on sign-in for Cart Service (APP-004).",
+    "app": "APP-004",
+    "repo": "mcg-cart-service",
+    "team": "TEAM-004",
+    "sprint": 4,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-03-01T16:00:00Z",
+    "release": "REL-2026-004",
+    "labels": [
+      "security",
+      "tech-debt"
+    ],
+    "prs": [
+      "PR-0236"
+    ]
+  },
+  {
+    "id": "CHK-1431",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-19T09:00:00Z",
+    "type": "spike",
+    "title": "Investigate approach for reduce p99 checkout latency",
+    "description": "Investigate approach for reduce p99 checkout latency for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 6,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-03-22T16:00:00Z",
+    "release": "REL-2026-006",
+    "labels": [
+      "tech-debt",
+      "observability"
+    ]
+  },
+  {
+    "id": "OMS-1335",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-20T09:00:00Z",
+    "type": "story",
+    "title": "Saga-based fulfillment orchestration",
+    "description": "Saga-based fulfillment orchestration for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 6,
+    "points": 2,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-03-25T16:00:00Z",
+    "epic": "OMS-1311",
+    "release": "REL-2026-006",
+    "labels": [
+      "perf",
+      "security"
+    ],
+    "prs": [
+      "PR-0466"
+    ]
+  },
+  {
+    "id": "PRM-1024",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-05T09:00:00Z",
+    "type": "story",
+    "title": "Budget caps per campaign",
+    "description": "Budget caps per campaign for Promotions Engine (APP-008).",
+    "app": "APP-008",
+    "repo": "mcg-promotions-engine",
+    "team": "TEAM-008",
+    "sprint": 7,
+    "points": 8,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-04-09T16:00:00Z",
+    "release": "REL-2026-007",
+    "labels": [
+      "reliability",
+      "observability"
+    ]
+  },
+  {
+    "id": "INV-1239",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-29T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: low-stock event publishing",
+    "description": "Refactor: low-stock event publishing for Inventory Service (APP-010).",
+    "app": "APP-010",
+    "repo": "mcg-inventory-service",
+    "team": "TEAM-012",
+    "sprint": 13,
+    "points": 2,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-06-30T16:00:00Z",
+    "labels": [
+      "tech-debt"
+    ]
+  },
+  {
+    "id": "PRM-1027",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-14T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in stacked promotion rules v2",
+    "description": "Fix incorrect behavior in stacked promotion rules v2 for Promotions Engine (APP-008).",
+    "app": "APP-008",
+    "repo": "mcg-promotions-engine",
+    "team": "TEAM-008",
+    "sprint": 10,
+    "points": 5,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-05-15T16:00:00Z",
+    "release": "REL-2026-010",
+    "labels": [
+      "perf"
+    ]
+  },
+  {
+    "id": "PRC-1154",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-27T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in regional price resolution",
+    "description": "Fix incorrect behavior in regional price resolution for Pricing Service (APP-007).",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "team": "TEAM-007",
+    "sprint": 4,
+    "points": 2,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-02-28T16:00:00Z",
+    "release": "REL-2026-004",
+    "labels": [
+      "ux"
+    ]
+  },
+  {
+    "id": "CAT-945",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-17T09:00:00Z",
+    "type": "story",
+    "title": "Category taxonomy versioning",
+    "description": "Category taxonomy versioning for Product Catalog (APP-005).",
+    "app": "APP-005",
+    "repo": "mcg-catalog-service",
+    "team": "TEAM-005",
+    "sprint": 6,
+    "points": 1,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-03-18T16:00:00Z",
+    "release": "REL-2026-006",
+    "labels": [
+      "ux",
+      "perf"
+    ]
+  },
+  {
+    "id": "CHK-1432",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-29T09:00:00Z",
+    "type": "story",
+    "title": "Handle partial payment authorization",
+    "description": "Handle partial payment authorization for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 9,
+    "points": 1,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-05-03T16:00:00Z",
+    "release": "REL-2026-009",
+    "labels": [
+      "reliability",
+      "observability"
+    ]
+  },
+  {
+    "id": "GW-464",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-08T09:00:00Z",
+    "type": "story",
+    "title": "Load-shedding under pressure",
+    "description": "Load-shedding under pressure for API Gateway / Edge (APP-024).",
+    "app": "APP-024",
+    "repo": "mcg-api-gateway",
+    "team": "TEAM-030",
+    "sprint": 5,
+    "points": 2,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-03-09T16:00:00Z",
+    "release": "REL-2026-005",
+    "labels": [
+      "security",
+      "reliability"
+    ]
+  },
+  {
+    "id": "OMS-1336",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-16T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in saga-based fulfillment orchestration",
+    "description": "Fix incorrect behavior in saga-based fulfillment orchestration for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 8,
+    "points": 2,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-04-19T16:00:00Z",
+    "release": "REL-2026-008",
+    "labels": [
+      "reliability",
+      "ux"
+    ],
+    "prs": [
+      "PR-0608"
+    ]
+  },
+  {
+    "id": "OMS-1338",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-22T09:00:00Z",
+    "type": "story",
+    "title": "Backorder handling",
+    "description": "Backorder handling for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 8,
+    "points": 3,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-04-26T16:00:00Z",
+    "release": "REL-2026-008",
+    "labels": [
+      "security",
+      "perf"
+    ]
+  },
+  {
+    "id": "POR-644",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-07-01T09:00:00Z",
+    "type": "story",
+    "title": "Saved payment methods ui",
+    "description": "Saved payment methods ui for Customer Portal (APP-021).",
+    "app": "APP-021",
+    "repo": "mcg-customer-portal",
+    "team": "TEAM-001",
+    "sprint": 13,
+    "points": 5,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-07-05T16:00:00Z",
+    "labels": [
+      "tech-debt",
+      "perf"
+    ],
+    "prs": [
+      "PR-0215"
+    ]
+  },
+  {
+    "id": "POR-647",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-07-02T09:00:00Z",
+    "type": "story",
+    "title": "Order timeline view",
+    "description": "Order timeline view for Customer Portal (APP-021).",
+    "app": "APP-021",
+    "repo": "mcg-customer-portal",
+    "team": "TEAM-001",
+    "sprint": 13,
+    "points": 1,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-07-04T16:00:00Z",
+    "labels": [
+      "reliability",
+      "security"
+    ],
+    "prs": [
+      "PR-0214"
+    ]
+  },
+  {
+    "id": "OMS-1342",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-18T09:00:00Z",
+    "type": "story",
+    "title": "Backorder handling",
+    "description": "Backorder handling for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 6,
+    "points": 3,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-03-23T16:00:00Z",
+    "epic": "OMS-1311",
+    "release": "REL-2026-006",
+    "labels": [
+      "observability",
+      "tech-debt"
+    ]
+  },
+  {
+    "id": "INV-1241",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-15T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: low-stock event publishing",
+    "description": "Refactor: low-stock event publishing for Inventory Service (APP-010).",
+    "app": "APP-010",
+    "repo": "mcg-inventory-service",
+    "team": "TEAM-012",
+    "sprint": 1,
+    "points": 3,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-01-18T16:00:00Z",
+    "release": "REL-2026-001",
+    "labels": [
+      "perf"
+    ]
+  },
+  {
+    "id": "PRM-1030",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-12T09:00:00Z",
+    "type": "story",
+    "title": "Write-through promo cache",
+    "description": "Write-through promo cache for Promotions Engine (APP-008).",
+    "app": "APP-008",
+    "repo": "mcg-promotions-engine",
+    "team": "TEAM-008",
+    "sprint": 10,
+    "points": 8,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-05-16T16:00:00Z",
+    "release": "REL-2026-010",
+    "labels": [
+      "reliability"
+    ]
+  },
+  {
+    "id": "CAT-947",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-03T09:00:00Z",
+    "type": "story",
+    "title": "Category taxonomy versioning",
+    "description": "Category taxonomy versioning for Product Catalog (APP-005).",
+    "app": "APP-005",
+    "repo": "mcg-catalog-service",
+    "team": "TEAM-005",
+    "sprint": 11,
+    "points": 2,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-06-07T16:00:00Z",
+    "labels": [
+      "ux",
+      "reliability"
+    ]
+  },
+  {
+    "id": "PRM-1034",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-21T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: write-through promo cache",
+    "description": "Refactor: write-through promo cache for Promotions Engine (APP-008).",
+    "app": "APP-008",
+    "repo": "mcg-promotions-engine",
+    "team": "TEAM-008",
+    "sprint": 4,
+    "points": 2,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-02-23T16:00:00Z",
+    "epic": "PRM-1011",
+    "release": "REL-2026-004",
+    "labels": [
+      "tech-debt"
+    ],
+    "prs": [
+      "PR-0367"
+    ]
+  },
+  {
+    "id": "GW-468",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-08T09:00:00Z",
+    "type": "story",
+    "title": "Canary routing",
+    "description": "Canary routing for API Gateway / Edge (APP-024).",
+    "app": "APP-024",
+    "repo": "mcg-api-gateway",
+    "team": "TEAM-030",
+    "sprint": 9,
+    "points": 1,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-05-10T16:00:00Z",
+    "release": "REL-2026-009",
+    "labels": [
+      "reliability"
+    ]
+  },
+  {
+    "id": "PRC-1158",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-11T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: price-consistency verification job",
+    "description": "Refactor: price-consistency verification job for Pricing Service (APP-007).",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "team": "TEAM-007",
+    "sprint": 12,
+    "points": 3,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-06-12T16:00:00Z",
+    "labels": [
+      "perf"
+    ]
+  },
+  {
+    "id": "OMS-1346",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-22T09:00:00Z",
+    "type": "story",
+    "title": "Partial shipment support",
+    "description": "Partial shipment support for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 6,
+    "points": 8,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-03-27T16:00:00Z",
+    "epic": "OMS-1311",
+    "release": "REL-2026-006",
+    "labels": [
+      "tech-debt"
+    ],
+    "prs": [
+      "PR-0321"
+    ]
+  },
+  {
+    "id": "PRC-1161",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-18T09:00:00Z",
+    "type": "story",
+    "title": "Markdown scheduling",
+    "description": "Markdown scheduling for Pricing Service (APP-007).",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "team": "TEAM-007",
+    "sprint": 8,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-04-20T16:00:00Z",
+    "release": "REL-2026-008",
+    "labels": [
+      "ux",
+      "security"
+    ],
+    "prs": [
+      "PR-0181"
+    ]
+  },
+  {
+    "id": "PRM-1037",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-16T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: budget caps per campaign",
+    "description": "Refactor: budget caps per campaign for Promotions Engine (APP-008).",
+    "app": "APP-008",
+    "repo": "mcg-promotions-engine",
+    "team": "TEAM-008",
+    "sprint": 4,
+    "points": 5,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-02-21T16:00:00Z",
+    "epic": "PRM-1011",
+    "release": "REL-2026-004",
+    "labels": [
+      "perf"
+    ]
+  },
+  {
+    "id": "CAT-949",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-31T09:00:00Z",
+    "type": "story",
+    "title": "Category taxonomy versioning",
+    "description": "Category taxonomy versioning for Product Catalog (APP-005).",
+    "app": "APP-005",
+    "repo": "mcg-catalog-service",
+    "team": "TEAM-005",
+    "sprint": 7,
+    "points": 1,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-04-03T16:00:00Z",
+    "release": "REL-2026-007",
+    "labels": [
+      "security"
+    ],
+    "prs": [
+      "PR-0200"
+    ]
+  },
+  {
+    "id": "INV-1242",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-24T09:00:00Z",
+    "type": "story",
+    "title": "Reservation ttl",
+    "description": "Reservation ttl for Inventory Service (APP-010).",
+    "app": "APP-010",
+    "repo": "mcg-inventory-service",
+    "team": "TEAM-012",
+    "sprint": 6,
+    "points": 8,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-03-26T16:00:00Z",
+    "release": "REL-2026-006",
+    "labels": [
+      "security"
+    ],
+    "prs": [
+      "PR-0462"
+    ]
+  },
+  {
+    "id": "OMS-1349",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-25T09:00:00Z",
+    "type": "story",
+    "title": "Cancellation and refund flow",
+    "description": "Cancellation and refund flow for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 2,
+    "points": 8,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-01-26T16:00:00Z",
+    "release": "REL-2026-002",
+    "labels": [
+      "security"
+    ]
+  },
+  {
+    "id": "SRCH-737",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-25T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in hybrid lexical+semantic ranking",
+    "description": "Fix incorrect behavior in hybrid lexical+semantic ranking for Search & Browse (APP-006).",
+    "app": "APP-006",
+    "repo": "mcg-search-service",
+    "team": "TEAM-003",
+    "sprint": 2,
+    "points": 3,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-01-27T16:00:00Z",
+    "release": "REL-2026-002",
+    "labels": [
+      "observability",
+      "reliability"
+    ]
+  },
+  {
+    "id": "SRCH-738",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-23T09:00:00Z",
+    "type": "story",
+    "title": "Personalized recommendations sidebar",
+    "description": "Personalized recommendations sidebar for Search & Browse (APP-006).",
+    "app": "APP-006",
+    "repo": "mcg-search-service",
+    "team": "TEAM-003",
+    "sprint": 2,
+    "points": 3,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-01-25T16:00:00Z",
+    "release": "REL-2026-002",
+    "labels": [
+      "reliability",
+      "observability"
+    ],
+    "prs": [
+      "PR-0231"
+    ]
+  },
+  {
+    "id": "PAY-985",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-13T09:00:00Z",
+    "type": "spike",
+    "title": "Investigate approach for PSP failover routing",
+    "description": "Investigate approach for PSP failover routing for Payments Service (APP-012).",
+    "app": "APP-012",
+    "repo": "mcg-payments-service",
+    "team": "TEAM-009",
+    "sprint": 10,
+    "points": 8,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-05-18T16:00:00Z",
+    "release": "REL-2026-010",
+    "labels": [
+      "ux",
+      "reliability"
+    ]
+  },
+  {
+    "id": "CHK-1433",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-03T09:00:00Z",
+    "type": "spike",
+    "title": "Investigate approach for handle partial payment authorization",
+    "description": "Investigate approach for handle partial payment authorization for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 9,
+    "points": 2,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-05-05T16:00:00Z",
+    "release": "REL-2026-009",
+    "labels": [
+      "security"
+    ]
+  },
+  {
+    "id": "OMS-1350",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-17T09:00:00Z",
+    "type": "story",
+    "title": "Cancellation and refund flow",
+    "description": "Cancellation and refund flow for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 6,
+    "points": 3,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-03-18T16:00:00Z",
+    "epic": "OMS-1311",
+    "release": "REL-2026-006",
+    "labels": [
+      "reliability",
+      "observability"
+    ]
+  },
+  {
+    "id": "PAY-987",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-20T09:00:00Z",
+    "type": "story",
+    "title": "Retry-storm protection",
+    "description": "Retry-storm protection for Payments Service (APP-012).",
+    "app": "APP-012",
+    "repo": "mcg-payments-service",
+    "team": "TEAM-009",
+    "sprint": 4,
+    "points": 1,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-02-21T16:00:00Z",
+    "release": "REL-2026-004",
+    "labels": [
+      "tech-debt",
+      "ux"
+    ]
+  },
+  {
+    "id": "PRM-1040",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-16T09:00:00Z",
+    "type": "story",
+    "title": "Stacked promotion rules v2",
+    "description": "Stacked promotion rules v2 for Promotions Engine (APP-008).",
+    "app": "APP-008",
+    "repo": "mcg-promotions-engine",
+    "team": "TEAM-008",
+    "sprint": 4,
+    "points": 5,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-02-19T16:00:00Z",
+    "epic": "PRM-1011",
+    "release": "REL-2026-004",
+    "labels": [
+      "observability",
+      "tech-debt"
+    ],
+    "prs": [
+      "PR-0137"
+    ]
+  },
+  {
+    "id": "PRC-1164",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-17T09:00:00Z",
+    "type": "story",
+    "title": "Cost-plus margin guardrails",
+    "description": "Cost-plus margin guardrails for Pricing Service (APP-007).",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "team": "TEAM-007",
+    "sprint": 4,
+    "points": 2,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-02-20T16:00:00Z",
+    "release": "REL-2026-004",
+    "labels": [
+      "observability"
+    ]
+  },
+  {
+    "id": "PAY-991",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-03T09:00:00Z",
+    "type": "story",
+    "title": "Refund idempotency",
+    "description": "Refund idempotency for Payments Service (APP-012).",
+    "app": "APP-012",
+    "repo": "mcg-payments-service",
+    "team": "TEAM-009",
+    "sprint": 5,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-03-08T16:00:00Z",
+    "epic": "PAY-971",
+    "release": "REL-2026-005",
+    "labels": [
+      "security"
+    ],
+    "prs": [
+      "PR-0286"
+    ]
+  },
+  {
+    "id": "PAY-993",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-13T09:00:00Z",
+    "type": "story",
+    "title": "Refund idempotency",
+    "description": "Refund idempotency for Payments Service (APP-012).",
+    "app": "APP-012",
+    "repo": "mcg-payments-service",
+    "team": "TEAM-009",
+    "sprint": 12,
+    "points": 3,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-06-16T16:00:00Z",
+    "epic": "PAY-974",
+    "labels": [
+      "observability"
+    ],
+    "prs": [
+      "PR-0541"
+    ]
+  },
+  {
+    "id": "CHK-1436",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-05T09:00:00Z",
+    "type": "spike",
+    "title": "Investigate approach for graceful degradation when promotions unavailable",
+    "description": "Investigate approach for graceful degradation when promotions unavailable for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 5,
+    "points": 8,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-03-09T16:00:00Z",
+    "release": "REL-2026-005",
+    "labels": [
+      "ux",
+      "observability"
+    ]
+  },
+  {
+    "id": "SRCH-741",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-29T09:00:00Z",
+    "type": "story",
+    "title": "Hybrid lexical+semantic ranking",
+    "description": "Hybrid lexical+semantic ranking for Search & Browse (APP-006).",
+    "app": "APP-006",
+    "repo": "mcg-search-service",
+    "team": "TEAM-003",
+    "sprint": 11,
+    "points": 2,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-05-31T16:00:00Z",
+    "epic": "SRCH-721",
+    "labels": [
+      "reliability"
+    ]
+  },
+  {
+    "id": "PRC-1165",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-26T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in price change audit trail",
+    "description": "Fix incorrect behavior in price change audit trail for Pricing Service (APP-007).",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "team": "TEAM-007",
+    "sprint": 2,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-01-30T16:00:00Z",
+    "release": "REL-2026-002",
+    "labels": [
+      "ux"
+    ]
+  },
+  {
+    "id": "INV-1245",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-18T09:00:00Z",
+    "type": "story",
+    "title": "Available-to-promise reservation fix",
+    "description": "Available-to-promise reservation fix for Inventory Service (APP-010).",
+    "app": "APP-010",
+    "repo": "mcg-inventory-service",
+    "team": "TEAM-012",
+    "sprint": 6,
+    "points": 5,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-03-23T16:00:00Z",
+    "release": "REL-2026-006",
+    "labels": [
+      "reliability",
+      "tech-debt"
+    ]
+  },
+  {
+    "id": "CHK-1438",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-06T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in graceful degradation when promotions unavailable",
+    "description": "Fix incorrect behavior in graceful degradation when promotions unavailable for Checkout Service (APP-003).",
+    "app": "APP-003",
+    "repo": "mcg-checkout-service",
+    "team": "TEAM-004",
+    "sprint": 1,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-01-08T16:00:00Z",
+    "epic": "CHK-1401",
+    "release": "REL-2026-001",
+    "labels": [
+      "reliability"
+    ],
+    "prs": [
+      "PR-0111"
+    ]
+  },
+  {
+    "id": "PRM-1041",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-22T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: coupon eligibility engine",
+    "description": "Refactor: coupon eligibility engine for Promotions Engine (APP-008).",
+    "app": "APP-008",
+    "repo": "mcg-promotions-engine",
+    "team": "TEAM-008",
+    "sprint": 10,
+    "points": 8,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-05-24T16:00:00Z",
+    "release": "REL-2026-010",
+    "labels": [
+      "tech-debt"
+    ],
+    "prs": [
+      "PR-0347"
+    ]
+  },
+  {
+    "id": "POR-650",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-22T09:00:00Z",
+    "type": "story",
+    "title": "Loyalty points balance widget",
+    "description": "Loyalty points balance widget for Customer Portal (APP-021).",
+    "app": "APP-021",
+    "repo": "mcg-customer-portal",
+    "team": "TEAM-001",
+    "sprint": 13,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-06-26T16:00:00Z",
+    "labels": [
+      "reliability"
+    ]
+  },
+  {
+    "id": "OMS-1352",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-12T09:00:00Z",
+    "type": "story",
+    "title": "Order state machine hardening",
+    "description": "Order state machine hardening for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 12,
+    "points": 5,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-06-17T16:00:00Z",
+    "labels": [
+      "tech-debt"
+    ]
+  },
+  {
+    "id": "GW-471",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-30T09:00:00Z",
+    "type": "spike",
+    "title": "Investigate approach for token-bucket rate limiting",
+    "description": "Investigate approach for token-bucket rate limiting for API Gateway / Edge (APP-024).",
+    "app": "APP-024",
+    "repo": "mcg-api-gateway",
+    "team": "TEAM-030",
+    "sprint": 7,
+    "points": 3,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-04-03T16:00:00Z",
+    "epic": "GW-434",
+    "release": "REL-2026-007",
+    "labels": [
+      "ux",
+      "tech-debt"
+    ]
+  },
+  {
+    "id": "SRCH-745",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-01T09:00:00Z",
+    "type": "task",
+    "title": "Refactor: personalized recommendations sidebar",
+    "description": "Refactor: personalized recommendations sidebar for Search & Browse (APP-006).",
+    "app": "APP-006",
+    "repo": "mcg-search-service",
+    "team": "TEAM-003",
+    "sprint": 11,
+    "points": 1,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-06-06T16:00:00Z",
+    "epic": "SRCH-721",
+    "labels": [
+      "ux",
+      "observability"
+    ]
+  },
+  {
+    "id": "PRC-1169",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-10T09:00:00Z",
+    "type": "bug",
+    "title": "Fix incorrect behavior in price-consistency verification job",
+    "description": "Fix incorrect behavior in price-consistency verification job for Pricing Service (APP-007).",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "team": "TEAM-007",
+    "sprint": 3,
+    "points": 3,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-02-11T16:00:00Z",
+    "epic": "PRC-1123",
+    "release": "REL-2026-003",
+    "labels": [
+      "observability",
+      "security"
+    ]
+  },
+  {
+    "id": "SRCH-747",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-29T09:00:00Z",
+    "type": "story",
+    "title": "Typo-tolerant query parsing",
+    "description": "Typo-tolerant query parsing for Search & Browse (APP-006).",
+    "app": "APP-006",
+    "repo": "mcg-search-service",
+    "team": "TEAM-003",
+    "sprint": 11,
+    "points": 8,
+    "status": "done",
+    "priority": "P2",
+    "resolved_at": "2026-05-31T16:00:00Z",
+    "epic": "SRCH-721",
+    "labels": [
+      "security"
+    ]
+  },
+  {
+    "id": "OMS-1355",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-01T09:00:00Z",
+    "type": "story",
+    "title": "Cancellation and refund flow",
+    "description": "Cancellation and refund flow for Order Management (APP-009).",
+    "app": "APP-009",
+    "repo": "mcg-oms",
+    "team": "TEAM-006",
+    "sprint": 7,
+    "points": 1,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-04-05T16:00:00Z",
+    "release": "REL-2026-007",
+    "labels": [
+      "perf"
+    ]
+  },
+  {
+    "id": "CAT-950",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-10T09:00:00Z",
+    "type": "story",
+    "title": "Category taxonomy versioning",
+    "description": "Category taxonomy versioning for Product Catalog (APP-005).",
+    "app": "APP-005",
+    "repo": "mcg-catalog-service",
+    "team": "TEAM-005",
+    "sprint": 7,
+    "points": 2,
+    "status": "done",
+    "priority": "P1",
+    "resolved_at": "2026-04-12T16:00:00Z",
+    "release": "REL-2026-007",
+    "labels": [
+      "observability"
+    ],
+    "prs": [
+      "PR-0412"
+    ]
+  },
+  {
+    "id": "GW-472",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-08T09:00:00Z",
+    "type": "story",
+    "title": "Request coalescing",
+    "description": "Request coalescing for API Gateway / Edge (APP-024).",
+    "app": "APP-024",
+    "repo": "mcg-api-gateway",
+    "team": "TEAM-030",
+    "sprint": 7,
+    "points": 3,
+    "status": "done",
+    "priority": "P3",
+    "resolved_at": "2026-04-10T16:00:00Z",
+    "epic": "GW-434",
+    "release": "REL-2026-007",
+    "labels": [
+      "ux"
+    ]
+  }
+]

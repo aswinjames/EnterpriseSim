@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/test_case.schema.json",
+  "title": "TestCase",
+  "description": "An automated test case (TC-#####) in TestRail per CANON-001 §5, grouped into suites (TS-###).",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "title", "app", "suite", "type", "status", "owner_team", "automated"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^TC-\\d{5,}$" },
+    "title": { "type": "string", "minLength": 1 },
+    "app": { "$ref": "common.schema.json#/$defs/appId" },
+    "repo": { "type": "string", "pattern": "^mcg-[a-z0-9-]+$" },
+    "suite": { "type": "string", "pattern": "^TS-\\d{3}$" },
+    "type": { "type": "string", "enum": ["unit", "contract", "integration", "e2e", "performance", "security"] },
+    "status": { "type": "string", "enum": ["active", "quarantined", "deprecated"] },
+    "priority": { "type": "string", "enum": ["P0", "P1", "P2", "P3"] },
+    "owner_team": { "$ref": "common.schema.json#/$defs/teamId" },
+    "automated": { "type": "boolean" },
+    "related_story": { "type": "string", "pattern": "^[A-Z]{2,4}-\\d+$" },
+    "critical_journey": { "type": "string" }
+  },
+  "unevaluatedProperties": false
+}

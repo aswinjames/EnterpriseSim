@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/incident.schema.json",
+  "title": "Incident",
+  "description": "A production incident (INC-YYYY-###) with severity Sev1..Sev4 per CANON-001 §5/§6.",
+  "type": "object",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/eclObjectBase" }],
+  "required": ["id", "title", "severity", "apps", "detected_at", "status", "summary"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/$defs/incidentId" },
+    "title": { "type": "string", "minLength": 1 },
+    "severity": { "type": "string", "enum": ["Sev1", "Sev2", "Sev3", "Sev4"] },
+    "apps": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/appId" } },
+    "teams": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/teamId" } },
+    "detected_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "resolved_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "duration_min": { "type": "integer", "minimum": 0 },
+    "summary": { "type": "string", "minLength": 1 },
+    "trigger": { "type": "string", "description": "Change/release that triggered it (e.g. a REL- or PR- id) or 'organic'." },
+    "root_cause_category": {
+      "type": "string",
+      "enum": ["config_change", "code_regression", "capacity", "dependency_failure", "data_issue", "cache_staleness", "deployment", "third_party", "security"]
+    },
+    "impacted_regions": { "type": "array", "items": { "type": "string", "enum": ["NA", "LATAM", "EU", "APAC"] } },
+    "hotfix_pr": { "$ref": "common.schema.json#/$defs/prId" },
+    "hotfix_story": { "type": "string", "pattern": "^[A-Z]{2,4}-\\d+$" },
+    "postmortem": { "$ref": "common.schema.json#/$defs/knowledgeId" },
+    "related_release": { "$ref": "common.schema.json#/$defs/releaseId" },
+    "status": { "type": "string", "enum": ["resolved", "monitoring", "open"] }
+  },
+  "unevaluatedProperties": false
+}

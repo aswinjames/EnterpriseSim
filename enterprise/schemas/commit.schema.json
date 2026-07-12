@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enterprisesim.dev/schemas/2020-12/commit.schema.json",
+  "title": "Commit",
+  "description": "A commit-metadata record belonging to a pull request. Metadata only; no source content. Its id is a synthetic abbreviated SHA (not a canonical ECL id), so this schema does not extend eclObjectBase.",
+  "type": "object",
+  "required": ["id", "schema_version", "created_at", "repo", "pr", "author", "message", "committed_at"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[0-9a-f]{7,40}$", "description": "Synthetic commit SHA (abbreviated)." },
+    "schema_version": { "type": "string", "pattern": "^2020-12\\.v\\d+$" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "metadata": { "$ref": "common.schema.json#/$defs/metadata" },
+    "repo": { "type": "string", "pattern": "^mcg-[a-z0-9-]+$" },
+    "pr": { "$ref": "common.schema.json#/$defs/prId" },
+    "story": { "type": "string", "pattern": "^[A-Z]{2,4}-\\d+$" },
+    "author": { "type": "string" },
+    "message": { "type": "string", "minLength": 1 },
+    "committed_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "additions": { "type": "integer", "minimum": 0 },
+    "deletions": { "type": "integer", "minimum": 0 },
+    "files_changed": { "type": "integer", "minimum": 0 }
+  },
+  "unevaluatedProperties": false
+}
