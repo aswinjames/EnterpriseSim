@@ -1,0 +1,395 @@
+[
+  {
+    "sprint": 1,
+    "window": [
+      "2026-01-05",
+      "2026-01-16"
+    ],
+    "release": "REL-2026-001",
+    "stories": 11,
+    "features": 6,
+    "debt": 3,
+    "bugs": 2,
+    "incidents": [
+      "INC-2026-001",
+      "INC-2026-002"
+    ],
+    "hotfixes": [
+      "PR-0312"
+    ],
+    "executions": 3,
+    "mean_eval_score": 0.68,
+    "mean_fused_confidence": 0.673,
+    "experiences_created": [
+      "EXP-090",
+      "EXP-207"
+    ],
+    "experiences_reinforced": []
+  },
+  {
+    "sprint": 2,
+    "window": [
+      "2026-01-19",
+      "2026-01-30"
+    ],
+    "release": "REL-2026-002",
+    "stories": 10,
+    "features": 5,
+    "debt": 3,
+    "bugs": 3,
+    "incidents": [
+      "INC-2026-003"
+    ],
+    "hotfixes": [],
+    "executions": 3,
+    "mean_eval_score": 0.57,
+    "mean_fused_confidence": 0.613,
+    "experiences_created": [
+      "EXP-210",
+      "EXP-204"
+    ],
+    "experiences_reinforced": [
+      "EXP-207"
+    ]
+  },
+  {
+    "sprint": 3,
+    "window": [
+      "2026-02-02",
+      "2026-02-13"
+    ],
+    "release": "REL-2026-003",
+    "stories": 9,
+    "features": 6,
+    "debt": 1,
+    "bugs": 2,
+    "incidents": [
+      "INC-2026-004"
+    ],
+    "hotfixes": [],
+    "executions": 6,
+    "mean_eval_score": 0.618,
+    "mean_fused_confidence": 0.653,
+    "experiences_created": [
+      "EXP-201",
+      "EXP-142"
+    ],
+    "experiences_reinforced": [
+      "EXP-090",
+      "EXP-204",
+      "EXP-207",
+      "EXP-210"
+    ]
+  },
+  {
+    "sprint": 4,
+    "window": [
+      "2026-02-16",
+      "2026-02-27"
+    ],
+    "release": "REL-2026-004",
+    "stories": 14,
+    "features": 7,
+    "debt": 8,
+    "bugs": 1,
+    "incidents": [
+      "INC-2026-007"
+    ],
+    "hotfixes": [],
+    "executions": 7,
+    "mean_eval_score": 0.667,
+    "mean_fused_confidence": 0.693,
+    "experiences_created": [
+      "EXP-055"
+    ],
+    "experiences_reinforced": [
+      "EXP-090",
+      "EXP-142",
+      "EXP-201",
+      "EXP-204",
+      "EXP-207",
+      "EXP-210"
+    ]
+  },
+  {
+    "sprint": 5,
+    "window": [
+      "2026-03-02",
+      "2026-03-13"
+    ],
+    "release": "REL-2026-005",
+    "stories": 12,
+    "features": 6,
+    "debt": 4,
+    "bugs": 1,
+    "incidents": [
+      "INC-2026-009"
+    ],
+    "hotfixes": [],
+    "executions": 8,
+    "mean_eval_score": 0.7,
+    "mean_fused_confidence": 0.715,
+    "experiences_created": [
+      "EXP-202"
+    ],
+    "experiences_reinforced": [
+      "EXP-055",
+      "EXP-090",
+      "EXP-142",
+      "EXP-201",
+      "EXP-204",
+      "EXP-207",
+      "EXP-210"
+    ]
+  },
+  {
+    "sprint": 6,
+    "window": [
+      "2026-03-16",
+      "2026-03-27"
+    ],
+    "release": "REL-2026-006",
+    "stories": 14,
+    "features": 11,
+    "debt": 6,
+    "bugs": 1,
+    "incidents": [
+      "INC-2026-011",
+      "INC-2026-012"
+    ],
+    "hotfixes": [],
+    "executions": 10,
+    "mean_eval_score": 0.722,
+    "mean_fused_confidence": 0.731,
+    "experiences_created": [
+      "EXP-203",
+      "EXP-206"
+    ],
+    "experiences_reinforced": [
+      "EXP-055",
+      "EXP-090",
+      "EXP-142",
+      "EXP-201",
+      "EXP-202",
+      "EXP-204",
+      "EXP-207",
+      "EXP-210"
+    ]
+  },
+  {
+    "sprint": 7,
+    "window": [
+      "2026-03-30",
+      "2026-04-10"
+    ],
+    "release": "REL-2026-007",
+    "stories": 13,
+    "features": 10,
+    "debt": 3,
+    "bugs": 1,
+    "incidents": [
+      "INC-2026-013",
+      "INC-2026-014"
+    ],
+    "hotfixes": [],
+    "executions": 11,
+    "mean_eval_score": 0.743,
+    "mean_fused_confidence": 0.761,
+    "experiences_created": [
+      "EXP-205"
+    ],
+    "experiences_reinforced": [
+      "EXP-055",
+      "EXP-090",
+      "EXP-142",
+      "EXP-201",
+      "EXP-202",
+      "EXP-203",
+      "EXP-204",
+      "EXP-206",
+      "EXP-207",
+      "EXP-210"
+    ]
+  },
+  {
+    "sprint": 8,
+    "window": [
+      "2026-04-13",
+      "2026-04-24"
+    ],
+    "release": "REL-2026-008",
+    "stories": 7,
+    "features": 3,
+    "debt": 2,
+    "bugs": 1,
+    "incidents": [
+      "INC-2026-015"
+    ],
+    "hotfixes": [],
+    "executions": 11,
+    "mean_eval_score": 0.763,
+    "mean_fused_confidence": 0.776,
+    "experiences_created": [
+      "EXP-208"
+    ],
+    "experiences_reinforced": [
+      "EXP-055",
+      "EXP-090",
+      "EXP-142",
+      "EXP-201",
+      "EXP-202",
+      "EXP-203",
+      "EXP-204",
+      "EXP-205",
+      "EXP-206",
+      "EXP-210"
+    ]
+  },
+  {
+    "sprint": 9,
+    "window": [
+      "2026-04-27",
+      "2026-05-08"
+    ],
+    "release": "REL-2026-009",
+    "stories": 17,
+    "features": 12,
+    "debt": 4,
+    "bugs": 2,
+    "incidents": [
+      "INC-2026-016"
+    ],
+    "hotfixes": [],
+    "executions": 10,
+    "mean_eval_score": 0.765,
+    "mean_fused_confidence": 0.772,
+    "experiences_created": [
+      "EXP-209"
+    ],
+    "experiences_reinforced": [
+      "EXP-055",
+      "EXP-142",
+      "EXP-201",
+      "EXP-202",
+      "EXP-203",
+      "EXP-204",
+      "EXP-205",
+      "EXP-206",
+      "EXP-208"
+    ]
+  },
+  {
+    "sprint": 10,
+    "window": [
+      "2026-05-11",
+      "2026-05-22"
+    ],
+    "release": "REL-2026-010",
+    "stories": 10,
+    "features": 3,
+    "debt": 4,
+    "bugs": 3,
+    "incidents": [
+      "INC-2026-018",
+      "INC-2026-019"
+    ],
+    "hotfixes": [],
+    "executions": 8,
+    "mean_eval_score": 0.781,
+    "mean_fused_confidence": 0.786,
+    "experiences_created": [],
+    "experiences_reinforced": [
+      "EXP-055",
+      "EXP-201",
+      "EXP-202",
+      "EXP-203",
+      "EXP-205",
+      "EXP-206",
+      "EXP-208",
+      "EXP-209"
+    ]
+  },
+  {
+    "sprint": 11,
+    "window": [
+      "2026-05-25",
+      "2026-06-05"
+    ],
+    "release": null,
+    "stories": 11,
+    "features": 6,
+    "debt": 4,
+    "bugs": 1,
+    "incidents": [],
+    "hotfixes": [],
+    "executions": 7,
+    "mean_eval_score": 0.829,
+    "mean_fused_confidence": 0.823,
+    "experiences_created": [],
+    "experiences_reinforced": [
+      "EXP-055",
+      "EXP-202",
+      "EXP-203",
+      "EXP-205",
+      "EXP-206",
+      "EXP-208",
+      "EXP-209"
+    ]
+  },
+  {
+    "sprint": 12,
+    "window": [
+      "2026-06-08",
+      "2026-06-19"
+    ],
+    "release": null,
+    "stories": 9,
+    "features": 5,
+    "debt": 3,
+    "bugs": 1,
+    "incidents": [
+      "INC-2026-021"
+    ],
+    "hotfixes": [],
+    "executions": 7,
+    "mean_eval_score": 0.909,
+    "mean_fused_confidence": 0.87,
+    "experiences_created": [],
+    "experiences_reinforced": [
+      "EXP-055",
+      "EXP-202",
+      "EXP-203",
+      "EXP-205",
+      "EXP-206",
+      "EXP-208",
+      "EXP-209"
+    ]
+  },
+  {
+    "sprint": 13,
+    "window": [
+      "2026-06-22",
+      "2026-07-03"
+    ],
+    "release": null,
+    "stories": 13,
+    "features": 8,
+    "debt": 6,
+    "bugs": 1,
+    "incidents": [],
+    "hotfixes": [],
+    "executions": 9,
+    "mean_eval_score": 0.948,
+    "mean_fused_confidence": 0.923,
+    "experiences_created": [],
+    "experiences_reinforced": [
+      "EXP-055",
+      "EXP-202",
+      "EXP-203",
+      "EXP-205",
+      "EXP-206",
+      "EXP-208",
+      "EXP-209"
+    ]
+  }
+]
