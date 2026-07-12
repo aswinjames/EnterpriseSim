@@ -1,0 +1,198 @@
+openapi: 3.1.0
+info:
+  title: Order Management (OMS) API
+  version: 1.0.0
+  description: >
+    Order lifecycle and fulfillment orchestration for MCG. Owned by TEAM-006 (Order
+    Management), backing APP-009. Creates orders from placed checkouts, exposes order
+    status/history and supports cancellation and returns. Depends on Inventory (APP-010),
+    WMS (APP-011) and Payments (APP-012). Ingress via API Gateway (APP-024).
+  contact:
+    name: Order Management Squad
+    email: team-oms@meridian.example
+servers:
+  - url: https://api.meridian.com/orders/v1
+    description: Production (via API Gateway APP-024)
+security:
+  - bearerAuth: []
+tags:
+  - name: orders
+  - name: returns
+paths:
+  /orders:
+    get:
+      operationId: listOrders
+      summary: List orders for a customer (paginated)
+      tags: [orders]
+      parameters:
+        - name: customerId
+          in: query
+          required: true
+          schema: { type: string }
+        - name: status
+          in: query
+          schema: { type: string, enum: [created, allocated, shipped, delivered, cancelled] }
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageToken'
+      responses:
+        '200':
+          description: Page of orders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderPage'
+    post:
+      operationId: createOrder
+      summary: Create an order (internal, from placed checkout)
+      description: Invoked by Checkout (APP-003) on order placement. Idempotent.
+      tags: [orders]
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /orders/{orderId}:
+    get:
+      operationId: getOrder
+      summary: Get an order
+      tags: [orders]
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      responses:
+        '200':
+          description: Order detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /orders/{orderId}/cancel:
+    post:
+      operationId: cancelOrder
+      summary: Cancel an order (if not yet shipped)
+      tags: [orders]
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Order cancelled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '409':
+          description: Order already shipped; cannot cancel
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    OrderId:
+      name: orderId
+      in: path
+      required: true
+      schema: { type: string }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+    PageSize:
+      name: page_size
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 25 }
+    PageToken:
+      name: page_token
+      in: query
+      schema: { type: string }
+  responses:
+    NotFound:
+      description: Order not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Conflict:
+      description: Idempotency or state conflict
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    CreateOrderRequest:
+      type: object
+      required: [checkoutId, customerId, lines, paymentRef]
+      properties:
+        checkoutId: { type: string, format: uuid }
+        customerId: { type: string }
+        paymentRef: { type: string, description: Payment authorization reference from APP-012. }
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderLine'
+    Order:
+      type: object
+      required: [orderId, status, lines]
+      properties:
+        orderId: { type: string }
+        customerId: { type: string }
+        status:
+          type: string
+          enum: [created, allocated, shipped, delivered, cancelled, returned]
+        lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderLine'
+        placedAt: { type: string, format: date-time }
+        total: { type: number }
+    OrderLine:
+      type: object
+      properties:
+        sku: { type: string }
+        quantity: { type: integer }
+        unitPrice: { type: number }
+        fulfillmentCenter: { type: string }
+    OrderPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+        nextPageToken: { type: string }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, traceId]
+          properties:
+            code: { type: string, example: oms.order_not_cancellable }
+            message: { type: string }
+            traceId: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field: { type: string }
+                  issue: { type: string }

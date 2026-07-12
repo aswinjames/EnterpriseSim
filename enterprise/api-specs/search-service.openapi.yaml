@@ -1,0 +1,162 @@
+openapi: 3.1.0
+info:
+  title: Search & Browse Service API
+  version: 1.0.0
+  description: >
+    Product search, faceted browse and recommendations for MCG storefronts. Owned by
+    TEAM-003 (Search & Discovery), backing APP-006. Reads canonical data from Catalog
+    (APP-005) and features from the Data Platform (APP-020). Ingress via API Gateway
+    (APP-024) with per-client rate limits.
+  contact:
+    name: Search & Discovery Squad
+    email: team-search@meridian.example
+servers:
+  - url: https://api.meridian.com/search/v1
+    description: Production (via API Gateway APP-024)
+security:
+  - bearerAuth: []
+tags:
+  - name: search
+  - name: recommendations
+paths:
+  /searches:
+    post:
+      operationId: search
+      summary: Execute a product search query
+      description: POST is used so complex filter/facet payloads are not URL-length bound.
+      tags: [search]
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+      responses:
+        '200':
+          description: Search results with facets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /recommendations:
+    get:
+      operationId: getRecommendations
+      summary: Get recommendations for a customer or SKU context
+      tags: [recommendations]
+      parameters:
+        - name: customerId
+          in: query
+          schema: { type: string }
+        - name: sku
+          in: query
+          schema: { type: string }
+        - name: placement
+          in: query
+          schema: { type: string, enum: [home, pdp, cart, search] }
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Ranked recommendation list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema: { type: string, format: uuid }
+    PageSize:
+      name: page_size
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 24 }
+  responses:
+    BadRequest:
+      description: Malformed query
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    TooManyRequests:
+      description: Rate limit exceeded at the gateway
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    SearchRequest:
+      type: object
+      required: [query, region]
+      properties:
+        query: { type: string }
+        region: { type: string, enum: [NA, LATAM, EU, APAC] }
+        filters:
+          type: object
+          additionalProperties: { type: string }
+        sort:
+          type: string
+          enum: [relevance, price_asc, price_desc, rating, newest]
+        pageSize: { type: integer, minimum: 1, maximum: 100, default: 24 }
+        pageToken: { type: string }
+    SearchResponse:
+      type: object
+      required: [results]
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchHit'
+        facets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Facet'
+        total: { type: integer }
+        nextPageToken: { type: string }
+    SearchHit:
+      type: object
+      properties:
+        sku: { type: string }
+        title: { type: string }
+        price: { type: number }
+        rating: { type: number }
+        score: { type: number, description: Relevance score. }
+    Facet:
+      type: object
+      properties:
+        name: { type: string }
+        values:
+          type: array
+          items:
+            type: object
+            properties:
+              value: { type: string }
+              count: { type: integer }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, traceId]
+          properties:
+            code: { type: string, example: search.invalid_filter }
+            message: { type: string }
+            traceId: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field: { type: string }
+                  issue: { type: string }

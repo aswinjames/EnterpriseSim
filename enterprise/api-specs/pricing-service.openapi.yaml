@@ -1,0 +1,186 @@
+openapi: 3.1.0
+info:
+  title: Pricing Service API
+  version: 1.0.0
+  description: >
+    Base and regional price resolution for MCG. Owned by TEAM-007 (Pricing), backing
+    APP-007. Resolves effective prices for a set of SKUs in a region/currency and
+    manages price lists. Publishes PriceChanged events. Ingress via API Gateway (APP-024).
+  contact:
+    name: Pricing Squad
+    email: team-pricing@meridian.example
+servers:
+  - url: https://api.meridian.com/pricing/v1
+    description: Production (via API Gateway APP-024)
+security:
+  - bearerAuth: []
+tags:
+  - name: prices
+  - name: price-lists
+paths:
+  /prices:resolve:
+    post:
+      operationId: resolvePrices
+      summary: Resolve effective prices for SKUs in a region
+      description: Batch resolution used by Cart (APP-004) and Checkout (APP-003).
+      tags: [prices]
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResolvePricesRequest'
+      responses:
+        '200':
+          description: Resolved prices
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResolvePricesResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /price-lists:
+    get:
+      operationId: listPriceLists
+      summary: List price lists (paginated)
+      tags: [price-lists]
+      parameters:
+        - name: region
+          in: query
+          schema: { type: string, enum: [NA, LATAM, EU, APAC] }
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageToken'
+      responses:
+        '200':
+          description: Page of price lists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceListPage'
+  /price-lists/{priceListId}:
+    get:
+      operationId: getPriceList
+      summary: Get a price list
+      tags: [price-lists]
+      parameters:
+        - name: priceListId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Price list detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceList'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema: { type: string, format: uuid }
+    PageSize:
+      name: page_size
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+    PageToken:
+      name: page_token
+      in: query
+      schema: { type: string }
+  responses:
+    BadRequest:
+      description: Malformed request
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Price list not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    TooManyRequests:
+      description: Rate limit exceeded at the gateway
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    ResolvePricesRequest:
+      type: object
+      required: [skus, region, currency]
+      properties:
+        skus:
+          type: array
+          minItems: 1
+          items: { type: string }
+        region: { type: string, enum: [NA, LATAM, EU, APAC] }
+        currency: { type: string, example: USD }
+        customerTier: { type: string }
+    ResolvePricesResponse:
+      type: object
+      required: [prices]
+      properties:
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResolvedPrice'
+        resolvedAt: { type: string, format: date-time }
+    ResolvedPrice:
+      type: object
+      required: [sku, amount, currency]
+      properties:
+        sku: { type: string }
+        amount: { type: number }
+        currency: { type: string }
+        listPrice: { type: number }
+        priceListId: { type: string }
+    PriceListPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/PriceList'
+        nextPageToken: { type: string }
+    PriceList:
+      type: object
+      required: [priceListId, region, status]
+      properties:
+        priceListId: { type: string }
+        region: { type: string, enum: [NA, LATAM, EU, APAC] }
+        currency: { type: string }
+        status:
+          type: string
+          enum: [draft, active, superseded]
+        effectiveFrom: { type: string, format: date-time }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, traceId]
+          properties:
+            code: { type: string, example: pricing.unknown_sku }
+            message: { type: string }
+            traceId: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field: { type: string }
+                  issue: { type: string }

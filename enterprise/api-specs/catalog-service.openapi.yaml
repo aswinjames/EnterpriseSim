@@ -1,0 +1,172 @@
+openapi: 3.1.0
+info:
+  title: Product Catalog Service API
+  version: 1.0.0
+  description: >
+    Canonical product and offer data for MCG. Owned by TEAM-005 (Catalog), backing
+    APP-005. Serves read-heavy product/offer lookups to Storefront (APP-001), Search
+    (APP-006) and Cart (APP-004); publishes change events to the catalog topic. Ingress
+    via API Gateway (APP-024).
+  contact:
+    name: Catalog Squad
+    email: team-catalog@meridian.example
+servers:
+  - url: https://api.meridian.com/catalog/v1
+    description: Production (via API Gateway APP-024)
+security:
+  - bearerAuth: []
+tags:
+  - name: products
+  - name: offers
+paths:
+  /products:
+    get:
+      operationId: listProducts
+      summary: List products (paginated, cursor-based)
+      tags: [products]
+      parameters:
+        - name: category
+          in: query
+          schema: { type: string }
+        - name: region
+          in: query
+          schema: { type: string, enum: [NA, LATAM, EU, APAC] }
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageToken'
+      responses:
+        '200':
+          description: Page of products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPage'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /products/{sku}:
+    get:
+      operationId: getProduct
+      summary: Get a product by SKU
+      tags: [products]
+      parameters:
+        - $ref: '#/components/parameters/Sku'
+      responses:
+        '200':
+          description: Product detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /products/{sku}/offers:
+    get:
+      operationId: listOffers
+      summary: List active offers (1P and 3P) for a SKU
+      tags: [offers]
+      parameters:
+        - $ref: '#/components/parameters/Sku'
+      responses:
+        '200':
+          description: Offers for the SKU
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Offer'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    Sku:
+      name: sku
+      in: path
+      required: true
+      schema: { type: string }
+    PageSize:
+      name: page_size
+      in: query
+      description: Max items per page (default 50, max 200).
+      schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+    PageToken:
+      name: page_token
+      in: query
+      description: Opaque cursor from the previous response's nextPageToken.
+      schema: { type: string }
+  responses:
+    NotFound:
+      description: Product or offer not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    TooManyRequests:
+      description: Rate limit exceeded at the gateway
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    ProductPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        nextPageToken:
+          type: string
+          description: Cursor for the next page; absent on the last page.
+    Product:
+      type: object
+      required: [sku, title, status]
+      properties:
+        sku: { type: string }
+        title: { type: string }
+        brand: { type: string }
+        category: { type: string }
+        status:
+          type: string
+          enum: [draft, published, discontinued]
+        attributes:
+          type: object
+          additionalProperties: { type: string }
+        updatedAt: { type: string, format: date-time }
+    Offer:
+      type: object
+      required: [offerId, sku, sellerType]
+      properties:
+        offerId: { type: string }
+        sku: { type: string }
+        sellerType:
+          type: string
+          enum: [first_party, third_party]
+        sellerId: { type: string }
+        condition:
+          type: string
+          enum: [new, refurbished, used]
+        availability:
+          type: string
+          enum: [in_stock, out_of_stock, preorder]
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, traceId]
+          properties:
+            code: { type: string, example: catalog.product_not_found }
+            message: { type: string }
+            traceId: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field: { type: string }
+                  issue: { type: string }

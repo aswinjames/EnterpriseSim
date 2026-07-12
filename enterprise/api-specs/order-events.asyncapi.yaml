@@ -1,0 +1,104 @@
+asyncapi: 2.6.0
+info:
+  title: Order Events
+  version: 1.0.0
+  description: >
+    Kafka event contract published by Order Management (APP-009), owned by TEAM-006.
+    Emits order lifecycle events consumed by Loyalty (APP-015), Notifications (APP-023),
+    the Data Platform (APP-020) and the Customer Portal (APP-021). Schemas are registered
+    in the schema registry and evolve backward-compatibly (CANON 4.8, principle 2).
+defaultContentType: application/json
+servers:
+  production:
+    url: kafka.meridian.internal:9093
+    protocol: kafka-secure
+    description: Production Kafka backbone (mTLS, SASL).
+channels:
+  mcg.orders.placed:
+    description: Emitted when an order is created from a placed checkout.
+    subscribe:
+      operationId: onOrderPlaced
+      message:
+        $ref: '#/components/messages/OrderPlaced'
+  mcg.orders.shipped:
+    description: Emitted when all shipments for an order have left a fulfillment center.
+    subscribe:
+      operationId: onOrderShipped
+      message:
+        $ref: '#/components/messages/OrderShipped'
+  mcg.orders.cancelled:
+    description: Emitted when an order is cancelled before shipment.
+    subscribe:
+      operationId: onOrderCancelled
+      message:
+        $ref: '#/components/messages/OrderCancelled'
+components:
+  messages:
+    OrderPlaced:
+      name: OrderPlaced
+      title: Order Placed
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/OrderPlacedPayload'
+    OrderShipped:
+      name: OrderShipped
+      title: Order Shipped
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/OrderShippedPayload'
+    OrderCancelled:
+      name: OrderCancelled
+      title: Order Cancelled
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/OrderCancelledPayload'
+  schemas:
+    EventEnvelope:
+      type: object
+      required: [eventId, eventType, occurredAt, source]
+      properties:
+        eventId: { type: string, format: uuid }
+        eventType: { type: string }
+        occurredAt: { type: string, format: date-time }
+        source: { type: string, example: APP-009 }
+        traceId: { type: string }
+    OrderPlacedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [orderId, customerId, total, lines]
+          properties:
+            orderId: { type: string }
+            customerId: { type: string }
+            region: { type: string, enum: [NA, LATAM, EU, APAC] }
+            total: { type: number }
+            currency: { type: string }
+            lines:
+              type: array
+              items:
+                type: object
+                properties:
+                  sku: { type: string }
+                  quantity: { type: integer }
+                  unitPrice: { type: number }
+    OrderShippedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [orderId, shipmentId]
+          properties:
+            orderId: { type: string }
+            shipmentId: { type: string }
+            carrier: { type: string }
+            trackingNumber: { type: string }
+            fulfillmentCenter: { type: string }
+    OrderCancelledPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [orderId, reason]
+          properties:
+            orderId: { type: string }
+            reason:
+              type: string
+              enum: [customer_request, payment_failed, fraud, out_of_stock]

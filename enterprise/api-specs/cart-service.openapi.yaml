@@ -1,0 +1,226 @@
+openapi: 3.1.0
+info:
+  title: Cart Service API
+  version: 1.0.0
+  description: >
+    Shopping cart state and pricing preview for MCG storefronts. Owned by TEAM-004
+    (Cart & Checkout), backing APP-004. Resolves line pricing via Pricing Service
+    (APP-007) and cart-level offers via Promotions Engine (APP-008). Ingress via the
+    API Gateway (APP-024) with per-client rate limits.
+  contact:
+    name: Cart & Checkout Squad
+    email: team-checkout@meridian.example
+servers:
+  - url: https://api.meridian.com/cart/v1
+    description: Production (via API Gateway APP-024)
+security:
+  - bearerAuth: []
+tags:
+  - name: carts
+    description: Cart lifecycle and line-item management
+paths:
+  /carts:
+    post:
+      operationId: createCart
+      summary: Create a cart
+      tags: [carts]
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCartRequest'
+      responses:
+        '201':
+          description: Cart created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /carts/{cartId}:
+    get:
+      operationId: getCart
+      summary: Get a cart with pricing preview
+      tags: [carts]
+      parameters:
+        - $ref: '#/components/parameters/CartId'
+      responses:
+        '200':
+          description: Cart with resolved pricing and applied offers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /carts/{cartId}/items:
+    post:
+      operationId: addCartItem
+      summary: Add a line item to the cart
+      tags: [carts]
+      parameters:
+        - $ref: '#/components/parameters/CartId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartItemInput'
+      responses:
+        '200':
+          description: Item added; cart re-priced
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /carts/{cartId}/items/{sku}:
+    delete:
+      operationId: removeCartItem
+      summary: Remove a line item
+      tags: [carts]
+      parameters:
+        - $ref: '#/components/parameters/CartId'
+        - name: sku
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Item removed
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    CartId:
+      name: cartId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Client-generated UUID; replays return the original result.
+      schema:
+        type: string
+        format: uuid
+  responses:
+    BadRequest:
+      description: Malformed request
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Cart or item not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Conflict:
+      description: Version or idempotency conflict
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    TooManyRequests:
+      description: Rate limit exceeded at the gateway
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    CreateCartRequest:
+      type: object
+      required: [region]
+      properties:
+        customerId:
+          type: string
+        region:
+          type: string
+          enum: [NA, LATAM, EU, APAC]
+        currency:
+          type: string
+          example: USD
+    CartItemInput:
+      type: object
+      required: [sku, quantity]
+      properties:
+        sku:
+          type: string
+        quantity:
+          type: integer
+          minimum: 1
+    Cart:
+      type: object
+      required: [cartId, items, totals]
+      properties:
+        cartId:
+          type: string
+          format: uuid
+        customerId:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartLine'
+        appliedOffers:
+          type: array
+          items:
+            type: string
+        totals:
+          $ref: '#/components/schemas/Totals'
+        version:
+          type: integer
+          description: Optimistic-concurrency version.
+    CartLine:
+      type: object
+      properties:
+        sku:
+          type: string
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+        lineTotal:
+          type: number
+    Totals:
+      type: object
+      properties:
+        subtotal: { type: number }
+        discount: { type: number }
+        estimatedTax: { type: number }
+        grandTotal: { type: number }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, traceId]
+          properties:
+            code: { type: string, example: cart.item_unavailable }
+            message: { type: string }
+            traceId: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field: { type: string }
+                  issue: { type: string }

@@ -1,0 +1,163 @@
+openapi: 3.1.0
+info:
+  title: Wallet & Gift Cards API
+  version: 1.0.0
+  description: >
+    Stored value, gift cards and refund credit for MCG. Owned by TEAM-010 (Wallet & Gift
+    Cards), backing APP-013. Manages wallet balances, gift-card issuance/redemption and
+    ledger entries. Settles payments through Payments (APP-012) and identifies customers
+    via Identity (APP-014). Ingress via API Gateway (APP-024).
+  contact:
+    name: Wallet & Gift Cards Squad
+    email: team-wallet@meridian.example
+servers:
+  - url: https://api.meridian.com/wallet/v1
+    description: Production (via API Gateway APP-024)
+security:
+  - bearerAuth: []
+tags:
+  - name: wallets
+  - name: gift-cards
+paths:
+  /wallets/{customerId}:
+    get:
+      operationId: getWallet
+      summary: Get a customer's wallet balance
+      tags: [wallets]
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+      responses:
+        '200':
+          description: Wallet balance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /wallets/{customerId}/transactions:
+    post:
+      operationId: createWalletTransaction
+      summary: Credit or debit a wallet
+      tags: [wallets]
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalletTxnRequest'
+      responses:
+        '201':
+          description: Transaction posted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletTransaction'
+        '409':
+          description: Insufficient balance for debit
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /gift-cards:redeem:
+    post:
+      operationId: redeemGiftCard
+      summary: Redeem a gift card into a customer's wallet
+      tags: [gift-cards]
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [customerId, cardCode]
+              properties:
+                customerId: { type: string }
+                cardCode: { type: string }
+      responses:
+        '200':
+          description: Gift card redeemed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+        '422':
+          description: Gift card invalid or already redeemed
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    CustomerId:
+      name: customerId
+      in: path
+      required: true
+      schema: { type: string }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+  responses:
+    NotFound:
+      description: Wallet not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    Wallet:
+      type: object
+      required: [customerId, balance, currency]
+      properties:
+        customerId: { type: string }
+        balance: { type: number }
+        currency: { type: string, example: USD }
+        updatedAt: { type: string, format: date-time }
+    WalletTxnRequest:
+      type: object
+      required: [type, amount]
+      properties:
+        type:
+          type: string
+          enum: [credit, debit]
+        amount: { type: number, minimum: 0 }
+        reason:
+          type: string
+          enum: [refund, purchase, gift_card, adjustment]
+        orderRef: { type: string }
+    WalletTransaction:
+      type: object
+      required: [transactionId, type, amount, balanceAfter]
+      properties:
+        transactionId: { type: string }
+        type: { type: string, enum: [credit, debit] }
+        amount: { type: number }
+        balanceAfter: { type: number }
+        postedAt: { type: string, format: date-time }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, traceId]
+          properties:
+            code: { type: string, example: wallet.insufficient_balance }
+            message: { type: string }
+            traceId: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field: { type: string }
+                  issue: { type: string }

@@ -1,0 +1,196 @@
+openapi: 3.1.0
+info:
+  title: API Gateway Admin API
+  version: 1.0.0
+  description: >
+    Control-plane API for the MCG edge / API Gateway. Owned by TEAM-030 (Core Platform),
+    backing APP-024. Manages route registration, rate-limit policies and API keys for the
+    services fronted by the gateway. The gateway itself enforces authN, rate limiting and
+    standard telemetry on all data-plane traffic (CANON 4.8). This admin API is internal
+    and restricted to platform operators.
+  contact:
+    name: Core Platform Squad
+    email: team-platform@meridian.example
+servers:
+  - url: https://gateway-admin.meridian.internal/v1
+    description: Production control plane (internal only)
+security:
+  - bearerAuth: []
+tags:
+  - name: routes
+  - name: rate-limits
+  - name: api-keys
+paths:
+  /routes:
+    get:
+      operationId: listRoutes
+      summary: List registered upstream routes (paginated)
+      tags: [routes]
+      parameters:
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageToken'
+      responses:
+        '200':
+          description: Page of routes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoutePage'
+    post:
+      operationId: createRoute
+      summary: Register an upstream route
+      tags: [routes]
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RouteInput'
+      responses:
+        '201':
+          description: Route registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Route'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /rate-limits:
+    put:
+      operationId: upsertRateLimit
+      summary: Create or update a rate-limit policy for a route
+      tags: [rate-limits]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RateLimitPolicy'
+      responses:
+        '200':
+          description: Policy applied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitPolicy'
+  /api-keys:
+    post:
+      operationId: createApiKey
+      summary: Issue an API key for a client application
+      tags: [api-keys]
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [clientName]
+              properties:
+                clientName: { type: string }
+                scopes:
+                  type: array
+                  items: { type: string }
+      responses:
+        '201':
+          description: API key issued (secret returned once)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKey'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+    PageSize:
+      name: page_size
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+    PageToken:
+      name: page_token
+      in: query
+      schema: { type: string }
+  responses:
+    Conflict:
+      description: Route already exists
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    RouteInput:
+      type: object
+      required: [path, upstreamApp, methods]
+      properties:
+        path: { type: string, example: /checkout/v1 }
+        upstreamApp: { type: string, example: APP-003 }
+        methods:
+          type: array
+          items: { type: string, enum: [GET, POST, PUT, DELETE, PATCH] }
+        authRequired: { type: boolean, default: true }
+    Route:
+      allOf:
+        - $ref: '#/components/schemas/RouteInput'
+        - type: object
+          properties:
+            routeId: { type: string }
+            createdAt: { type: string, format: date-time }
+    RoutePage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Route'
+        nextPageToken: { type: string }
+    RateLimitPolicy:
+      type: object
+      required: [routeId, requestsPerMinute]
+      properties:
+        routeId: { type: string }
+        requestsPerMinute: { type: integer, minimum: 1 }
+        burst: { type: integer, minimum: 0 }
+        scope:
+          type: string
+          enum: [per_api_key, per_ip, global]
+    ApiKey:
+      type: object
+      required: [keyId, clientName]
+      properties:
+        keyId: { type: string }
+        clientName: { type: string }
+        secret:
+          type: string
+          description: Returned only on creation; never retrievable again.
+        scopes:
+          type: array
+          items: { type: string }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, traceId]
+          properties:
+            code: { type: string, example: gateway.route_conflict }
+            message: { type: string }
+            traceId: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field: { type: string }
+                  issue: { type: string }

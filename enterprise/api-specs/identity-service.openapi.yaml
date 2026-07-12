@@ -1,0 +1,177 @@
+openapi: 3.1.0
+info:
+  title: Identity & Customer Profile API
+  version: 1.0.0
+  description: >
+    Authentication, authorization and customer identity for MCG. Owned by TEAM-014
+    (Identity & Customer Profile), backing APP-014. Implements OAuth2/OIDC token issuance
+    and customer profile CRUD. Profile data is PII-classified and access-controlled.
+    Ingress via API Gateway (APP-024).
+  contact:
+    name: Identity & Customer Profile Squad
+    email: team-identity@meridian.example
+servers:
+  - url: https://api.meridian.com/identity/v1
+    description: Production (via API Gateway APP-024)
+tags:
+  - name: auth
+  - name: customers
+paths:
+  /oauth/token:
+    post:
+      operationId: issueToken
+      summary: Issue an OAuth2 access token
+      description: Supports authorization_code, refresh_token and client_credentials grants.
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+      responses:
+        '200':
+          description: Token issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /customers:
+    post:
+      operationId: registerCustomer
+      summary: Register a new customer
+      tags: [customers]
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterCustomerRequest'
+      responses:
+        '201':
+          description: Customer created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '409':
+          description: Email already registered
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /customers/{customerId}:
+    get:
+      operationId: getCustomer
+      summary: Get a customer profile (PII)
+      tags: [customers]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Customer profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+  responses:
+    BadRequest:
+      description: Invalid grant or request
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unauthorized:
+      description: Invalid credentials
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Customer not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    TokenRequest:
+      type: object
+      required: [grant_type]
+      properties:
+        grant_type:
+          type: string
+          enum: [authorization_code, refresh_token, client_credentials]
+        code: { type: string }
+        refresh_token: { type: string }
+        client_id: { type: string }
+        client_secret: { type: string }
+    TokenResponse:
+      type: object
+      required: [access_token, token_type, expires_in]
+      properties:
+        access_token: { type: string }
+        token_type: { type: string, example: Bearer }
+        expires_in: { type: integer }
+        refresh_token: { type: string }
+        scope: { type: string }
+    RegisterCustomerRequest:
+      type: object
+      required: [email, region]
+      properties:
+        email: { type: string, format: email }
+        displayName: { type: string }
+        region: { type: string, enum: [NA, LATAM, EU, APAC] }
+        marketingConsent: { type: boolean, default: false }
+    Customer:
+      type: object
+      required: [customerId, email, status]
+      properties:
+        customerId: { type: string }
+        email: { type: string, format: email }
+        displayName: { type: string }
+        status:
+          type: string
+          enum: [active, locked, closed]
+        region: { type: string, enum: [NA, LATAM, EU, APAC] }
+        createdAt: { type: string, format: date-time }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, traceId]
+          properties:
+            code: { type: string, example: identity.email_taken }
+            message: { type: string }
+            traceId: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field: { type: string }
+                  issue: { type: string }

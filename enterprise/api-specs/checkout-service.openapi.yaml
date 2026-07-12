@@ -1,0 +1,255 @@
+openapi: 3.1.0
+info:
+  title: Checkout Service API
+  version: 1.0.0
+  description: >
+    Orchestrates the checkout flow for meridian.com and Meridian Mobile: creates a
+    checkout session from a cart, resolves pricing/promotions, authorizes payment and
+    places the order. Owned by TEAM-004 (Cart & Checkout), backing APP-003. All traffic
+    ingresses through the API Gateway (APP-024) which enforces authN and rate limits.
+  contact:
+    name: Cart & Checkout Squad
+    email: team-checkout@meridian.example
+servers:
+  - url: https://api.meridian.com/checkout/v1
+    description: Production (via API Gateway APP-024)
+  - url: https://api.staging.meridian.com/checkout/v1
+    description: Staging
+security:
+  - bearerAuth: []
+tags:
+  - name: checkouts
+    description: Checkout session lifecycle
+paths:
+  /checkouts:
+    post:
+      operationId: createCheckout
+      summary: Create a checkout session from a cart
+      tags: [checkouts]
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCheckoutRequest'
+      responses:
+        '201':
+          description: Checkout session created
+          headers:
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimitRemaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Checkout'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /checkouts/{checkoutId}:
+    get:
+      operationId: getCheckout
+      summary: Retrieve a checkout session
+      tags: [checkouts]
+      parameters:
+        - $ref: '#/components/parameters/CheckoutId'
+      responses:
+        '200':
+          description: Checkout session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Checkout'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /checkouts/{checkoutId}/place:
+    post:
+      operationId: placeOrder
+      summary: Place the order for a checkout session
+      description: >
+        Authorizes payment via Payments Service (APP-012), decrements ATP via Inventory
+        Service (APP-010) and hands off to Order Management (APP-009). Idempotent on the
+        Idempotency-Key header so retries never double-charge or double-place.
+      tags: [checkouts]
+      parameters:
+        - $ref: '#/components/parameters/CheckoutId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceOrderRequest'
+      responses:
+        '200':
+          description: Order placed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaceOrderResult'
+        '402':
+          description: Payment authorization declined
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          description: Checkout not placeable (empty cart, stale pricing, out of stock)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    CheckoutId:
+      name: checkoutId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Client-generated UUID; replays return the original result.
+      schema:
+        type: string
+        format: uuid
+  headers:
+    RateLimitRemaining:
+      description: Requests remaining in the current gateway rate-limit window.
+      schema:
+        type: integer
+  responses:
+    BadRequest:
+      description: Malformed request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Idempotency conflict or state conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    TooManyRequests:
+      description: Rate limit exceeded at the gateway
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    CreateCheckoutRequest:
+      type: object
+      required: [cartId, customerId, region]
+      properties:
+        cartId:
+          type: string
+          format: uuid
+        customerId:
+          type: string
+        region:
+          type: string
+          enum: [NA, LATAM, EU, APAC]
+        currency:
+          type: string
+          example: USD
+    Checkout:
+      type: object
+      required: [checkoutId, status, cartId, totals]
+      properties:
+        checkoutId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [open, placing, placed, expired, cancelled]
+        cartId:
+          type: string
+          format: uuid
+        customerId:
+          type: string
+        totals:
+          $ref: '#/components/schemas/Totals'
+        createdAt:
+          type: string
+          format: date-time
+    Totals:
+      type: object
+      properties:
+        subtotal:
+          type: number
+        discount:
+          type: number
+        tax:
+          type: number
+        shipping:
+          type: number
+        grandTotal:
+          type: number
+    PlaceOrderRequest:
+      type: object
+      required: [paymentMethodId, shippingAddressId]
+      properties:
+        paymentMethodId:
+          type: string
+        shippingAddressId:
+          type: string
+        acceptedTermsVersion:
+          type: string
+    PlaceOrderResult:
+      type: object
+      required: [orderId, paymentStatus]
+      properties:
+        orderId:
+          type: string
+          description: Canonical order id assigned by Order Management (APP-009).
+        paymentStatus:
+          type: string
+          enum: [authorized, captured, declined]
+        estimatedDelivery:
+          type: string
+          format: date
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, traceId]
+          properties:
+            code:
+              type: string
+              example: checkout.not_placeable
+            message:
+              type: string
+            traceId:
+              type: string
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  issue:
+                    type: string

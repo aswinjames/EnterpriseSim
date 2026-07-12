@@ -1,0 +1,179 @@
+openapi: 3.1.0
+info:
+  title: Customer Portal (My Meridian) API
+  version: 1.0.0
+  description: >
+    Self-service account, orders and returns for registered customers (My Meridian).
+    Owned by TEAM-001 (Storefront Experience), backing APP-021. Reads orders from OMS
+    (APP-009), identity/profile from Identity (APP-014) and loyalty from Loyalty
+    (APP-015). Ingress via API Gateway (APP-024).
+  contact:
+    name: Storefront Experience Squad
+    email: team-storefront@meridian.example
+servers:
+  - url: https://api.meridian.com/portal/v1
+    description: Production (via API Gateway APP-024)
+security:
+  - bearerAuth: []
+tags:
+  - name: profile
+  - name: orders
+  - name: returns
+paths:
+  /profile:
+    get:
+      operationId: getProfile
+      summary: Get the authenticated customer's profile
+      tags: [profile]
+      responses:
+        '200':
+          description: Customer profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /orders:
+    get:
+      operationId: listMyOrders
+      summary: List the authenticated customer's orders (paginated)
+      tags: [orders]
+      parameters:
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageToken'
+      responses:
+        '200':
+          description: Page of orders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSummaryPage'
+  /orders/{orderId}/returns:
+    post:
+      operationId: createReturn
+      summary: Start a return for an order
+      tags: [returns]
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema: { type: string }
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReturnRequest'
+      responses:
+        '201':
+          description: Return created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Return'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: Items not eligible for return
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+    PageSize:
+      name: page_size
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 50, default: 20 }
+    PageToken:
+      name: page_token
+      in: query
+      schema: { type: string }
+  responses:
+    Unauthorized:
+      description: Missing or invalid credentials
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Order not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    Profile:
+      type: object
+      required: [customerId, email]
+      properties:
+        customerId: { type: string }
+        email: { type: string, format: email }
+        displayName: { type: string }
+        loyaltyTier: { type: string }
+        defaultRegion: { type: string, enum: [NA, LATAM, EU, APAC] }
+    OrderSummaryPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              orderId: { type: string }
+              status: { type: string }
+              total: { type: number }
+              placedAt: { type: string, format: date-time }
+        nextPageToken: { type: string }
+    ReturnRequest:
+      type: object
+      required: [lines, reason]
+      properties:
+        reason:
+          type: string
+          enum: [damaged, wrong_item, no_longer_needed, other]
+        lines:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            properties:
+              sku: { type: string }
+              quantity: { type: integer, minimum: 1 }
+    Return:
+      type: object
+      required: [returnId, status]
+      properties:
+        returnId: { type: string }
+        status:
+          type: string
+          enum: [requested, approved, received, refunded, rejected]
+        refundEstimate: { type: number }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, traceId]
+          properties:
+            code: { type: string, example: portal.return_not_eligible }
+            message: { type: string }
+            traceId: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field: { type: string }
+                  issue: { type: string }

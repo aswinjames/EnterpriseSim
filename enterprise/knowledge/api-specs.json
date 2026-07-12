@@ -1,0 +1,227 @@
+[
+  {
+    "id": "KN-250", "schema_version": "2020-12.v1", "created_at": "2026-02-03T09:00:00Z",
+    "title": "Checkout Service API v1",
+    "body": "OpenAPI 3.1 contract for the Checkout Service (APP-003): create a checkout session from a cart, retrieve it, and place the order. Place is idempotent on the Idempotency-Key header and orchestrates payment authorization, inventory reservation and handoff to Order Management.",
+    "owner_team": "TEAM-004", "app": "APP-003", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "openapi", "path": "enterprise/api-specs/checkout-service.openapi.yaml" }
+  },
+  {
+    "id": "KN-251", "schema_version": "2020-12.v1", "created_at": "2026-02-05T09:00:00Z",
+    "title": "Cart Service API v1",
+    "body": "OpenAPI 3.1 contract for the Cart Service (APP-004): create carts, add and remove line items, and read a cart with resolved pricing and applied offers. Uses optimistic-concurrency versioning and idempotency keys on mutating operations.",
+    "owner_team": "TEAM-004", "app": "APP-004", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "openapi", "path": "enterprise/api-specs/cart-service.openapi.yaml" }
+  },
+  {
+    "id": "KN-252", "schema_version": "2020-12.v1", "created_at": "2026-02-06T09:00:00Z",
+    "title": "Product Catalog Service API v1",
+    "body": "OpenAPI 3.1 contract for the Product Catalog Service (APP-005): cursor-paginated product listing, product-by-SKU lookup, and active 1P/3P offer listing. Read-optimized surface for Storefront, Search and Cart.",
+    "owner_team": "TEAM-005", "app": "APP-005", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "openapi", "path": "enterprise/api-specs/catalog-service.openapi.yaml" }
+  },
+  {
+    "id": "KN-253", "schema_version": "2020-12.v1", "created_at": "2026-02-10T09:00:00Z",
+    "title": "Search & Browse Service API v1",
+    "body": "OpenAPI 3.1 contract for Search & Browse (APP-006): POST-based product search with filters, sort and facets, plus a recommendations endpoint by customer/SKU/placement. Cursor pagination and gateway rate limits apply.",
+    "owner_team": "TEAM-003", "app": "APP-006", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "openapi", "path": "enterprise/api-specs/search-service.openapi.yaml" }
+  },
+  {
+    "id": "KN-254", "schema_version": "2020-12.v1", "created_at": "2026-02-12T09:00:00Z",
+    "title": "Pricing Service API v1",
+    "body": "OpenAPI 3.1 contract for the Pricing Service (APP-007): batch resolution of effective prices for SKUs in a region/currency, plus price-list listing and retrieval. Consumed by Cart and Checkout for pricing preview and placement.",
+    "owner_team": "TEAM-007", "app": "APP-007", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "openapi", "path": "enterprise/api-specs/pricing-service.openapi.yaml" }
+  },
+  {
+    "id": "KN-255", "schema_version": "2020-12.v1", "created_at": "2026-02-14T09:00:00Z",
+    "title": "Promotions Engine API v1",
+    "body": "OpenAPI 3.1 contract for the Promotions Engine (APP-008): evaluate applicable promotions for a cart and validate coupon codes against a cart context. Returns applied promotions and resulting discounts with typed error envelopes.",
+    "owner_team": "TEAM-008", "app": "APP-008", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "openapi", "path": "enterprise/api-specs/promotions-engine.openapi.yaml" }
+  },
+  {
+    "id": "KN-256", "schema_version": "2020-12.v1", "created_at": "2026-02-17T09:00:00Z",
+    "title": "Order Management (OMS) API v1",
+    "body": "OpenAPI 3.1 contract for Order Management (APP-009): list and retrieve orders, create orders from placed checkouts (idempotent, internal), and cancel orders prior to shipment. Backing the order lifecycle across fulfillment.",
+    "owner_team": "TEAM-006", "app": "APP-009", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "openapi", "path": "enterprise/api-specs/order-management.openapi.yaml" }
+  },
+  {
+    "id": "KN-257", "schema_version": "2020-12.v1", "created_at": "2026-02-19T09:00:00Z",
+    "title": "Inventory Service API v1",
+    "body": "OpenAPI 3.1 contract for the Inventory Service (APP-010): available-to-promise (ATP) queries for SKUs in a region and short-TTL soft reservations for checkout, with idempotent creation and explicit release.",
+    "owner_team": "TEAM-012", "app": "APP-010", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "openapi", "path": "enterprise/api-specs/inventory-service.openapi.yaml" }
+  },
+  {
+    "id": "KN-258", "schema_version": "2020-12.v1", "created_at": "2026-02-24T09:00:00Z",
+    "title": "Payments Service API v1",
+    "body": "OpenAPI 3.1 contract for the Payments Service (APP-012), PCI scope: authorize (with 3-D Secure challenge support), capture and refund payments against tokenized methods. Idempotent and mTLS-fronted; no raw PAN traverses the contract.",
+    "owner_team": "TEAM-009", "app": "APP-012", "sensitivity": "pci",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8", "CANON-001#4.6"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "openapi", "path": "enterprise/api-specs/payments-service.openapi.yaml" }
+  },
+  {
+    "id": "KN-259", "schema_version": "2020-12.v1", "created_at": "2026-02-26T09:00:00Z",
+    "title": "Storefront BFF API v1",
+    "body": "OpenAPI 3.1 contract for the Storefront BFF (APP-001): page-shaped aggregation endpoints (home, product detail) that compose catalog, pricing and availability data for the meridian.com web experience.",
+    "owner_team": "TEAM-001", "app": "APP-001", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "openapi", "path": "enterprise/api-specs/storefront-bff.openapi.yaml" }
+  },
+  {
+    "id": "KN-260", "schema_version": "2020-12.v1", "created_at": "2026-03-02T09:00:00Z",
+    "title": "Customer Portal (My Meridian) API v1",
+    "body": "OpenAPI 3.1 contract for the Customer Portal (APP-021): authenticated profile retrieval, paginated order history, and return initiation. Self-service surface backing the My Meridian product.",
+    "owner_team": "TEAM-001", "app": "APP-021", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "openapi", "path": "enterprise/api-specs/customer-portal.openapi.yaml" }
+  },
+  {
+    "id": "KN-261", "schema_version": "2020-12.v1", "created_at": "2026-03-04T09:00:00Z",
+    "title": "API Gateway Admin API v1",
+    "body": "OpenAPI 3.1 control-plane contract for the API Gateway / Edge (APP-024): register upstream routes, set rate-limit policies, and issue client API keys. Internal, platform-operator-only surface complementing gateway-enforced authN and rate limiting.",
+    "owner_team": "TEAM-030", "app": "APP-024", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "openapi", "path": "enterprise/api-specs/api-gateway.openapi.yaml" }
+  },
+  {
+    "id": "KN-262", "schema_version": "2020-12.v1", "created_at": "2026-03-06T09:00:00Z",
+    "title": "Identity & Customer Profile API v1",
+    "body": "OpenAPI 3.1 contract for the Identity & Customer Profile Service (APP-014): OAuth2/OIDC token issuance and customer registration/retrieval. Profile data is PII and access-controlled; tokens are JWT bearer credentials.",
+    "owner_team": "TEAM-014", "app": "APP-014", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8", "CANON-001#4.6"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "openapi", "path": "enterprise/api-specs/identity-service.openapi.yaml" }
+  },
+  {
+    "id": "KN-263", "schema_version": "2020-12.v1", "created_at": "2026-03-10T09:00:00Z",
+    "title": "Wallet & Gift Cards API v1",
+    "body": "OpenAPI 3.1 contract for the Wallet & Gift Cards Service (APP-013): read wallet balances, post idempotent credit/debit transactions, and redeem gift cards into a customer's wallet.",
+    "owner_team": "TEAM-010", "app": "APP-013", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "openapi", "path": "enterprise/api-specs/wallet-service.openapi.yaml" }
+  },
+  {
+    "id": "KN-264", "schema_version": "2020-12.v1", "created_at": "2026-03-12T09:00:00Z",
+    "title": "Loyalty (Meridian Rewards) API v1",
+    "body": "OpenAPI 3.1 contract for the Loyalty Service (APP-015): member status retrieval, paginated points ledger, and idempotent points redemption. Backs the Meridian Rewards program.",
+    "owner_team": "TEAM-011", "app": "APP-015", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "openapi", "path": "enterprise/api-specs/loyalty-service.openapi.yaml" }
+  },
+  {
+    "id": "KN-265", "schema_version": "2020-12.v1", "created_at": "2026-03-16T09:00:00Z",
+    "title": "Order Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by Order Management (APP-009): OrderPlaced, OrderShipped and OrderCancelled on the mcg.orders.* topics. Envelope carries eventId, eventType, occurredAt and source; schemas evolve backward-compatibly.",
+    "owner_team": "TEAM-006", "app": "APP-009", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "asyncapi", "path": "enterprise/api-specs/order-events.asyncapi.yaml" }
+  },
+  {
+    "id": "KN-266", "schema_version": "2020-12.v1", "created_at": "2026-03-18T09:00:00Z",
+    "title": "Payment Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by the Payments Service (APP-012), PCI scope: PaymentAuthorized, PaymentCaptured and PaymentRefunded on the mcg.payments.* PCI-segmented topics. Payloads carry only tokenized references; no PAN is published.",
+    "owner_team": "TEAM-009", "app": "APP-012", "sensitivity": "pci",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8", "CANON-001#4.6"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "asyncapi", "path": "enterprise/api-specs/payment-events.asyncapi.yaml" }
+  },
+  {
+    "id": "KN-267", "schema_version": "2020-12.v1", "created_at": "2026-03-20T09:00:00Z",
+    "title": "Inventory Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by the Inventory Service (APP-010): AtpChanged, StockReserved and ReservationReleased on the mcg.inventory.* topics. Consumed by Checkout, Search, Storefront and the Data Platform.",
+    "owner_team": "TEAM-012", "app": "APP-010", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "asyncapi", "path": "enterprise/api-specs/inventory-events.asyncapi.yaml" }
+  },
+  {
+    "id": "KN-268", "schema_version": "2020-12.v1", "created_at": "2026-03-24T09:00:00Z",
+    "title": "Catalog Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by the Product Catalog Service (APP-005): ProductPublished, ProductUpdated and OfferUpdated on the mcg.catalog.* topics. Consumed by Search, Storefront, Pricing and the Data Platform.",
+    "owner_team": "TEAM-005", "app": "APP-005", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "asyncapi", "path": "enterprise/api-specs/catalog-events.asyncapi.yaml" }
+  },
+  {
+    "id": "KN-269", "schema_version": "2020-12.v1", "created_at": "2026-03-26T09:00:00Z",
+    "title": "Pricing Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by the Pricing Service (APP-007): PriceChanged and PriceListActivated on the mcg.pricing.* topics. Consumed by Cart, Promotions, Storefront and the Data Platform.",
+    "owner_team": "TEAM-007", "app": "APP-007", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "asyncapi", "path": "enterprise/api-specs/pricing-events.asyncapi.yaml" }
+  },
+  {
+    "id": "KN-270", "schema_version": "2020-12.v1", "created_at": "2026-03-30T09:00:00Z",
+    "title": "Cart Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by the Cart Service (APP-004): CartUpdated and CartAbandoned on the mcg.cart.* topics. Consumed by Marketing Automation, Search and the Data Platform for behavioral signals.",
+    "owner_team": "TEAM-004", "app": "APP-004", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "asyncapi", "path": "enterprise/api-specs/cart-events.asyncapi.yaml" }
+  },
+  {
+    "id": "KN-271", "schema_version": "2020-12.v1", "created_at": "2026-04-01T09:00:00Z",
+    "title": "Customer Identity Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by the Identity & Customer Profile Service (APP-014): CustomerRegistered and ProfileUpdated on the mcg.customers.* PII-restricted topics. Only minimal identifiers are published.",
+    "owner_team": "TEAM-014", "app": "APP-014", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8", "CANON-001#4.6"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "asyncapi", "path": "enterprise/api-specs/customer-events.asyncapi.yaml" }
+  },
+  {
+    "id": "KN-272", "schema_version": "2020-12.v1", "created_at": "2026-04-03T09:00:00Z",
+    "title": "Loyalty Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by the Loyalty Service (APP-015): PointsEarned and TierChanged on the mcg.loyalty.* topics. Consumed by Notifications, Customer Portal, Marketing Automation and the Data Platform.",
+    "owner_team": "TEAM-011", "app": "APP-015", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "asyncapi", "path": "enterprise/api-specs/loyalty-events.asyncapi.yaml" }
+  },
+  {
+    "id": "KN-273", "schema_version": "2020-12.v1", "created_at": "2026-04-07T09:00:00Z",
+    "title": "Notification Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract for the Notifications Service (APP-023): consumes NotificationRequested commands and emits NotificationDelivered and NotificationFailed on the mcg.notifications.* topics. Contact details are resolved internally, not carried on the wire.",
+    "owner_team": "TEAM-019", "app": "APP-023", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "asyncapi", "path": "enterprise/api-specs/notification-events.asyncapi.yaml" }
+  },
+  {
+    "id": "KN-274", "schema_version": "2020-12.v1", "created_at": "2026-04-09T09:00:00Z",
+    "title": "Checkout Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by the Checkout Service (APP-003): CheckoutStarted, CheckoutCompleted and CheckoutAbandoned on the mcg.checkout.* topics. Consumed by Marketing Automation, Retail Media and the Data Platform for conversion analytics.",
+    "owner_team": "TEAM-004", "app": "APP-003", "sensitivity": "internal",
+    "authority": "owner-approved", "version": 1, "status": "published",
+    "canon_refs": ["CANON-001#4.8"],
+    "metadata": { "doc_type": "api_spec", "spec_type": "asyncapi", "path": "enterprise/api-specs/checkout-events.asyncapi.yaml" }
+  }
+]

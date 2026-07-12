@@ -1,0 +1,165 @@
+openapi: 3.1.0
+info:
+  title: Promotions Engine API
+  version: 1.0.0
+  description: >
+    Offers, coupons and cart-level discounts for MCG. Owned by TEAM-008 (Promotions &
+    Offers), backing APP-008. Evaluates applicable promotions for a cart and validates
+    coupon codes. Depends on Pricing (APP-007) and Loyalty (APP-015). Ingress via API
+    Gateway (APP-024).
+  contact:
+    name: Promotions & Offers Squad
+    email: team-promotions@meridian.example
+servers:
+  - url: https://api.meridian.com/promotions/v1
+    description: Production (via API Gateway APP-024)
+security:
+  - bearerAuth: []
+tags:
+  - name: promotions
+  - name: coupons
+paths:
+  /promotions:evaluate:
+    post:
+      operationId: evaluatePromotions
+      summary: Evaluate applicable promotions for a cart
+      tags: [promotions]
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EvaluateRequest'
+      responses:
+        '200':
+          description: Applicable promotions and resulting discounts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /coupons/{code}:validate:
+    post:
+      operationId: validateCoupon
+      summary: Validate a coupon code for a cart context
+      tags: [coupons]
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema: { type: string }
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EvaluateRequest'
+      responses:
+        '200':
+          description: Coupon valid; discount described
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CouponResult'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: Coupon not applicable (expired, min-spend, region)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema: { type: string, format: uuid }
+  responses:
+    BadRequest:
+      description: Malformed request
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Coupon code not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    TooManyRequests:
+      description: Rate limit exceeded at the gateway
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    EvaluateRequest:
+      type: object
+      required: [cartId, region, lines]
+      properties:
+        cartId: { type: string, format: uuid }
+        customerId: { type: string }
+        region: { type: string, enum: [NA, LATAM, EU, APAC] }
+        loyaltyTier: { type: string }
+        lines:
+          type: array
+          items:
+            type: object
+            properties:
+              sku: { type: string }
+              quantity: { type: integer }
+              unitPrice: { type: number }
+    EvaluateResponse:
+      type: object
+      required: [appliedPromotions, totalDiscount]
+      properties:
+        appliedPromotions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppliedPromotion'
+        totalDiscount: { type: number }
+    AppliedPromotion:
+      type: object
+      properties:
+        promotionId: { type: string }
+        name: { type: string }
+        type:
+          type: string
+          enum: [percent_off, amount_off, bogo, free_shipping]
+        discount: { type: number }
+    CouponResult:
+      type: object
+      required: [code, valid]
+      properties:
+        code: { type: string }
+        valid: { type: boolean }
+        promotion:
+          $ref: '#/components/schemas/AppliedPromotion'
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, traceId]
+          properties:
+            code: { type: string, example: promotions.coupon_expired }
+            message: { type: string }
+            traceId: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field: { type: string }
+                  issue: { type: string }

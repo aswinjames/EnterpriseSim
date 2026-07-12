@@ -1,0 +1,133 @@
+openapi: 3.1.0
+info:
+  title: Storefront BFF API
+  version: 1.0.0
+  description: >
+    Backend-for-frontend for the meridian.com consumer web experience. Owned by TEAM-001
+    (Storefront Experience), backing APP-001. Aggregates product, pricing, cart and
+    availability data into page-shaped responses for the Next.js web app; upstreams are
+    Catalog (APP-005), Search (APP-006), Cart (APP-004) and Pricing (APP-007). Ingress
+    via API Gateway (APP-024).
+  contact:
+    name: Storefront Experience Squad
+    email: team-storefront@meridian.example
+servers:
+  - url: https://api.meridian.com/storefront/v1
+    description: Production (via API Gateway APP-024)
+security:
+  - bearerAuth: []
+tags:
+  - name: pages
+paths:
+  /pages/home:
+    get:
+      operationId: getHomePage
+      summary: Get the aggregated home page payload
+      tags: [pages]
+      parameters:
+        - $ref: '#/components/parameters/Region'
+      responses:
+        '200':
+          description: Home page composition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomePage'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /pages/product/{sku}:
+    get:
+      operationId: getProductPage
+      summary: Get the aggregated product detail page
+      description: Composes catalog detail, resolved price and ATP into one PDP payload.
+      tags: [pages]
+      parameters:
+        - name: sku
+          in: path
+          required: true
+          schema: { type: string }
+        - $ref: '#/components/parameters/Region'
+      responses:
+        '200':
+          description: Product detail page composition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPage'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    Region:
+      name: region
+      in: query
+      required: true
+      schema: { type: string, enum: [NA, LATAM, EU, APAC] }
+  responses:
+    NotFound:
+      description: Product not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    TooManyRequests:
+      description: Rate limit exceeded at the gateway
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    HomePage:
+      type: object
+      properties:
+        region: { type: string }
+        heroBanners:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string }
+              imageUrl: { type: string, format: uri }
+              targetUrl: { type: string, format: uri }
+        recommendedSkus:
+          type: array
+          items: { type: string }
+    ProductPage:
+      type: object
+      required: [sku, title, price]
+      properties:
+        sku: { type: string }
+        title: { type: string }
+        brand: { type: string }
+        price: { type: number }
+        currency: { type: string }
+        availability:
+          type: string
+          enum: [in_stock, low_stock, out_of_stock]
+        images:
+          type: array
+          items: { type: string, format: uri }
+        relatedSkus:
+          type: array
+          items: { type: string }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, traceId]
+          properties:
+            code: { type: string, example: storefront.product_not_found }
+            message: { type: string }
+            traceId: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field: { type: string }
+                  issue: { type: string }

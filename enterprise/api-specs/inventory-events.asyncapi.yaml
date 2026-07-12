@@ -1,0 +1,103 @@
+asyncapi: 2.6.0
+info:
+  title: Inventory Events
+  version: 1.0.0
+  description: >
+    Kafka event contract published by the Inventory Service (APP-010), owned by TEAM-012.
+    Emits available-to-promise and reservation events consumed by Checkout (APP-003),
+    Search (APP-006), Storefront (APP-001) and the Data Platform (APP-020). Schemas evolve
+    backward-compatibly (CANON 4.8).
+defaultContentType: application/json
+servers:
+  production:
+    url: kafka.meridian.internal:9093
+    protocol: kafka-secure
+    description: Production Kafka backbone (mTLS, SASL).
+channels:
+  mcg.inventory.atp-changed:
+    description: Emitted when available-to-promise for a SKU/region changes.
+    subscribe:
+      operationId: onAtpChanged
+      message:
+        $ref: '#/components/messages/AtpChanged'
+  mcg.inventory.reserved:
+    description: Emitted when stock is soft-reserved for a checkout.
+    subscribe:
+      operationId: onStockReserved
+      message:
+        $ref: '#/components/messages/StockReserved'
+  mcg.inventory.reservation-released:
+    description: Emitted when a reservation is released or expires.
+    subscribe:
+      operationId: onReservationReleased
+      message:
+        $ref: '#/components/messages/ReservationReleased'
+components:
+  messages:
+    AtpChanged:
+      name: AtpChanged
+      title: ATP Changed
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AtpChangedPayload'
+    StockReserved:
+      name: StockReserved
+      title: Stock Reserved
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/StockReservedPayload'
+    ReservationReleased:
+      name: ReservationReleased
+      title: Reservation Released
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ReservationReleasedPayload'
+  schemas:
+    EventEnvelope:
+      type: object
+      required: [eventId, eventType, occurredAt, source]
+      properties:
+        eventId: { type: string, format: uuid }
+        eventType: { type: string }
+        occurredAt: { type: string, format: date-time }
+        source: { type: string, example: APP-010 }
+        traceId: { type: string }
+    AtpChangedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [sku, region, availableQuantity]
+          properties:
+            sku: { type: string }
+            region: { type: string, enum: [NA, LATAM, EU, APAC] }
+            availableQuantity: { type: integer }
+            availability:
+              type: string
+              enum: [in_stock, low_stock, out_of_stock]
+            fulfillmentCenter: { type: string }
+    StockReservedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [reservationId, checkoutId, lines]
+          properties:
+            reservationId: { type: string, format: uuid }
+            checkoutId: { type: string, format: uuid }
+            expiresAt: { type: string, format: date-time }
+            lines:
+              type: array
+              items:
+                type: object
+                properties:
+                  sku: { type: string }
+                  quantity: { type: integer }
+    ReservationReleasedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [reservationId, reason]
+          properties:
+            reservationId: { type: string, format: uuid }
+            reason:
+              type: string
+              enum: [expired, cancelled, committed]

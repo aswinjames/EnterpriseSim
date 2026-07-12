@@ -1,0 +1,198 @@
+openapi: 3.1.0
+info:
+  title: Payments Service API
+  version: 1.0.0
+  description: >
+    Payment authorization and capture for MCG (PCI-DSS scope). Owned by TEAM-009
+    (Payments), backing APP-012. Handles authorize/capture/refund with 3-D Secure
+    challenge support against external PSPs. Cardholder data is tokenized and isolated to
+    this service's boundary; no PAN traverses other services. Ingress via API Gateway
+    (APP-024) with mutual TLS.
+  contact:
+    name: Payments Squad
+    email: team-payments@meridian.example
+servers:
+  - url: https://api.meridian.com/payments/v1
+    description: Production (via API Gateway APP-024, mTLS, PCI scope)
+security:
+  - bearerAuth: []
+tags:
+  - name: payments
+  - name: refunds
+paths:
+  /payments/authorize:
+    post:
+      operationId: authorizePayment
+      summary: Authorize a payment (with optional 3DS)
+      description: >
+        Authorizes funds against a tokenized payment method. If the issuer requires
+        Strong Customer Authentication, returns 200 with status challenge_required and a
+        3DS challenge URL. Idempotent on Idempotency-Key so retries never double-authorize.
+      tags: [payments]
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorizeRequest'
+      responses:
+        '200':
+          description: Authorization result (approved, declined or 3DS challenge)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /payments/{paymentId}/capture:
+    post:
+      operationId: capturePayment
+      summary: Capture a previously authorized payment
+      tags: [payments]
+      parameters:
+        - $ref: '#/components/parameters/PaymentId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount: { type: number, description: Defaults to full authorized amount. }
+      responses:
+        '200':
+          description: Capture result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /payments/{paymentId}/refunds:
+    post:
+      operationId: refundPayment
+      summary: Refund a captured payment (full or partial)
+      tags: [refunds]
+      parameters:
+        - $ref: '#/components/parameters/PaymentId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefundRequest'
+      responses:
+        '201':
+          description: Refund accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refund'
+        '422':
+          description: Refund exceeds captured amount
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    PaymentId:
+      name: paymentId
+      in: path
+      required: true
+      schema: { type: string }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+  responses:
+    BadRequest:
+      description: Malformed request
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Conflict:
+      description: Idempotency or state conflict
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    TooManyRequests:
+      description: Rate limit exceeded at the gateway
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    AuthorizeRequest:
+      type: object
+      required: [orderRef, amount, currency, paymentMethodToken]
+      properties:
+        orderRef: { type: string }
+        amount: { type: number }
+        currency: { type: string, example: USD }
+        paymentMethodToken:
+          type: string
+          description: PSP-issued token; never a raw PAN.
+        threeDsReturnUrl: { type: string, format: uri }
+    Payment:
+      type: object
+      required: [paymentId, status, amount]
+      properties:
+        paymentId: { type: string }
+        status:
+          type: string
+          enum: [authorized, captured, declined, challenge_required, refunded]
+        amount: { type: number }
+        currency: { type: string }
+        threeDsChallengeUrl:
+          type: string
+          format: uri
+          description: Present only when status is challenge_required.
+        authCode: { type: string }
+    RefundRequest:
+      type: object
+      required: [amount, reason]
+      properties:
+        amount: { type: number }
+        reason:
+          type: string
+          enum: [customer_return, cancellation, goodwill, chargeback]
+    Refund:
+      type: object
+      required: [refundId, status, amount]
+      properties:
+        refundId: { type: string }
+        status:
+          type: string
+          enum: [pending, settled, failed]
+        amount: { type: number }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, traceId]
+          properties:
+            code: { type: string, example: payments.card_declined }
+            message: { type: string }
+            traceId: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field: { type: string }
+                  issue: { type: string }

@@ -1,0 +1,3131 @@
+[
+  {
+    "id": "KN-045",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-15T09:00:00Z",
+    "title": "Checkout domain rules",
+    "body": "Order placement invariants for APP-003 (Checkout Service): (1) a guest checkout MUST NOT create a Loyalty (APP-015) account; (2) payment authorization (APP-012) precedes inventory commitment (APP-010); (3) all order-placement calls carry an idempotency key (see KN-052).",
+    "owner_team": "TEAM-004",
+    "app": "APP-003",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 4,
+    "status": "published",
+    "freshness": {
+      "last_validated": "2026-06-30T12:00:00Z",
+      "sla_days": 180,
+      "index": 0.12
+    },
+    "relations": {
+      "depends_on": [
+        "KN-052",
+        "KN-063"
+      ],
+      "referenced_by_incidents": [
+        "INC-2026-007"
+      ]
+    },
+    "promoted_from_experience": "EXP-090"
+  },
+  {
+    "id": "KN-052",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-16T10:30:00Z",
+    "title": "Order-placement idempotency standard",
+    "body": "All order-placement calls into APP-003 (Checkout Service) and all payment authorization/capture calls into APP-012 (Payments Service) MUST carry a client-generated idempotency key in the 'Idempotency-Key' header (UUIDv4). The receiving service persists the key with the request fingerprint and the first computed result for at least 24 hours. A retry presenting a previously seen key MUST return the original stored result verbatim and MUST NOT re-execute the side effect (no duplicate order, no duplicate charge). A key replayed with a different request body returns HTTP 422. Keys are scoped per endpoint and per customer/cart. This is the enterprise idempotency contract referenced by KN-045.",
+    "owner_team": "TEAM-004",
+    "app": "APP-003",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 2,
+    "status": "published",
+    "freshness": {
+      "last_validated": "2026-06-30T12:00:00Z",
+      "sla_days": 180,
+      "index": 0.2
+    },
+    "relations": {
+      "depends_on": [
+        "KN-108"
+      ],
+      "referenced_by": [
+        "KN-045"
+      ]
+    }
+  },
+  {
+    "id": "KN-063",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-20T14:00:00Z",
+    "title": "Promotion cache invalidation rule",
+    "body": "Any pricing or promotion change taking effect during an active promotion window MUST invalidate and refresh the APP-008 (Promotions Engine) promotions cache using write-through semantics: the authoritative store is updated first, then the Redis cache entry is rewritten (not merely evicted) within the same transaction boundary before the change is acknowledged. Cache keys are versioned by promotion id and effective-window; consumers (APP-004 Cart, APP-003 Checkout) must read the current version. A stale promotions cache causes incorrect cart totals and mispriced orders, as seen in INC-2026-007. TTL-only expiry is NOT acceptable for in-window changes.",
+    "owner_team": "TEAM-008",
+    "app": "APP-008",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 3,
+    "status": "published",
+    "freshness": {
+      "last_validated": "2026-06-30T12:00:00Z",
+      "sla_days": 90,
+      "index": 0.35
+    },
+    "relations": {
+      "depends_on": [
+        "KN-119"
+      ],
+      "referenced_by_incidents": [
+        "INC-2026-007"
+      ]
+    }
+  },
+  {
+    "id": "KN-100",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-20T09:00:00Z",
+    "title": "Monetary rounding and currency precision",
+    "body": "APP-007 (Pricing Service) MUST represent all monetary amounts as integer minor units (cents, pence, centavos) in the currency's ISO 4217 minor-unit scale; floating-point money is prohibited end to end. Line-item prices are stored at full precision and rounded only at display and at order-total computation using banker's rounding (round-half-to-even) to the currency scale. The sum of rounded line items MUST equal the rounded order total via largest-remainder allocation so residual cents are distributed deterministically. Currencies with zero minor units (none in MCG's active set) are handled by scale=0. All amounts carry an explicit ISO 4217 currency code; mixing currencies in a single cart or order is rejected.",
+    "owner_team": "TEAM-007",
+    "app": "APP-007",
+    "canon_refs": [
+      "CANON-001#1.4"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 2,
+    "status": "published",
+    "relations": {
+      "referenced_by": [
+        "KN-101",
+        "KN-102"
+      ]
+    }
+  },
+  {
+    "id": "KN-101",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-21T09:00:00Z",
+    "title": "Regional price resolution and currency binding",
+    "body": "APP-007 (Pricing Service) resolves the effective price for a (SKU, region, currency, channel) tuple. Each of MCG's seven markets binds to exactly one selling currency: US->USD, CA->CAD, MX->MXN, BR->BRL, GB->GBP, DE->EUR, AU->AUD. A price request MUST specify region code (NA/LATAM/EU/APAC) and country; if no country-specific price override exists, resolution falls back to the region base price, then to the global list price, never to a foreign-currency price. A SKU sellable in a market MUST have a resolvable non-null price in that market's currency or it is treated as not-for-sale there. Prices are never converted at request time via FX; every market price is authored explicitly.",
+    "owner_team": "TEAM-007",
+    "app": "APP-007",
+    "canon_refs": [
+      "CANON-001#1.4"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-100"
+      ]
+    }
+  },
+  {
+    "id": "KN-102",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-22T09:00:00Z",
+    "title": "Tax-inclusive vs tax-exclusive pricing by region",
+    "body": "Displayed prices MUST honor regional tax-presentation law. EU markets (GB, DE) and AU display VAT/GST-inclusive prices to consumers; NA markets (US, CA, MX) display tax-exclusive prices with tax calculated and added at checkout; BR displays inclusive prices with tax breakdown. APP-007 (Pricing Service) tags each resolved price with a tax_treatment flag (inclusive|exclusive) derived from region, and APP-003 (Checkout Service) MUST compute order tax consistently with that flag so the customer is never double-taxed or under-taxed. Storefront APP-001 renders the legally required inclusive/exclusive label per market.",
+    "owner_team": "TEAM-007",
+    "app": "APP-007",
+    "canon_refs": [
+      "CANON-001#1.4"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-100",
+        "KN-101"
+      ]
+    }
+  },
+  {
+    "id": "KN-103",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-03T09:00:00Z",
+    "title": "Price-change effective windows and no retroactive repricing",
+    "body": "APP-007 (Pricing Service) price changes are scheduled with an explicit effective_from (and optional effective_to) timestamp in UTC. A price applies to a cart based on the price effective at the moment of order placement in APP-003, not at cart creation; carts show a pricing preview that may change. Once an order is placed, its captured prices are immutable and MUST NOT be retroactively repriced by any later price change. Backdating effective_from earlier than now is rejected. Overlapping active price records for the same (SKU, market, channel) are a data-integrity error and MUST be prevented by a uniqueness constraint.",
+    "owner_team": "TEAM-007",
+    "app": "APP-007",
+    "canon_refs": [
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-100"
+      ]
+    }
+  },
+  {
+    "id": "KN-104",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-04T09:00:00Z",
+    "title": "Price floor and margin-guard enforcement",
+    "body": "APP-007 (Pricing Service) MUST reject any resolved sell price (after all automatic markdowns but before promotions) that falls below the SKU's configured price floor, defined as unit cost plus the category minimum-margin percentage. Promotions in APP-008 stacked on top may not drive the customer-effective unit price below the absolute floor (cost * (1 + regulatory_minimum)); if a promotion would breach it, the promotion is capped, not the base price. Any price published at or below unit cost requires an explicit owner-approved loss-leader exception flag with an expiry date. Breaches are logged and alerted to TEAM-007 on-call.",
+    "owner_team": "TEAM-007",
+    "app": "APP-007",
+    "canon_refs": [
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-100"
+      ],
+      "related": [
+        "KN-118"
+      ]
+    }
+  },
+  {
+    "id": "KN-105",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-08T09:00:00Z",
+    "title": "Cart line-item quantity caps",
+    "body": "APP-004 (Cart Service) enforces per-line and per-cart quantity limits: a single line item MAY NOT exceed the SKU's max_order_quantity (default 10, overridable per SKU by APP-005 Catalog), and a cart MAY NOT exceed 100 distinct line items or 500 total units. Restricted SKUs (age-restricted, hazmat, purchase-limited promotional items) carry their own tighter caps that always win. Attempts to exceed a cap clamp the quantity to the maximum and return a structured warning; they never silently succeed. Caps are re-validated at checkout in APP-003 because catalog limits may change while a cart is idle.",
+    "owner_team": "TEAM-004",
+    "app": "APP-004",
+    "canon_refs": [
+      "CANON-001#3"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "related": [
+        "KN-106",
+        "KN-107"
+      ]
+    }
+  },
+  {
+    "id": "KN-106",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-09T09:00:00Z",
+    "title": "Cart expiry and abandonment lifecycle",
+    "body": "APP-004 (Cart Service) carts have a rolling TTL: an active (signed-in) cart persists 30 days from last modification; a guest cart persists 7 days keyed to the anonymous session. On each mutation the TTL is reset. Expired carts are soft-deleted and reservable stock, if any, is released. A cart MUST re-price and re-validate item availability (APP-010) and promotions (APP-008) on load if older than 15 minutes, because prices and stock are volatile. Merging a guest cart into a signed-in cart at login unions line items, summing quantities up to the caps in KN-105 and re-resolving prices.",
+    "owner_team": "TEAM-004",
+    "app": "APP-004",
+    "canon_refs": [
+      "CANON-001#3"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-105"
+      ],
+      "related": [
+        "KN-107"
+      ]
+    }
+  },
+  {
+    "id": "KN-107",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-10T09:00:00Z",
+    "title": "Cart pricing preview is non-binding",
+    "body": "The totals shown by APP-004 (Cart Service) are a non-binding preview. The authoritative price, tax and promotion computation happens at order placement in APP-003 (Checkout Service). The cart MUST clearly reflect the last-resolved values and their staleness, and MUST NOT be treated by any downstream system as a price commitment. If the checkout-time total differs from the cart preview by more than a configurable threshold (default any increase), APP-003 surfaces the change to the customer for explicit re-confirmation before authorizing payment. This prevents silently charging a total the customer did not see.",
+    "owner_team": "TEAM-004",
+    "app": "APP-004",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-103"
+      ],
+      "related": [
+        "KN-045"
+      ]
+    }
+  },
+  {
+    "id": "KN-108",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-04T09:00:00Z",
+    "title": "Payment authorization, capture and PCI boundary",
+    "body": "APP-012 (Payments Service) is the sole holder of PCI cardholder-data scope; raw PAN MUST NEVER leave APP-012's boundary and MUST NEVER be logged, cached, or forwarded to APP-003, APP-009, APP-024 or the data platform. Upstream systems handle only network tokens or PSP tokens. MCG uses auth-then-capture: authorization reserves funds at checkout; capture occurs on shipment confirmation from APP-009 (OMS). An authorization not captured within 7 days MUST be voided automatically. Every authorization and capture carries the idempotency key from KN-052. All card data at rest is encrypted; access is least-privilege and audited (CANON-001 \u00a74.6).",
+    "owner_team": "TEAM-009",
+    "app": "APP-012",
+    "canon_refs": [
+      "CANON-001#4.6",
+      "CANON-001#2.6"
+    ],
+    "sensitivity": "pci",
+    "authority": "owner-approved",
+    "version": 3,
+    "status": "published",
+    "relations": {
+      "referenced_by": [
+        "KN-052",
+        "KN-045"
+      ],
+      "related": [
+        "KN-109",
+        "KN-110"
+      ]
+    }
+  },
+  {
+    "id": "KN-109",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-05T09:00:00Z",
+    "title": "Payment retry and decline handling",
+    "body": "APP-012 (Payments Service) distinguishes retryable soft declines (issuer timeout, temporary network error, insufficient-funds-retry hints) from hard declines (stolen card, do-not-honor, invalid card). Soft declines MAY be retried with exponential backoff up to 3 attempts within the same authorization idempotency key (KN-052) so the customer is never double-authorized. Hard declines MUST NOT be retried programmatically and are returned to APP-003 with a generic, non-enumerating customer message (never revealing issuer reason codes to the client). Gateway-level PSP failover to a secondary processor is permitted only for connectivity failures, not for business declines.",
+    "owner_team": "TEAM-009",
+    "app": "APP-012",
+    "canon_refs": [
+      "CANON-001#4.6"
+    ],
+    "sensitivity": "pci",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-052"
+      ],
+      "related": [
+        "KN-108"
+      ]
+    }
+  },
+  {
+    "id": "KN-110",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-06T09:00:00Z",
+    "title": "Refund rules and refund-to-original-tender",
+    "body": "APP-012 (Payments Service) refunds MUST return funds to the original tender used for capture; cross-tender refunds are prohibited except gift-card/store-credit fallback authorized by APP-013 (Wallet). The cumulative refunded amount for an order MUST NOT exceed the total captured amount; partial refunds are tracked against remaining refundable balance. A refund can only be issued against a captured payment; an uncaptured authorization is voided, not refunded. Every refund references the originating return (APP-021/APP-009) or support case (APP-017) and carries an idempotency key so a retried refund does not pay the customer twice.",
+    "owner_team": "TEAM-009",
+    "app": "APP-012",
+    "canon_refs": [
+      "CANON-001#4.6"
+    ],
+    "sensitivity": "pci",
+    "authority": "owner-approved",
+    "version": 2,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-052",
+        "KN-108"
+      ],
+      "related": [
+        "KN-131"
+      ]
+    }
+  },
+  {
+    "id": "KN-111",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-07T09:00:00Z",
+    "title": "3-D Secure and strong customer authentication",
+    "body": "APP-012 (Payments Service) MUST apply 3-D Secure 2.x strong customer authentication (SCA) where mandated: EU/UK markets (GB, DE) require SCA for consumer card payments unless a valid exemption (low-value, low-risk TRA, or trusted-beneficiary) applies. When a 3DS challenge is required, checkout (APP-003) MUST complete the challenge before authorization is treated as valid; a frictionless flow is used when the issuer permits. Liability shift is recorded on the authorization. SCA is not applied to NA markets where it is not required, so as not to add needless friction. All 3DS artifacts stay within the PCI boundary (KN-108); the client only receives challenge redirection, never card data.",
+    "owner_team": "TEAM-009",
+    "app": "APP-012",
+    "canon_refs": [
+      "CANON-001#4.6",
+      "CANON-001#1.4"
+    ],
+    "sensitivity": "pci",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-108"
+      ],
+      "related": [
+        "KN-109"
+      ]
+    }
+  },
+  {
+    "id": "KN-112",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-16T09:00:00Z",
+    "title": "Inventory available-to-promise (ATP) computation",
+    "body": "APP-010 (Inventory Service) computes ATP per (SKU, fulfillment node) as on_hand minus open_reservations minus safety_stock, floored at zero, plus inbound quantity whose expected receipt is within the promise horizon. Sellable ATP surfaced to APP-004/APP-003 is the network aggregate across nodes able to serve the customer's region. ATP MUST be derived from the authoritative reservation ledger, never from a cached count alone, and MUST be recomputed on every stock-affecting event (receipt, reservation, release, adjustment) received from APP-011 (WMS) via Kafka. Negative ATP is never exposed; it is clamped to zero and alerted as a reconciliation signal.",
+    "owner_team": "TEAM-012",
+    "app": "APP-010",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 2,
+    "status": "published",
+    "relations": {
+      "related": [
+        "KN-113",
+        "KN-114"
+      ]
+    }
+  },
+  {
+    "id": "KN-113",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-17T09:00:00Z",
+    "title": "Inventory reservation and oversell prevention",
+    "body": "APP-010 (Inventory Service) MUST create a hard reservation against ATP before APP-003 (Checkout Service) commits an order, and the reservation decrement MUST be atomic (conditional update: reserve only if available >= requested) to prevent oversell under concurrency. Per KN-045, payment authorization precedes inventory commit; the reservation is confirmed only after auth succeeds and released if auth fails. Reservations carry a TTL (default 15 minutes for in-flight checkout) and expire back to ATP if the order is not placed. The reservation ledger is the single source of truth; double-reserving the same units for two orders is a Sev2-class defect.",
+    "owner_team": "TEAM-012",
+    "app": "APP-010",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 2,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-112"
+      ],
+      "related": [
+        "KN-045"
+      ]
+    }
+  },
+  {
+    "id": "KN-114",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-18T09:00:00Z",
+    "title": "Inventory oversell backorder and cancellation policy",
+    "body": "When physical reconciliation from APP-011 (WMS) reveals negative net availability (oversell) for an already-committed order, APP-010 (Inventory Service) and APP-009 (OMS) MUST resolve it deterministically: allocate remaining units by order-placement timestamp (oldest first); shortfall orders are either backordered (if the SKU permits backorder and inbound is within the promise horizon) or cancelled with automatic full refund via APP-012 and customer notification via APP-023. Silent under-shipment is prohibited. Every oversell event opens a reconciliation record and is reported to TEAM-012 for root-cause.",
+    "owner_team": "TEAM-012",
+    "app": "APP-010",
+    "canon_refs": [
+      "CANON-001#3"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-112",
+        "KN-113"
+      ]
+    }
+  },
+  {
+    "id": "KN-115",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-20T09:00:00Z",
+    "title": "Order state machine invariants",
+    "body": "APP-009 (OMS) orders traverse a strict state machine: CREATED -> PAYMENT_AUTHORIZED -> ALLOCATED -> PICKING -> SHIPPED -> DELIVERED, with terminal branches CANCELLED and RETURNED. Transitions are one-directional except explicitly defined compensations; illegal transitions (e.g., SHIPPED -> ALLOCATED) MUST be rejected. An order MUST NOT reach ALLOCATED without a confirmed inventory reservation (APP-010) and MUST NOT reach SHIPPED without a successful payment capture (APP-012). Every transition is event-sourced and emitted to Kafka for downstream consumers; the current state is derivable by replay. Cancellation is only permitted before SHIPPED; after that the flow is return/refund.",
+    "owner_team": "TEAM-006",
+    "app": "APP-009",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 2,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-108",
+        "KN-113"
+      ],
+      "related": [
+        "KN-116"
+      ]
+    }
+  },
+  {
+    "id": "KN-116",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-21T09:00:00Z",
+    "title": "Order split-shipment and partial-fulfillment rules",
+    "body": "APP-009 (OMS) MAY split an order across multiple fulfillment nodes when no single node can fulfill all lines; each shipment is an independent fulfillment unit with its own tracking, but the order total and tax are computed once at placement and never re-derived per shipment. Payment capture (APP-012) occurs per shipment on dispatch, and the sum of captures MUST NOT exceed the single authorization total. A cancelled line before allocation reduces the capturable amount; the authorization is adjusted or partially voided accordingly. Customers see one order with multiple shipments, not multiple orders.",
+    "owner_team": "TEAM-006",
+    "app": "APP-009",
+    "canon_refs": [
+      "CANON-001#3"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-115"
+      ],
+      "related": [
+        "KN-108"
+      ]
+    }
+  },
+  {
+    "id": "KN-117",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-26T09:00:00Z",
+    "title": "Catalog SKU lifecycle and status transitions",
+    "body": "APP-005 (Product Catalog) SKUs follow the lifecycle DRAFT -> ACTIVE -> DISCONTINUED -> ARCHIVED. Only ACTIVE SKUs are sellable and indexable by APP-006 (Search). A SKU MUST have a resolvable price (APP-007) and a canonical title, primary image, and category before it can transition to ACTIVE; publishing an incomplete SKU is rejected. DISCONTINUED SKUs remain visible for existing orders and returns but are removed from new-purchase paths; ARCHIVED SKUs are excluded from all customer surfaces. SKU identifiers are immutable and never reused (CANON-001 \u00a76). Catalog changes propagate to consumers via Kafka events with backward-compatible schemas.",
+    "owner_team": "TEAM-005",
+    "app": "APP-005",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#6"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "related": [
+        "KN-118",
+        "KN-125"
+      ]
+    }
+  },
+  {
+    "id": "KN-118",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-27T09:00:00Z",
+    "title": "Catalog offer-price consistency contract",
+    "body": "APP-005 (Product Catalog) holds offer metadata but is NOT the pricing authority; the sellable price is always resolved from APP-007 (Pricing Service) at read time. Catalog MUST NOT cache or persist a price that can diverge from APP-007. A SKU marked sellable in a market whose price cannot be resolved by APP-007 in that market's currency (KN-101) MUST be treated as not-available in that market rather than displayed priceless or at a stale value. Catalog and Pricing align on SKU keys via the shared contracts registry (TEAM-030); any key drift is a data-contract violation.",
+    "owner_team": "TEAM-005",
+    "app": "APP-005",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-101"
+      ],
+      "related": [
+        "KN-117"
+      ]
+    }
+  },
+  {
+    "id": "KN-119",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-17T09:00:00Z",
+    "title": "Promotion stacking and exclusivity rules",
+    "body": "APP-008 (Promotions Engine) evaluates promotions in a deterministic order and enforces stacking policy: each promotion declares stackable=true|false and a priority. An exclusive (stackable=false) promotion, once applied, blocks all other discounts on the same line or cart per its scope. When multiple exclusive promotions qualify, the one yielding the greatest customer benefit is applied (best-for-customer resolution), ties broken by highest priority then earliest expiry. Order-level and line-level promotions never double-discount the same amount. The final discounted price MUST respect the price floor in KN-104. Evaluation is idempotent for a given cart snapshot so previews and checkout agree.",
+    "owner_team": "TEAM-008",
+    "app": "APP-008",
+    "canon_refs": [
+      "CANON-001#3"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 2,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-104"
+      ],
+      "related": [
+        "KN-063",
+        "KN-120",
+        "KN-121"
+      ]
+    }
+  },
+  {
+    "id": "KN-120",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-18T09:00:00Z",
+    "title": "Coupon redemption limits and single-use enforcement",
+    "body": "APP-008 (Promotions Engine) coupons carry redemption constraints: global redemption cap, per-customer cap (default 1), minimum basket value, and eligible-SKU/category scope. Single-use coupon codes MUST be atomically marked redeemed at order placement (APP-003), keyed to the order and idempotency key (KN-052), so a retried placement does not consume a second redemption and concurrent placements cannot both redeem a one-time code. Expired, exhausted, or out-of-scope coupons are rejected with a specific reason; a coupon applied in the cart but invalid at checkout is removed and the customer is re-prompted. Coupon codes are never guessable-sequential and are rate-limited at the gateway (KN-141).",
+    "owner_team": "TEAM-008",
+    "app": "APP-008",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#4.8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-052"
+      ],
+      "related": [
+        "KN-119",
+        "KN-141"
+      ]
+    }
+  },
+  {
+    "id": "KN-121",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-19T09:00:00Z",
+    "title": "Promotion window scheduling and timezone handling",
+    "body": "APP-008 (Promotions Engine) promotion windows are stored in UTC with an explicit start and end; activation and deactivation MUST be evaluated against UTC while being presented to customers in the market's local timezone. A promotion is active strictly within [start, end); boundary instants are deterministic. Region-scoped promotions (e.g., a US-only sale) MUST NOT apply to carts resolved for other markets. Scheduling a promotion whose end precedes its start, or that overlaps an exclusive promotion of the same scope, is rejected at authoring time. Any in-window change triggers the cache invalidation in KN-063.",
+    "owner_team": "TEAM-008",
+    "app": "APP-008",
+    "canon_refs": [
+      "CANON-001#1.4",
+      "CANON-001#3"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-063"
+      ],
+      "related": [
+        "KN-119"
+      ]
+    }
+  },
+  {
+    "id": "KN-122",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-23T09:00:00Z",
+    "title": "Search relevance freshness SLA",
+    "body": "APP-006 (Search & Browse) MUST reflect catalog and price changes within a bounded freshness SLA: ACTIVE/DISCONTINUED status changes and price changes from APP-005/APP-007 MUST be searchable within 5 minutes (p95) of the emitting Kafka event; new ACTIVE SKUs within 15 minutes. A discontinued or archived SKU (KN-117) MUST disappear from purchasable search results within the same 5-minute window to avoid selling unavailable items. Out-of-stock items (ATP=0 from APP-010) are demoted, not necessarily removed, per merchandising policy. Index lag beyond SLA raises an alert to TEAM-003 and is a candidate Sev3.",
+    "owner_team": "TEAM-003",
+    "app": "APP-006",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 2,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-117"
+      ],
+      "related": [
+        "KN-123",
+        "KN-124"
+      ]
+    }
+  },
+  {
+    "id": "KN-123",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-24T09:00:00Z",
+    "title": "Search result eligibility and market filtering",
+    "body": "APP-006 (Search & Browse) MUST filter results to items sellable in the requesting customer's market: a SKU without a resolvable price in the market currency (KN-101) or not ACTIVE (KN-117) MUST NOT appear in purchasable results. Age-restricted or region-restricted SKUs are filtered per the customer's verified region and, where required, age gate. Search MUST NOT leak internal-only fields (cost, margin, supplier) into any customer-facing response. Relevance ranking may personalize ordering but MUST NOT override hard eligibility filters; an ineligible item is never rankable into view.",
+    "owner_team": "TEAM-003",
+    "app": "APP-006",
+    "canon_refs": [
+      "CANON-001#1.4",
+      "CANON-001#3"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-101",
+        "KN-117"
+      ],
+      "related": [
+        "KN-122"
+      ]
+    }
+  },
+  {
+    "id": "KN-124",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-25T09:00:00Z",
+    "title": "Search query handling and zero-result policy",
+    "body": "APP-006 (Search & Browse) MUST sanitize and normalize queries (trim, lowercase-fold per locale, strip control characters) and MUST NOT pass raw user input into index queries in a way that permits query injection. Queries are language-aware per market locale (English, Spanish, French-CA, Portuguese, German). A zero-result query MUST return a structured empty result with spelling suggestions and category fallbacks, never an error. Search latency SLO is p95 < 300 ms at the service; breaches degrade gracefully to a cached/basic ranker rather than failing the storefront (APP-001).",
+    "owner_team": "TEAM-003",
+    "app": "APP-006",
+    "canon_refs": [
+      "CANON-001#1.4",
+      "CANON-001#6"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "related": [
+        "KN-122"
+      ]
+    }
+  },
+  {
+    "id": "KN-125",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-28T09:00:00Z",
+    "title": "Catalog event schema backward-compatibility",
+    "body": "APP-005 (Product Catalog) publishes product and offer change events to Kafka; per CANON-001 \u00a74.8 and \u00a78 these schemas are registered in the schema registry and MUST evolve backward-compatibly. Producers MAY add optional fields but MUST NOT remove or repurpose existing fields, nor tighten types, without a new major event version and a deprecation window coordinated with consumers (APP-006, APP-004, APP-020) through TEAM-030 contracts. Consumers MUST tolerate unknown fields. A breaking change shipped without a versioned migration is a cross-service contract violation blocked by contract tests in CI.",
+    "owner_team": "TEAM-005",
+    "app": "APP-005",
+    "canon_refs": [
+      "CANON-001#4.8",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "related": [
+        "KN-117",
+        "KN-142"
+      ]
+    }
+  },
+  {
+    "id": "KN-126",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-06T09:00:00Z",
+    "title": "Guest checkout data-minimization rule",
+    "body": "APP-003 (Checkout Service) guest checkout MUST collect only the data required to fulfill and communicate about the order (shipping/billing address, contact email/phone, payment token). Per KN-045 it MUST NOT create a Loyalty (APP-015) account and MUST NOT silently create a full identity (APP-014) profile; any account creation is an explicit, opt-in post-purchase action. Guest PII is classified pii and retained only as long as needed for the order lifecycle plus the legal returns/tax window, then minimized. Marketing consent is never assumed from a guest purchase; opt-in is explicit.",
+    "owner_team": "TEAM-004",
+    "app": "APP-003",
+    "canon_refs": [
+      "CANON-001#3"
+    ],
+    "sensitivity": "pii",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-045"
+      ],
+      "related": [
+        "KN-127"
+      ]
+    }
+  },
+  {
+    "id": "KN-127",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-07T09:00:00Z",
+    "title": "Checkout address validation and shippability",
+    "body": "APP-003 (Checkout Service) MUST validate and normalize the shipping address against the market's address format and MUST confirm the destination is serviceable for every line item before authorizing payment. Items with region restrictions (hazmat, age-restricted, export-controlled) that cannot ship to the destination MUST block placement with a specific per-item reason, not a generic failure. Tax jurisdiction is derived from the validated shipping address (KN-102). A checkout MUST NOT authorize payment (APP-012) for an order it cannot fulfill; shippability and reservation (APP-010) checks precede the payment step per KN-045.",
+    "owner_team": "TEAM-004",
+    "app": "APP-003",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#1.4"
+    ],
+    "sensitivity": "pii",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-045",
+        "KN-102"
+      ],
+      "related": [
+        "KN-113"
+      ]
+    }
+  },
+  {
+    "id": "KN-128",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-12T09:00:00Z",
+    "title": "Checkout latency SLO and graceful degradation",
+    "body": "APP-003 (Checkout Service) order-placement API has a p99 latency SLO of 1200 ms and p50 of 300 ms measured at the gateway (APP-024). When a non-critical dependency degrades (e.g., APP-008 Promotions), checkout MUST degrade gracefully by proceeding with last-known-good promotion state within its freshness bound rather than failing placement, EXCEPT where correctness requires the dependency (payment authorization APP-012 and inventory reservation APP-010 are non-bypassable). Circuit breakers protect each downstream call with bounded timeouts and no unbounded retries (see KN-052 for idempotent retry behavior). SLO breaches during progressive rollout trigger automated rollback (CANON-001 \u00a77.4).",
+    "owner_team": "TEAM-004",
+    "app": "APP-003",
+    "canon_refs": [
+      "CANON-001#6",
+      "CANON-001#7.4"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-052"
+      ],
+      "related": [
+        "KN-063",
+        "KN-141"
+      ]
+    }
+  },
+  {
+    "id": "KN-129",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-14T09:00:00Z",
+    "title": "Returns eligibility policy",
+    "body": "APP-021 (Customer Portal) self-service returns MUST enforce eligibility before issuing an RMA: the item is within the return window (default 30 days from delivery, 90 days for Loyalty higher tiers, 14 days for final-sale categories), the order reached DELIVERED (APP-009 state, KN-115), and the SKU category is returnable (perishables, digital goods, and hygiene items are non-returnable unless defective). Return quantity MUST NOT exceed the delivered quantity. An approved return creates a return record in APP-009 and, on receipt/inspection at APP-011 (WMS), triggers a refund to original tender per KN-110. Ineligible requests are declined with a specific reason and a support handoff to APP-017.",
+    "owner_team": "TEAM-001",
+    "app": "APP-021",
+    "canon_refs": [
+      "CANON-001#3"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 2,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-110",
+        "KN-115"
+      ],
+      "related": [
+        "KN-130"
+      ]
+    }
+  },
+  {
+    "id": "KN-130",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-15T09:00:00Z",
+    "title": "Customer portal authorization scoping",
+    "body": "APP-021 (Customer Portal) MUST enforce that an authenticated customer can view and act only on their own orders, addresses, payment instruments, and loyalty balance; every read and mutation is authorized against the identity from APP-014 (Identity) and the resource owner. Insecure direct object reference (accessing another customer's order by guessing an id) MUST be impossible; order and return identifiers are non-sequential and access-checked server-side, never trusted from the client. Payment instrument display shows only tokenized last-four; full PAN is never retrievable (KN-108). Portal never exposes internal fulfillment, cost, or fraud-scoring data.",
+    "owner_team": "TEAM-001",
+    "app": "APP-021",
+    "canon_refs": [
+      "CANON-001#4.6",
+      "CANON-001#8"
+    ],
+    "sensitivity": "pii",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-108"
+      ],
+      "related": [
+        "KN-129",
+        "KN-140"
+      ]
+    }
+  },
+  {
+    "id": "KN-131",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-16T09:00:00Z",
+    "title": "Return refund timing and restocking rules",
+    "body": "For an approved return (KN-129), APP-009 (OMS) MUST NOT release the refund via APP-012 until the returned item is received and passes inspection at APP-011 (WMS), except for policy-defined instant-refund cases (low-value items or high-trust Loyalty tiers) which refund on carrier scan. Restockable items in sellable condition return to ATP (APP-010) at the receiving node; damaged/defective items are quarantined and never restocked. The refund amount equals the returned line value plus applicable tax, minus non-refundable fees per policy, and MUST NOT exceed the captured amount for those lines (KN-110). Refund status is visible to the customer in APP-021 and to agents in APP-017.",
+    "owner_team": "TEAM-006",
+    "app": "APP-009",
+    "canon_refs": [
+      "CANON-001#3"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-110",
+        "KN-129"
+      ],
+      "related": [
+        "KN-114"
+      ]
+    }
+  },
+  {
+    "id": "KN-132",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-24T09:00:00Z",
+    "title": "Loyalty points accrual rules",
+    "body": "Loyalty (APP-015, Meridian Rewards) accrues points only on captured, net-of-returns spend: points are provisionally granted at order placement and become redeemable after the return window closes for the order (KN-129), or are clawed back proportionally on refund. Accrual excludes taxes, shipping, gift-card purchases, and the discounted portion funded by promotions; it accrues on the customer-paid amount. Guest orders accrue nothing (KN-045). Accrual rate is tier-dependent and configured per market; points have no cash value and are non-transferable. Every accrual/clawback references the originating order (APP-009) and is idempotent so replayed order events do not double-grant points.",
+    "owner_team": "TEAM-011",
+    "app": "APP-015",
+    "canon_refs": [
+      "CANON-001#3"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-045"
+      ],
+      "related": [
+        "KN-133"
+      ]
+    }
+  },
+  {
+    "id": "KN-133",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-25T09:00:00Z",
+    "title": "Loyalty redemption and balance integrity",
+    "body": "Loyalty (APP-015) redemptions MUST atomically debit the point ledger with a conditional update (redeem only if balance >= requested) to prevent negative balances and concurrent double-spend. Points redeemed for a discount at checkout (APP-003) are held while the order is in flight and are committed on capture or released on cancellation/auth failure, mirroring the reservation pattern in KN-113. Expired points are removed by a scheduled, auditable job and cannot be redeemed after expiry. The ledger is append-only and every entry references its source event; the current balance is always derivable by replay and MUST reconcile to the ledger.",
+    "owner_team": "TEAM-011",
+    "app": "APP-015",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-132"
+      ],
+      "related": [
+        "KN-113"
+      ]
+    }
+  },
+  {
+    "id": "KN-134",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-12T09:00:00Z",
+    "title": "Storefront price and availability display consistency",
+    "body": "APP-001 (Storefront Web) MUST display the price resolved from APP-007 (KN-101) and availability from APP-010, never a client-cached or hardcoded value, and MUST render the legally required tax-inclusive/exclusive label per market (KN-102). When a product is not sellable in the visitor's market it MUST show an appropriate unavailable state rather than a broken or zero price. The 'add to cart' action MUST re-validate price and availability server-side; the storefront never authoritatively computes totals. Storefront MUST NOT expose internal identifiers, cost, or margin, and MUST degrade to a read-only browse experience if checkout dependencies are down rather than showing errors.",
+    "owner_team": "TEAM-001",
+    "app": "APP-001",
+    "canon_refs": [
+      "CANON-001#1.4",
+      "CANON-001#3"
+    ],
+    "sensitivity": "public",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-101",
+        "KN-102"
+      ],
+      "related": [
+        "KN-107",
+        "KN-135"
+      ]
+    }
+  },
+  {
+    "id": "KN-135",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-13T09:00:00Z",
+    "title": "Storefront localization and market routing",
+    "body": "APP-001 (Storefront Web) MUST route each visitor to the correct market context (region code NA/LATAM/EU/APAC, country, currency, language) and keep that context consistent across catalog, search, cart, and checkout for the whole session. Supported locales are US-en/es, CA-en/fr, MX-es, BR-pt, GB-en, DE-de, AU-en (CANON-001 \u00a71.4). Currency, price presentation, and legal copy (returns, tax, cookie/consent) MUST match the selected market. Switching market re-resolves prices and re-validates the cart (KN-106); it MUST NOT carry a foreign-currency price across markets.",
+    "owner_team": "TEAM-001",
+    "app": "APP-001",
+    "canon_refs": [
+      "CANON-001#1.4"
+    ],
+    "sensitivity": "public",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-101"
+      ],
+      "related": [
+        "KN-134"
+      ]
+    }
+  },
+  {
+    "id": "KN-136",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-01T09:00:00Z",
+    "title": "API Gateway authentication and mTLS policy",
+    "body": "APP-024 (API Gateway / Edge) is the single ingress for external traffic and MUST authenticate every request before routing: consumer traffic via OAuth2/OIDC tokens validated against APP-014 (Identity), and all internal service-to-service calls via mutual TLS with least-privilege workload identity (CANON-001 \u00a74.6). Unauthenticated requests to protected routes are rejected with 401 at the edge; the gateway MUST NOT forward unauthenticated traffic to backends. PCI cardholder data never traverses the gateway in the clear and card fields are never logged (KN-108). The gateway terminates TLS, enforces allowed methods, and injects a correlation/trace id (CANON-001 \u00a78 Observability) on every request.",
+    "owner_team": "TEAM-030",
+    "app": "APP-024",
+    "canon_refs": [
+      "CANON-001#4.6",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 2,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-108"
+      ],
+      "related": [
+        "KN-137",
+        "KN-141"
+      ]
+    }
+  },
+  {
+    "id": "KN-137",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-02T09:00:00Z",
+    "title": "API versioning and deprecation policy",
+    "body": "Per CANON-001 \u00a74.8, all external APIs behind APP-024 (API Gateway) are versioned in the URL path (/v1/...); backward-incompatible changes REQUIRE a new major version and MUST NOT be shipped by mutating an existing version's contract. A deprecated version MUST remain available for a minimum 90-day deprecation window with Sunset/Deprecation response headers announcing the removal date, and consumers MUST be notified through the contracts registry (TEAM-030). REST resources are plural nouns; responses use the shared error envelope and pagination conventions. Removing a version before its window elapses is prohibited.",
+    "owner_team": "TEAM-030",
+    "app": "APP-024",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "sensitivity": "internal",
+    "authority": "canon",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "related": [
+        "KN-125",
+        "KN-136",
+        "KN-142"
+      ]
+    }
+  },
+  {
+    "id": "KN-138",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-13T09:00:00Z",
+    "title": "Gateway idempotency and safe-retry propagation",
+    "body": "APP-024 (API Gateway / Edge) MUST propagate the client Idempotency-Key header unchanged to backends and MUST NOT itself retry non-idempotent methods (POST/PATCH on order/payment endpoints) on upstream timeout, because a blind retry can create duplicate orders or charges. Automatic edge retries are permitted only for idempotent, safe methods (GET/HEAD) and for explicitly idempotent endpoints that honor KN-052. Retried requests preserve the original correlation id for traceability. This rule complements the service-side idempotency contract (KN-052) and the checkout latency policy (KN-128).",
+    "owner_team": "TEAM-030",
+    "app": "APP-024",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-052"
+      ],
+      "related": [
+        "KN-128",
+        "KN-141"
+      ]
+    }
+  },
+  {
+    "id": "KN-139",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-03T09:00:00Z",
+    "title": "Identity session and token lifetime policy",
+    "body": "Consumer authentication via APP-014 (Identity) issues short-lived access tokens (default 15 minutes) and longer-lived refresh tokens (default 30 days, rotating on use) over OIDC/OAuth2. Access tokens MUST be validated at APP-024 (Gateway) on every request (KN-136); refresh-token reuse after rotation MUST invalidate the token family (replay detection). Step-up authentication is required for sensitive actions (adding a payment instrument, changing email, high-value redemption). Sessions MUST be revocable centrally (logout-everywhere), and password/credential material is never logged. Failed-login attempts are rate-limited and lock out after a threshold to resist credential stuffing.",
+    "owner_team": "TEAM-014",
+    "app": "APP-014",
+    "canon_refs": [
+      "CANON-001#4.6"
+    ],
+    "sensitivity": "pii",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "related": [
+        "KN-136",
+        "KN-140"
+      ]
+    }
+  },
+  {
+    "id": "KN-140",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-04T09:00:00Z",
+    "title": "Customer PII handling and data-subject rights",
+    "body": "Customer personal data managed by APP-014 (Identity) and surfaced by APP-021 (Customer Portal) is classified pii and MUST be encrypted at rest and in transit, access-controlled least-privilege, and never emitted to logs or analytics without tokenization/pseudonymization. MCG MUST honor data-subject access and erasure requests across the systems that hold PII (APP-014, APP-021, APP-009, APP-016), except where retention is legally mandated (tax/financial records for the statutory period). Erasure anonymizes rather than breaks referential integrity of order history required for accounting. Cross-border personal data handling respects each market's applicable regime (e.g., UK/EU GDPR, Brazil LGPD).",
+    "owner_team": "TEAM-014",
+    "app": "APP-014",
+    "canon_refs": [
+      "CANON-001#4.6",
+      "CANON-001#1.4"
+    ],
+    "sensitivity": "pii",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "related": [
+        "KN-126",
+        "KN-130",
+        "KN-139"
+      ]
+    }
+  },
+  {
+    "id": "KN-141",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-05T09:00:00Z",
+    "title": "Gateway rate-limiting and abuse protection",
+    "body": "APP-024 (API Gateway / Edge) MUST enforce tiered rate limits: per-authenticated-user, per-IP for anonymous traffic, and per-API-key for partner/seller integrations, with limits calibrated per endpoint sensitivity. Sensitive endpoints (login and token via APP-014, coupon validation via APP-008, checkout via APP-003) carry stricter limits and progressive backoff to resist brute force, coupon enumeration (KN-120) and credential stuffing (KN-139). Exceeding a limit returns HTTP 429 with a Retry-After header and is never silently dropped. Limits are enforced at the edge before backend load is incurred; bursts are absorbed with a token-bucket. Rate-limit events feed observability and security dashboards (TEAM-032/TEAM-040).",
+    "owner_team": "TEAM-030",
+    "app": "APP-024",
+    "canon_refs": [
+      "CANON-001#4.8",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 2,
+    "status": "published",
+    "relations": {
+      "related": [
+        "KN-120",
+        "KN-136",
+        "KN-139"
+      ]
+    }
+  },
+  {
+    "id": "KN-142",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-19T09:00:00Z",
+    "title": "Kafka event schema and ordering guarantees",
+    "body": "All domain events across the commerce path (order, inventory, payment, catalog, promotion) are published to Kafka with schemas registered in the schema registry and evolved backward-compatibly (CANON-001 \u00a74.8, \u00a78). Events for a single aggregate (e.g., one order id, one SKU-node) MUST be partitioned by the aggregate key to preserve per-key ordering; consumers MUST be idempotent and tolerate at-least-once delivery and duplicate redelivery. Events carry an event id, aggregate id, version, and UTC timestamp. Consumers MUST NOT assume global ordering across keys. A poison message MUST route to a dead-letter topic with alerting, never block the partition indefinitely.",
+    "owner_team": "TEAM-030",
+    "app": "APP-024",
+    "canon_refs": [
+      "CANON-001#4.8",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "related": [
+        "KN-115",
+        "KN-125",
+        "KN-137"
+      ]
+    }
+  },
+  {
+    "id": "KN-143",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-27T09:00:00Z",
+    "title": "Promotion best-deal computation determinism",
+    "body": "APP-008 (Promotions Engine) MUST produce the same discount result for the same cart snapshot and evaluation timestamp regardless of node, thread, or evaluation order (deterministic and referentially transparent). All eligible-promotion resolution, best-for-customer selection (KN-119) and tie-breaks MUST be pure functions of inputs; no wall-clock, random, or cache-order dependence may affect the outcome. This determinism is what allows the cart preview (KN-107) and the checkout-time recomputation (APP-003) to agree, and is a precondition for reliable evaluation/benchmarking of AI-authored promotion changes.",
+    "owner_team": "TEAM-008",
+    "app": "APP-008",
+    "canon_refs": [
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-119"
+      ],
+      "related": [
+        "KN-107",
+        "KN-063"
+      ]
+    }
+  },
+  {
+    "id": "KN-144",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-06T09:00:00Z",
+    "title": "Tax calculation and jurisdiction rules by market",
+    "body": "Order tax in APP-003 (Checkout Service) is computed per the destination jurisdiction derived from the validated shipping address (KN-127): US/CA use destination-based sales tax / GST+PST by province and locality; MX applies IVA; BR applies its layered consumption taxes; GB and DE apply VAT; AU applies GST. Tax is computed on the discounted, customer-paid amount after promotions, never on the pre-discount price, and shipping is taxed where the jurisdiction requires it. Tax-inclusive markets (KN-102) back out the tax component for reporting. Captured order tax is immutable post-placement; corrections are handled via refund/adjustment, not by mutating the order.",
+    "owner_team": "TEAM-004",
+    "app": "APP-003",
+    "canon_refs": [
+      "CANON-001#1.4",
+      "CANON-001#3"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-102",
+        "KN-127"
+      ],
+      "related": [
+        "KN-100"
+      ]
+    }
+  },
+  {
+    "id": "KN-145",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-14T09:00:00Z",
+    "title": "Inventory safety-stock and node-selection policy",
+    "body": "APP-010 (Inventory Service) reserves a configurable safety-stock buffer per (SKU, node) that is excluded from ATP (KN-112) to absorb count drift and prevent oversell during high-velocity sales and promotion windows. Node selection for fulfillment MUST prefer the node minimizing split shipments and delivery time to the customer's region while respecting node capacity and cutoff times, coordinated with APP-009 (KN-116). Safety-stock levels are raised automatically ahead of known peak windows (peak-readiness) and are never set to zero for Tier 0 checkout-path SKUs without owner approval. Physical counts from APP-011 (WMS) reconcile the ledger on a defined cadence.",
+    "owner_team": "TEAM-012",
+    "app": "APP-010",
+    "canon_refs": [
+      "CANON-001#3"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "depends_on": [
+        "KN-112"
+      ],
+      "related": [
+        "KN-116"
+      ]
+    }
+  },
+  {
+    "id": "KN-146",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-20T09:00:00Z",
+    "title": "Peak-readiness change-freeze and load policy",
+    "body": "During designated peak windows (major promotional events and seasonal peaks), Tier 0 commerce-path services (APP-003, APP-004, APP-007, APP-010, APP-012, APP-024) enter a change-freeze: only incident hotfixes (CANON-001 \u00a77.3) and pre-approved changes deploy, and every such change requires the elevated Tier 0/PCI approvals (CANON-001 \u00a77.5). Services MUST have validated capacity against forecast peak load with headroom (performance tests per CANON-001 \u00a74.4), circuit breakers and graceful degradation (KN-128) verified, and promotion caches pre-warmed (KN-063). Autoscaling limits and rate-limit budgets (KN-141) are raised for the window and reverted after. The freeze is coordinated by the Architecture Office (TEAM-090) with SRE (TEAM-032).",
+    "owner_team": "TEAM-004",
+    "app": "APP-003",
+    "canon_refs": [
+      "CANON-001#7.3",
+      "CANON-001#7.5",
+      "CANON-001#4.4"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "related": [
+        "KN-063",
+        "KN-128",
+        "KN-141"
+      ]
+    }
+  },
+  {
+    "id": "KN-200",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-12T10:00:00Z",
+    "title": "Storefront Rendering & BFF",
+    "body": "Architecture of Storefront Web (APP-001): server-side and edge rendering with Next.js/React and a Node backend-for-frontend that aggregates catalog (APP-005), search (APP-006), cart (APP-004) and pricing (APP-007) through the API gateway (APP-024). Covers per-region rendering, ISR/edge caching and the latency profile exercised during INC-2026-016.",
+    "owner_team": "TEAM-001",
+    "app": "APP-001",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0001.md"
+    }
+  },
+  {
+    "id": "KN-201",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-15T10:00:00Z",
+    "title": "Customer Portal & Self-Service Returns (My Meridian)",
+    "body": "Architecture of the My Meridian customer portal (APP-021): React plus Node BFF exposing account, order (APP-009), identity (APP-014) and loyalty (APP-015) self-service. Documents the returns-eligibility model shipped in REL-2026-008 and the fix path for the eligibility defect in INC-2026-015.",
+    "owner_team": "TEAM-001",
+    "app": "APP-021",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0002.md"
+    }
+  },
+  {
+    "id": "KN-202",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-14T10:00:00Z",
+    "title": "Checkout Orchestration",
+    "body": "Architecture of the Checkout Service (APP-003): Java/Spring Boot orchestration across cart (APP-004), pricing (APP-007), payments (APP-012), inventory (APP-010) and order management (APP-009). Codifies the payment-authorization-before-inventory-commitment invariant, idempotent order placement, and guest checkout (CHK-1421), informed by INC-2026-002 and INC-2026-019.",
+    "owner_team": "TEAM-004",
+    "app": "APP-003",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0003.md"
+    }
+  },
+  {
+    "id": "KN-203",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-13T10:00:00Z",
+    "title": "Cart State & Redis Resilience",
+    "body": "Architecture of the Cart Service (APP-004): Go service backed by a Redis cluster for cart state, with pricing preview (APP-007), promotion preview (APP-008) and catalog lookups (APP-005). Documents Redis primary failover, replica reads and degraded-mode behavior hardened after INC-2026-001 and shipped in REL-2026-001.",
+    "owner_team": "TEAM-004",
+    "app": "APP-004",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0004.md"
+    }
+  },
+  {
+    "id": "KN-204",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-26T10:00:00Z",
+    "title": "Product Catalog & Indexing",
+    "body": "Architecture of the Product Catalog (APP-005): Java plus PostgreSQL system of record for product and offer data, projected into OpenSearch and fed by Kafka ingestion from the data platform (APP-020). Publishes catalog-change events consumed by Search (APP-006); resilience shaped by INC-2026-021 and INC-2026-003, delivered in REL-2026-002.",
+    "owner_team": "TEAM-005",
+    "app": "APP-005",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0005.md"
+    }
+  },
+  {
+    "id": "KN-205",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-28T10:00:00Z",
+    "title": "Search Hybrid Ranking",
+    "body": "Architecture of Search & Browse (APP-006): Python and OpenSearch hybrid lexical-plus-vector ranking, with a reindex pipeline consuming catalog events (APP-005) and features from the data platform (APP-020). Documents price-freshness guarantees and the reindex-lag mitigations following INC-2026-003, shipped in REL-2026-002.",
+    "owner_team": "TEAM-003",
+    "app": "APP-006",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0006.md"
+    }
+  },
+  {
+    "id": "KN-206",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-09T10:00:00Z",
+    "title": "Pricing Resolution",
+    "body": "Architecture of the Pricing Service (APP-007): Java plus PostgreSQL base-price and regional-rule resolution across NA, LATAM, EU and APAC with currency handling, fed by the data platform (APP-020) and consumed by cart, checkout, storefront and search. Regional rule safeguards were reinforced after INC-2026-004 and INC-2026-003, delivered in REL-2026-003.",
+    "owner_team": "TEAM-007",
+    "app": "APP-007",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0007.md"
+    }
+  },
+  {
+    "id": "KN-207",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-23T10:00:00Z",
+    "title": "Promotions Engine & Cache",
+    "body": "Architecture of the Promotions Engine (APP-008): Kotlin/Spring Boot plus Redis evaluating offers, coupons and cart-level discounts, dependent on pricing (APP-007) and loyalty (APP-015) and consumed by cart (APP-004). Covers the promotion cache holistically and links to the write-through redesign (KN-228); shaped by the INC-2026-007/011/018 staleness series and REL-2026-004.",
+    "owner_team": "TEAM-008",
+    "app": "APP-008",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0008.md"
+    }
+  },
+  {
+    "id": "KN-208",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-23T10:00:00Z",
+    "title": "Order Management Saga",
+    "body": "Architecture of Order Management (APP-009): Java/Spring Boot plus PostgreSQL orchestration saga across inventory (APP-010), warehouse (APP-011) and payments (APP-012) over Kafka, with compensating transactions and an explicit order-lifecycle state machine. Multi-warehouse correctness was hardened after INC-2026-012 and delivered in REL-2026-006.",
+    "owner_team": "TEAM-006",
+    "app": "APP-009",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0009.md"
+    }
+  },
+  {
+    "id": "KN-209",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-20T10:00:00Z",
+    "title": "Inventory Available-to-Promise (ATP)",
+    "body": "Architecture of the Inventory Service (APP-010): Go plus PostgreSQL and Redis computing real-time available-to-promise across multiple warehouses (APP-011), with reservation semantics and Kafka event flow. Documents the oversell-prevention model introduced after INC-2026-012 and shipped in REL-2026-006.",
+    "owner_team": "TEAM-012",
+    "app": "APP-010",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0010.md"
+    }
+  },
+  {
+    "id": "KN-210",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-09T10:00:00Z",
+    "title": "Payments & PCI Boundary",
+    "body": "Architecture of the Payments Service (APP-012): Java/Spring Boot plus PostgreSQL within a PCI-DSS cardholder-data boundary, covering tokenization, external PSP integration with failover, 3-D Secure and authorization/capture. Called by checkout (APP-003) through the gateway (APP-024); PSP-degradation resilience was hardened after INC-2026-009 and shipped in REL-2026-005.",
+    "owner_team": "TEAM-009",
+    "app": "APP-012",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0011.md"
+    }
+  },
+  {
+    "id": "KN-211",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-01T10:00:00Z",
+    "title": "API Gateway & Edge",
+    "body": "Architecture of the API Gateway / Edge (APP-024): Envoy/Kong with Go and Lua handling ingress, routing, OIDC token verification against identity (APP-014), rate limiting and the REST/GraphQL edge for storefront, mobile and search. Edge auth and rate-limit behavior were tuned after INC-2026-013 and INC-2026-014 and shipped in REL-2026-007.",
+    "owner_team": "TEAM-030",
+    "app": "APP-024",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0012.md"
+    }
+  },
+  {
+    "id": "KN-212",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-20T10:00:00Z",
+    "title": "Event Backbone (Apache Kafka)",
+    "body": "Cross-cutting architecture of MCG's Kafka event backbone: CloudEvents envelope, topic naming (for example commerce.checkout.order-placed.v1), partitioning, consumer groups, delivery semantics and dead-letter handling. Describes the producer/consumer topology spanning catalog, search, promotions, order management and inventory in line with the event-driven and open-standards principles.",
+    "owner_team": "TEAM-030",
+    "canon_refs": [
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0013.md"
+    }
+  },
+  {
+    "id": "KN-213",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-22T10:00:00Z",
+    "title": "API Contracts & Schema Registry",
+    "body": "Cross-cutting architecture of API-first contracts at MCG: OpenAPI, protobuf and GraphQL SDL governed in mcg-contracts, plus the Kafka schema registry and backward-compatible expand-contract evolution (ADR-0033). Documents consumer-driven contract testing owned by Quality Engineering (TEAM-050) and the open-standards posture (ADR-0026).",
+    "owner_team": "TEAM-030",
+    "canon_refs": [
+      "CANON-001#4",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0014.md"
+    }
+  },
+  {
+    "id": "KN-214",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-03T10:00:00Z",
+    "title": "Service Mesh & mTLS",
+    "body": "Cross-cutting architecture of MCG's Kubernetes service mesh: mutual TLS on all service-to-service calls, SPIFFE-style workload identity, least-privilege traffic policy and mesh-level retries and timeouts. Realizes the security-by-design and cloud-native principles across the commerce path.",
+    "owner_team": "TEAM-030",
+    "canon_refs": [
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0015.md"
+    }
+  },
+  {
+    "id": "KN-215",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-08T10:00:00Z",
+    "title": "Feature Flags & Progressive Delivery",
+    "body": "Cross-cutting architecture of the mcg-feature-flags service and MCG's progressive-delivery model: flag evaluation, canary-to-percentage-to-full rollout, automated rollback on SLO breach and kill-switches. Anchors the trunk-based development standard (ADR-0031) and the guest-checkout rollout (CHK-1421).",
+    "owner_team": "TEAM-030",
+    "canon_refs": [
+      "CANON-001#4",
+      "CANON-001#7"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0016.md"
+    }
+  },
+  {
+    "id": "KN-216",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-05T10:00:00Z",
+    "title": "Observability & SLOs",
+    "body": "Cross-cutting architecture of MCG observability: OpenTelemetry metrics, logs and traces, golden-signal SLOs and error-budget policy, alerting and incident tooling owned by SRE (TEAM-032). Defines per-tier SLO targets and the dashboards used during peak readiness (REL-2026-009) and incidents such as INC-2026-016.",
+    "owner_team": "TEAM-032",
+    "canon_refs": [
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0017.md"
+    }
+  },
+  {
+    "id": "KN-217",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-06T10:00:00Z",
+    "title": "CI/CD Golden Paths",
+    "body": "Cross-cutting architecture of the DevEx (TEAM-031) golden-path pipeline: lint, build, unit, SAST/SCA, package, staging deploy, integration and contract tests, DAST, canary and progressive rollout, with signed images and SBOM provenance. Documents the per-language pipeline variants and GitOps delivery under trunk-based development (ADR-0031).",
+    "owner_team": "TEAM-031",
+    "canon_refs": [
+      "CANON-001#4"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0018.md"
+    }
+  },
+  {
+    "id": "KN-218",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-11T10:00:00Z",
+    "title": "Data Platform Integration",
+    "body": "Architecture of Enterprise Data Platform integration (APP-020): Databricks/Spark lakehouse, Snowflake marts and dbt, ingesting change and event data from the commerce services over Kafka under explicit data contracts. Feeds catalog (APP-005), pricing (APP-007) and search (APP-006) features; ingestion resilience shaped by INC-2026-021 with sensitivity classification per ADR-0043.",
+    "owner_team": "TEAM-060",
+    "app": "APP-020",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0019.md"
+    }
+  },
+  {
+    "id": "KN-219",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-07T10:00:00Z",
+    "title": "Multi-Region Topology",
+    "body": "Cross-cutting architecture of MCG's multi-region topology: AWS regions mapped to the NA, LATAM, EU and APAC region codes, data-residency constraints, active-active versus active-passive posture per criticality tier, cross-region replication and latency-based routing at the edge (APP-024). Notes the Azure footprint retained for the legacy POS estate.",
+    "owner_team": "TEAM-030",
+    "canon_refs": [
+      "CANON-001#1",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0020.md"
+    }
+  },
+  {
+    "id": "KN-220",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-15T10:00:00Z",
+    "title": "Idempotency Patterns",
+    "body": "Cross-cutting architecture of idempotency at MCG: idempotency keys on order placement and payment, Redis/PostgreSQL dedup stores, at-least-once event consumers and exactly-once effects. Applied across checkout (APP-003), payments (APP-012) and order management (APP-009) per ADR-0045 and informed by INC-2026-002.",
+    "owner_team": "TEAM-030",
+    "canon_refs": [
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0021.md"
+    }
+  },
+  {
+    "id": "KN-221",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-05T10:00:00Z",
+    "title": "Caching Strategy",
+    "body": "Cross-cutting architecture of MCG's layered caching: edge/CDN caching for storefront (APP-001) and Redis caches for cart (APP-004), promotions (APP-008) and inventory (APP-010), spanning read-through, write-through and cache-aside patterns with TTLs, invalidation and stampede protection. Draws on the promo-staleness lesson from INC-2026-007 and links to the write-through redesign (KN-228).",
+    "owner_team": "TEAM-030",
+    "canon_refs": [
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0022.md"
+    }
+  },
+  {
+    "id": "KN-222",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-06T10:00:00Z",
+    "title": "Resilience & Circuit Breaking",
+    "body": "Cross-cutting architecture of resilience across the checkout path: timeouts, retries with jitter, circuit breakers, bulkheads, fallbacks and graceful degradation. Synthesizes lessons from INC-2026-009 (PSP degradation), INC-2026-001 (Redis failover) and INC-2026-019 (latency regression) into reusable patterns.",
+    "owner_team": "TEAM-030",
+    "canon_refs": [
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0023.md"
+    }
+  },
+  {
+    "id": "KN-223",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-31T10:00:00Z",
+    "title": "Authentication & Authorization (OIDC)",
+    "body": "Architecture of Identity & Customer Profile (APP-014): Go OIDC/OAuth2 identity service issuing and verifying tokens at the edge (APP-024), distinguishing guest and registered sessions and enforcing service-to-service authorization. Documents PII handling and the token-verification fix following INC-2026-014, shipped in REL-2026-007.",
+    "owner_team": "TEAM-014",
+    "app": "APP-014",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0024.md"
+    }
+  },
+  {
+    "id": "KN-224",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-02T10:00:00Z",
+    "title": "Rate Limiting & Traffic Shaping",
+    "body": "Architecture of rate limiting at the API Gateway / Edge (APP-024): token-bucket and sliding-window algorithms at Envoy/Kong, per-client and per-route quotas backed by distributed Redis counters, tiered limits and standardized 429/Retry-After handling. Thresholds were retuned after INC-2026-013 and shipped in REL-2026-007.",
+    "owner_team": "TEAM-030",
+    "app": "APP-024",
+    "canon_refs": [
+      "CANON-001#4",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0025.md"
+    }
+  },
+  {
+    "id": "KN-225",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-18T10:00:00Z",
+    "title": "Secrets Management",
+    "body": "Cross-cutting architecture of secrets management owned by Security Engineering (TEAM-040): the platform secret manager, dynamic secrets, rotation, workload identity and the prohibition on secrets in code, config or logs. Details PCI key handling for payments (APP-012) in line with security-by-design and ADR-0043.",
+    "owner_team": "TEAM-040",
+    "canon_refs": [
+      "CANON-001#4",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0026.md"
+    }
+  },
+  {
+    "id": "KN-226",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-08T10:00:00Z",
+    "title": "Disaster Recovery",
+    "body": "Cross-cutting architecture of disaster recovery at MCG: RPO/RTO targets per criticality tier, backup and restore, cross-region failover, backward-compatible expand-contract migrations and regular DR drills with runbooks. Builds on the multi-region topology (KN-219) and is owned by SRE (TEAM-032).",
+    "owner_team": "TEAM-032",
+    "canon_refs": [
+      "CANON-001#7",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0027.md"
+    }
+  },
+  {
+    "id": "KN-227",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-06T10:00:00Z",
+    "title": "Peak-Readiness & Load Shedding",
+    "body": "Cross-cutting architecture of peak readiness at MCG: capacity planning for peak and flash-sale events, autoscaling, load shedding with priority queues, graceful degradation and game days. Synthesizes lessons from INC-2026-011 and INC-2026-016 and underpins REL-2026-009.",
+    "owner_team": "TEAM-032",
+    "canon_refs": [
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0028.md"
+    }
+  },
+  {
+    "id": "KN-228",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-18T10:00:00Z",
+    "title": "Promotion-Cache Write-Through Design",
+    "body": "Architecture of the systemic fix for promotion-cache staleness in the Promotions Engine (APP-008): a write-through cache with event-driven invalidation on price and promotion changes, versioned cache keys and coherence with pricing (APP-007). Directly resolves the INC-2026-007/011/018 series and was delivered in REL-2026-010.",
+    "owner_team": "TEAM-008",
+    "app": "APP-008",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0029.md"
+    }
+  },
+  {
+    "id": "KN-229",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-20T10:00:00Z",
+    "title": "Checkout Latency Budget",
+    "body": "Architecture of the end-to-end checkout latency budget for the Checkout Service (APP-003): decomposition of the p99 budget across cart, pricing, promotion, inventory and payment calls, with parallelization, asynchronous promotion evaluation, per-hop timeouts and budget enforcement. Addresses the synchronous-promo regression in INC-2026-019 and was delivered in REL-2026-010.",
+    "owner_team": "TEAM-004",
+    "app": "APP-003",
+    "canon_refs": [
+      "CANON-001#3",
+      "CANON-001#8"
+    ],
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "architecture",
+      "path": "enterprise/architecture/AD-0030.md"
+    }
+  },
+  {
+    "id": "KN-250",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-03T09:00:00Z",
+    "title": "Checkout Service API v1",
+    "body": "OpenAPI 3.1 contract for the Checkout Service (APP-003): create a checkout session from a cart, retrieve it, and place the order. Place is idempotent on the Idempotency-Key header and orchestrates payment authorization, inventory reservation and handoff to Order Management.",
+    "owner_team": "TEAM-004",
+    "app": "APP-003",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "openapi",
+      "path": "enterprise/api-specs/checkout-service.openapi.yaml"
+    }
+  },
+  {
+    "id": "KN-251",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-05T09:00:00Z",
+    "title": "Cart Service API v1",
+    "body": "OpenAPI 3.1 contract for the Cart Service (APP-004): create carts, add and remove line items, and read a cart with resolved pricing and applied offers. Uses optimistic-concurrency versioning and idempotency keys on mutating operations.",
+    "owner_team": "TEAM-004",
+    "app": "APP-004",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "openapi",
+      "path": "enterprise/api-specs/cart-service.openapi.yaml"
+    }
+  },
+  {
+    "id": "KN-252",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-06T09:00:00Z",
+    "title": "Product Catalog Service API v1",
+    "body": "OpenAPI 3.1 contract for the Product Catalog Service (APP-005): cursor-paginated product listing, product-by-SKU lookup, and active 1P/3P offer listing. Read-optimized surface for Storefront, Search and Cart.",
+    "owner_team": "TEAM-005",
+    "app": "APP-005",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "openapi",
+      "path": "enterprise/api-specs/catalog-service.openapi.yaml"
+    }
+  },
+  {
+    "id": "KN-253",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-10T09:00:00Z",
+    "title": "Search & Browse Service API v1",
+    "body": "OpenAPI 3.1 contract for Search & Browse (APP-006): POST-based product search with filters, sort and facets, plus a recommendations endpoint by customer/SKU/placement. Cursor pagination and gateway rate limits apply.",
+    "owner_team": "TEAM-003",
+    "app": "APP-006",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "openapi",
+      "path": "enterprise/api-specs/search-service.openapi.yaml"
+    }
+  },
+  {
+    "id": "KN-254",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-12T09:00:00Z",
+    "title": "Pricing Service API v1",
+    "body": "OpenAPI 3.1 contract for the Pricing Service (APP-007): batch resolution of effective prices for SKUs in a region/currency, plus price-list listing and retrieval. Consumed by Cart and Checkout for pricing preview and placement.",
+    "owner_team": "TEAM-007",
+    "app": "APP-007",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "openapi",
+      "path": "enterprise/api-specs/pricing-service.openapi.yaml"
+    }
+  },
+  {
+    "id": "KN-255",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-14T09:00:00Z",
+    "title": "Promotions Engine API v1",
+    "body": "OpenAPI 3.1 contract for the Promotions Engine (APP-008): evaluate applicable promotions for a cart and validate coupon codes against a cart context. Returns applied promotions and resulting discounts with typed error envelopes.",
+    "owner_team": "TEAM-008",
+    "app": "APP-008",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "openapi",
+      "path": "enterprise/api-specs/promotions-engine.openapi.yaml"
+    }
+  },
+  {
+    "id": "KN-256",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-17T09:00:00Z",
+    "title": "Order Management (OMS) API v1",
+    "body": "OpenAPI 3.1 contract for Order Management (APP-009): list and retrieve orders, create orders from placed checkouts (idempotent, internal), and cancel orders prior to shipment. Backing the order lifecycle across fulfillment.",
+    "owner_team": "TEAM-006",
+    "app": "APP-009",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "openapi",
+      "path": "enterprise/api-specs/order-management.openapi.yaml"
+    }
+  },
+  {
+    "id": "KN-257",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-19T09:00:00Z",
+    "title": "Inventory Service API v1",
+    "body": "OpenAPI 3.1 contract for the Inventory Service (APP-010): available-to-promise (ATP) queries for SKUs in a region and short-TTL soft reservations for checkout, with idempotent creation and explicit release.",
+    "owner_team": "TEAM-012",
+    "app": "APP-010",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "openapi",
+      "path": "enterprise/api-specs/inventory-service.openapi.yaml"
+    }
+  },
+  {
+    "id": "KN-258",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-24T09:00:00Z",
+    "title": "Payments Service API v1",
+    "body": "OpenAPI 3.1 contract for the Payments Service (APP-012), PCI scope: authorize (with 3-D Secure challenge support), capture and refund payments against tokenized methods. Idempotent and mTLS-fronted; no raw PAN traverses the contract.",
+    "owner_team": "TEAM-009",
+    "app": "APP-012",
+    "sensitivity": "pci",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8",
+      "CANON-001#4.6"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "openapi",
+      "path": "enterprise/api-specs/payments-service.openapi.yaml"
+    }
+  },
+  {
+    "id": "KN-259",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-26T09:00:00Z",
+    "title": "Storefront BFF API v1",
+    "body": "OpenAPI 3.1 contract for the Storefront BFF (APP-001): page-shaped aggregation endpoints (home, product detail) that compose catalog, pricing and availability data for the meridian.com web experience.",
+    "owner_team": "TEAM-001",
+    "app": "APP-001",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "openapi",
+      "path": "enterprise/api-specs/storefront-bff.openapi.yaml"
+    }
+  },
+  {
+    "id": "KN-260",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-02T09:00:00Z",
+    "title": "Customer Portal (My Meridian) API v1",
+    "body": "OpenAPI 3.1 contract for the Customer Portal (APP-021): authenticated profile retrieval, paginated order history, and return initiation. Self-service surface backing the My Meridian product.",
+    "owner_team": "TEAM-001",
+    "app": "APP-021",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "openapi",
+      "path": "enterprise/api-specs/customer-portal.openapi.yaml"
+    }
+  },
+  {
+    "id": "KN-261",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-04T09:00:00Z",
+    "title": "API Gateway Admin API v1",
+    "body": "OpenAPI 3.1 control-plane contract for the API Gateway / Edge (APP-024): register upstream routes, set rate-limit policies, and issue client API keys. Internal, platform-operator-only surface complementing gateway-enforced authN and rate limiting.",
+    "owner_team": "TEAM-030",
+    "app": "APP-024",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "openapi",
+      "path": "enterprise/api-specs/api-gateway.openapi.yaml"
+    }
+  },
+  {
+    "id": "KN-262",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-06T09:00:00Z",
+    "title": "Identity & Customer Profile API v1",
+    "body": "OpenAPI 3.1 contract for the Identity & Customer Profile Service (APP-014): OAuth2/OIDC token issuance and customer registration/retrieval. Profile data is PII and access-controlled; tokens are JWT bearer credentials.",
+    "owner_team": "TEAM-014",
+    "app": "APP-014",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8",
+      "CANON-001#4.6"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "openapi",
+      "path": "enterprise/api-specs/identity-service.openapi.yaml"
+    }
+  },
+  {
+    "id": "KN-263",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-10T09:00:00Z",
+    "title": "Wallet & Gift Cards API v1",
+    "body": "OpenAPI 3.1 contract for the Wallet & Gift Cards Service (APP-013): read wallet balances, post idempotent credit/debit transactions, and redeem gift cards into a customer's wallet.",
+    "owner_team": "TEAM-010",
+    "app": "APP-013",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "openapi",
+      "path": "enterprise/api-specs/wallet-service.openapi.yaml"
+    }
+  },
+  {
+    "id": "KN-264",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-12T09:00:00Z",
+    "title": "Loyalty (Meridian Rewards) API v1",
+    "body": "OpenAPI 3.1 contract for the Loyalty Service (APP-015): member status retrieval, paginated points ledger, and idempotent points redemption. Backs the Meridian Rewards program.",
+    "owner_team": "TEAM-011",
+    "app": "APP-015",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "openapi",
+      "path": "enterprise/api-specs/loyalty-service.openapi.yaml"
+    }
+  },
+  {
+    "id": "KN-265",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-16T09:00:00Z",
+    "title": "Order Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by Order Management (APP-009): OrderPlaced, OrderShipped and OrderCancelled on the mcg.orders.* topics. Envelope carries eventId, eventType, occurredAt and source; schemas evolve backward-compatibly.",
+    "owner_team": "TEAM-006",
+    "app": "APP-009",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "asyncapi",
+      "path": "enterprise/api-specs/order-events.asyncapi.yaml"
+    }
+  },
+  {
+    "id": "KN-266",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-18T09:00:00Z",
+    "title": "Payment Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by the Payments Service (APP-012), PCI scope: PaymentAuthorized, PaymentCaptured and PaymentRefunded on the mcg.payments.* PCI-segmented topics. Payloads carry only tokenized references; no PAN is published.",
+    "owner_team": "TEAM-009",
+    "app": "APP-012",
+    "sensitivity": "pci",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8",
+      "CANON-001#4.6"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "asyncapi",
+      "path": "enterprise/api-specs/payment-events.asyncapi.yaml"
+    }
+  },
+  {
+    "id": "KN-267",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-20T09:00:00Z",
+    "title": "Inventory Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by the Inventory Service (APP-010): AtpChanged, StockReserved and ReservationReleased on the mcg.inventory.* topics. Consumed by Checkout, Search, Storefront and the Data Platform.",
+    "owner_team": "TEAM-012",
+    "app": "APP-010",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "asyncapi",
+      "path": "enterprise/api-specs/inventory-events.asyncapi.yaml"
+    }
+  },
+  {
+    "id": "KN-268",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-24T09:00:00Z",
+    "title": "Catalog Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by the Product Catalog Service (APP-005): ProductPublished, ProductUpdated and OfferUpdated on the mcg.catalog.* topics. Consumed by Search, Storefront, Pricing and the Data Platform.",
+    "owner_team": "TEAM-005",
+    "app": "APP-005",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "asyncapi",
+      "path": "enterprise/api-specs/catalog-events.asyncapi.yaml"
+    }
+  },
+  {
+    "id": "KN-269",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-26T09:00:00Z",
+    "title": "Pricing Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by the Pricing Service (APP-007): PriceChanged and PriceListActivated on the mcg.pricing.* topics. Consumed by Cart, Promotions, Storefront and the Data Platform.",
+    "owner_team": "TEAM-007",
+    "app": "APP-007",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "asyncapi",
+      "path": "enterprise/api-specs/pricing-events.asyncapi.yaml"
+    }
+  },
+  {
+    "id": "KN-270",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-30T09:00:00Z",
+    "title": "Cart Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by the Cart Service (APP-004): CartUpdated and CartAbandoned on the mcg.cart.* topics. Consumed by Marketing Automation, Search and the Data Platform for behavioral signals.",
+    "owner_team": "TEAM-004",
+    "app": "APP-004",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "asyncapi",
+      "path": "enterprise/api-specs/cart-events.asyncapi.yaml"
+    }
+  },
+  {
+    "id": "KN-271",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-01T09:00:00Z",
+    "title": "Customer Identity Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by the Identity & Customer Profile Service (APP-014): CustomerRegistered and ProfileUpdated on the mcg.customers.* PII-restricted topics. Only minimal identifiers are published.",
+    "owner_team": "TEAM-014",
+    "app": "APP-014",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8",
+      "CANON-001#4.6"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "asyncapi",
+      "path": "enterprise/api-specs/customer-events.asyncapi.yaml"
+    }
+  },
+  {
+    "id": "KN-272",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-03T09:00:00Z",
+    "title": "Loyalty Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by the Loyalty Service (APP-015): PointsEarned and TierChanged on the mcg.loyalty.* topics. Consumed by Notifications, Customer Portal, Marketing Automation and the Data Platform.",
+    "owner_team": "TEAM-011",
+    "app": "APP-015",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "asyncapi",
+      "path": "enterprise/api-specs/loyalty-events.asyncapi.yaml"
+    }
+  },
+  {
+    "id": "KN-273",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-07T09:00:00Z",
+    "title": "Notification Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract for the Notifications Service (APP-023): consumes NotificationRequested commands and emits NotificationDelivered and NotificationFailed on the mcg.notifications.* topics. Contact details are resolved internally, not carried on the wire.",
+    "owner_team": "TEAM-019",
+    "app": "APP-023",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "asyncapi",
+      "path": "enterprise/api-specs/notification-events.asyncapi.yaml"
+    }
+  },
+  {
+    "id": "KN-274",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-09T09:00:00Z",
+    "title": "Checkout Events (Kafka) v1",
+    "body": "AsyncAPI 2.6 event contract published by the Checkout Service (APP-003): CheckoutStarted, CheckoutCompleted and CheckoutAbandoned on the mcg.checkout.* topics. Consumed by Marketing Automation, Retail Media and the Data Platform for conversion analytics.",
+    "owner_team": "TEAM-004",
+    "app": "APP-003",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "canon_refs": [
+      "CANON-001#4.8"
+    ],
+    "metadata": {
+      "doc_type": "api_spec",
+      "spec_type": "asyncapi",
+      "path": "enterprise/api-specs/checkout-events.asyncapi.yaml"
+    }
+  },
+  {
+    "id": "KN-300",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-14T18:17:00Z",
+    "title": "Postmortem: Cart Redis primary failover caused elevated errors",
+    "body": "A Redis primary backing the Cart Service (APP-004) failed over under organic memory pressure, causing a ~9 minute spike in cart write errors in NA while a replica was promoted and clients reconnected. Root cause was capacity: insufficient headroom plus a slow client connection-pool reconnect tail. Fixed operationally via the designed Sentinel promotion; follow-ups add proactive capacity alerting, tuned reconnect intervals, and quarterly Redis sizing reviews.",
+    "owner_team": "TEAM-004",
+    "app": "APP-004",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "referenced_by_incidents": [
+        "INC-2026-001"
+      ]
+    },
+    "metadata": {
+      "doc_type": "postmortem",
+      "incident": "INC-2026-001",
+      "path": "enterprise/postmortems/INC-2026-001.md"
+    }
+  },
+  {
+    "id": "KN-301",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-09T07:50:00Z",
+    "title": "Postmortem: Guest checkout created orphaned loyalty accounts",
+    "body": "PR-0207 wired the Checkout Service (APP-003) to provision a Loyalty (APP-015) account on every order placement, including guest orders, violating the invariant that guest carts must not create loyalty accounts (KN-045) and producing orphaned accounts across NA and EU. Root cause was a code regression plus a test gap (no negative assertion) and dropped loyalty domain rules in context. Fixed by hotfix PR-0312 (story CHK-1421), which gated provisioning on an authenticated identity and added the negative test; the lesson became EXP-090.",
+    "owner_team": "TEAM-004",
+    "app": "APP-003",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "referenced_by_incidents": [
+        "INC-2026-002"
+      ]
+    },
+    "metadata": {
+      "doc_type": "postmortem",
+      "incident": "INC-2026-002",
+      "path": "enterprise/postmortems/INC-2026-002.md"
+    }
+  },
+  {
+    "id": "KN-302",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-01-21T01:13:00Z",
+    "title": "Postmortem: Search reindex lag surfaced stale prices in results",
+    "body": "REL-2026-002 changed catalog-to-index propagation cadence, increasing latency so the Search & Browse (APP-006) index briefly showed stale prices in NA search results. Root cause was a data-freshness (propagation lag) issue, not incorrect data; authoritative price resolution at cart/checkout prevented any mischarge. Resolved self-healing as the reindex backlog drained; follow-ups right-size propagation cadence and add a pre-release freshness-impact check.",
+    "owner_team": "TEAM-003",
+    "app": "APP-006",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "referenced_by_incidents": [
+        "INC-2026-003"
+      ]
+    },
+    "metadata": {
+      "doc_type": "postmortem",
+      "incident": "INC-2026-003",
+      "path": "enterprise/postmortems/INC-2026-003.md"
+    }
+  },
+  {
+    "id": "KN-303",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-05T11:51:00Z",
+    "title": "Postmortem: Regional price rule misconfiguration in APAC",
+    "body": "A regional rounding-rule configuration change in REL-2026-003 set the wrong rounding direction for APAC, producing systematic off-by-one minor-unit rounding in resolved prices (APP-007) for ~22 minutes. Root cause was a config change that reached production without per-region rounding-invariant validation. Fixed by rolling the configuration back to the prior known-good value; follow-ups add automated rounding-invariant assertions and staged validation for regional pricing config.",
+    "owner_team": "TEAM-007",
+    "app": "APP-007",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "referenced_by_incidents": [
+        "INC-2026-004"
+      ]
+    },
+    "metadata": {
+      "doc_type": "postmortem",
+      "incident": "INC-2026-004",
+      "path": "enterprise/postmortems/INC-2026-004.md"
+    }
+  },
+  {
+    "id": "KN-304",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-02-26T12:45:00Z",
+    "title": "Postmortem: Promotion-window price change did not invalidate promo cache",
+    "body": "First of the promo-cache-staleness trio: during REL-2026-004 a promotion-window price change in Pricing (APP-007) did not invalidate the Promotions Engine (APP-008) cache, so stale promo data produced incorrect cart totals at checkout (APP-003) across NA and EU (Sev1). Root cause was cache staleness: TTL-based invalidation with no event-driven flush on upstream price change. Mitigated by a promo-cache flush and a targeted path-specific invalidation; the tactical fix later proved insufficient (see INC-2026-011, INC-2026-018) and seeds KN-063.",
+    "owner_team": "TEAM-008",
+    "app": "APP-008",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "referenced_by_incidents": [
+        "INC-2026-007"
+      ]
+    },
+    "metadata": {
+      "doc_type": "postmortem",
+      "incident": "INC-2026-007",
+      "path": "enterprise/postmortems/INC-2026-007.md"
+    }
+  },
+  {
+    "id": "KN-305",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-04T20:50:00Z",
+    "title": "Postmortem: Primary PSP degraded; authorization latency spiked",
+    "body": "MCG's primary external payment service provider degraded, spiking Payments (APP-012) authorization p99 and causing slow/failed auths in NA and LATAM until failover engaged. Root cause was third-party degradation, worsened by a manual (non-automatic) PSP failover step; PCI boundaries held and idempotency keys prevented double-charges. Resolved by failing over to the secondary PSP; follow-ups automate health-based failover and tune circuit breakers.",
+    "owner_team": "TEAM-009",
+    "app": "APP-012",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "referenced_by_incidents": [
+        "INC-2026-009"
+      ]
+    },
+    "metadata": {
+      "doc_type": "postmortem",
+      "incident": "INC-2026-009",
+      "path": "enterprise/postmortems/INC-2026-009.md"
+    }
+  },
+  {
+    "id": "KN-306",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-18T01:39:00Z",
+    "title": "Postmortem: Promo cache staleness recurrence during flash sale",
+    "body": "Second of the promo-cache-staleness trio: during a flash sale the Promotions Engine (APP-008) again served stale promo data, causing brief cart-total mismatches at checkout (APP-003) in NA. Root cause was the same cache staleness as INC-2026-007; the post-incident targeted invalidation did not cover the rapid activation/deactivation path. Mitigated by a promo-cache flush and escalated toward a systemic write-through fix, ultimately delivered in INC-2026-018.",
+    "owner_team": "TEAM-008",
+    "app": "APP-008",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "referenced_by_incidents": [
+        "INC-2026-011"
+      ]
+    },
+    "metadata": {
+      "doc_type": "postmortem",
+      "incident": "INC-2026-011",
+      "path": "enterprise/postmortems/INC-2026-011.md"
+    }
+  },
+  {
+    "id": "KN-307",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-03-27T06:24:00Z",
+    "title": "Postmortem: ATP oversell on multi-warehouse SKUs",
+    "body": "REL-2026-006 introduced a reservation path in the Inventory Service (APP-010) that did not serialize decrements for multi-warehouse SKUs, allowing a read-modify-write race that briefly oversold high-demand items so Order Management (APP-009) accepted unfulfillable orders in NA. Root cause was a data-consistency defect in reservation semantics under concurrency. Mitigated by serializing decrements (per-SKU guard); follow-ups harden atomic reservation and add concurrency tests.",
+    "owner_team": "TEAM-012",
+    "app": "APP-010",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "referenced_by_incidents": [
+        "INC-2026-012"
+      ]
+    },
+    "metadata": {
+      "doc_type": "postmortem",
+      "incident": "INC-2026-012",
+      "path": "enterprise/postmortems/INC-2026-012.md"
+    }
+  },
+  {
+    "id": "KN-308",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-01T10:19:00Z",
+    "title": "Postmortem: Rate-limit threshold too aggressive after rollout",
+    "body": "REL-2026-007 shipped a token-bucket rate-limit configuration to the API Gateway (APP-024) with a threshold too low for EU traffic, rejecting legitimate requests with HTTP 429 for ~14 minutes. Root cause was a config change deployed without validation against observed regional traffic baselines. Fixed by rolling back the rate-limit configuration; follow-ups derive thresholds from per-region baselines and add a canary stage for rate-limit changes.",
+    "owner_team": "TEAM-030",
+    "app": "APP-024",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "referenced_by_incidents": [
+        "INC-2026-013"
+      ]
+    },
+    "metadata": {
+      "doc_type": "postmortem",
+      "incident": "INC-2026-013",
+      "path": "enterprise/postmortems/INC-2026-013.md"
+    }
+  },
+  {
+    "id": "KN-309",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-10T10:58:00Z",
+    "title": "Postmortem: Edge OIDC verification rejected valid tokens",
+    "body": "A REL-2026-007 change to edge OIDC verification in the API Gateway (APP-024), validating Identity (APP-014) tokens, applied too tight a clock-skew tolerance, so edge nodes with minor clock offset rejected valid tokens and intermittently signed out NA and EU users. Root cause was deployment-shaped: the failure manifested non-uniformly by node clock offset and was not reproduced in a clock-synchronized test environment. Fixed by rolling back the verification change; follow-ups add a configurable skew tolerance, NTP drift monitoring, and skew-injection tests. The failure was in the safe direction (no invalid token accepted).",
+    "owner_team": "TEAM-030",
+    "app": "APP-024",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "referenced_by_incidents": [
+        "INC-2026-014"
+      ]
+    },
+    "metadata": {
+      "doc_type": "postmortem",
+      "incident": "INC-2026-014",
+      "path": "enterprise/postmortems/INC-2026-014.md"
+    }
+  },
+  {
+    "id": "KN-310",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-04-19T10:30:00Z",
+    "title": "Postmortem: Self-service returns showed incorrect eligibility",
+    "body": "REL-2026-008 introduced a boundary-condition regression in the Customer Portal (APP-021) returns-eligibility rule, marking some genuinely returnable NA orders as ineligible for self-service return for ~30 minutes. Root cause was a code regression (inclusive/exclusive comparison on the return window) with no boundary test coverage; the error was over-restrictive and support-assisted returns remained available. Fixed by reverting the rule; follow-ups add boundary tests and a returns golden-case suite.",
+    "owner_team": "TEAM-001",
+    "app": "APP-021",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "referenced_by_incidents": [
+        "INC-2026-015"
+      ]
+    },
+    "metadata": {
+      "doc_type": "postmortem",
+      "incident": "INC-2026-015",
+      "path": "enterprise/postmortems/INC-2026-015.md"
+    }
+  },
+  {
+    "id": "KN-311",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-03T09:25:00Z",
+    "title": "Postmortem: Storefront latency degradation under load test",
+    "body": "A pre-peak load test saturated the Storefront Web origin (APP-001) while the API Gateway (APP-024) passed full load through, degrading p95/p99 latency for a fraction of NA users overlapping the test window. Root cause was capacity: insufficient origin autoscaling headroom and edge load-shedding not pre-configured to protect the origin. Mitigated by tuning edge load-shedding; follow-ups right-size origin headroom and schedule load tests off-peak with better isolation.",
+    "owner_team": "TEAM-001",
+    "app": "APP-001",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "referenced_by_incidents": [
+        "INC-2026-016"
+      ]
+    },
+    "metadata": {
+      "doc_type": "postmortem",
+      "incident": "INC-2026-016",
+      "path": "enterprise/postmortems/INC-2026-016.md"
+    }
+  },
+  {
+    "id": "KN-312",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-12T11:21:00Z",
+    "title": "Postmortem: Third promo-cache staleness incident triggers systemic fix",
+    "body": "Third and final promo-cache-staleness incident (after INC-2026-007 and INC-2026-011): the Promotions Engine (APP-008) again served stale promo data, causing incorrect cart totals at checkout (APP-003) across NA and EU (Sev1). Root cause was the systemic absence of write-through/event-driven cache coherence between Pricing (APP-007) and the promo cache; prior path-by-path patches were insufficient. Resolved by implementing a systemic write-through invalidation and adding a standing pre-release promotion-window cache-invalidation check; codified in KN-063 and the ARCH-05 systemic-pattern example.",
+    "owner_team": "TEAM-008",
+    "app": "APP-008",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "referenced_by_incidents": [
+        "INC-2026-018"
+      ]
+    },
+    "metadata": {
+      "doc_type": "postmortem",
+      "incident": "INC-2026-018",
+      "path": "enterprise/postmortems/INC-2026-018.md"
+    }
+  },
+  {
+    "id": "KN-313",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-16T02:08:00Z",
+    "title": "Postmortem: Checkout p99 latency regression from synchronous promo call",
+    "body": "REL-2026-010 added a synchronous Promotions Engine call on the Checkout Service (APP-003) critical path, adding its tail latency to checkout p99 and breaching the latency SLO under load in NA. Root cause was capacity/latency-budget: an unbudgeted synchronous hop on a latency-sensitive Tier 0 path. Fixed in 8 minutes by making the promotions call asynchronous behind a flag; follow-ups enforce a checkout critical-path latency budget and add a performance gate.",
+    "owner_team": "TEAM-004",
+    "app": "APP-003",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "referenced_by_incidents": [
+        "INC-2026-019"
+      ]
+    },
+    "metadata": {
+      "doc_type": "postmortem",
+      "incident": "INC-2026-019",
+      "path": "enterprise/postmortems/INC-2026-019.md"
+    }
+  },
+  {
+    "id": "KN-314",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-09T04:14:00Z",
+    "title": "Postmortem: Catalog ingestion stalled on data-platform outage",
+    "body": "A brief Enterprise Data Platform (APP-020) outage stalled the Product Catalog (APP-005) offer-ingestion pipeline for ~14 minutes, briefly staling new offer data across NA, EU and APAC. Root cause was an upstream dependency failure; Catalog degraded gracefully by serving last-known-good data and resumed ingestion on recovery with no data loss. Resolved when APP-020 recovered and the backlog drained; follow-ups define an offer-freshness SLO and add a downstream-visible freshness indicator.",
+    "owner_team": "TEAM-005",
+    "app": "APP-005",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "relations": {
+      "referenced_by_incidents": [
+        "INC-2026-021"
+      ]
+    },
+    "metadata": {
+      "doc_type": "postmortem",
+      "incident": "INC-2026-021",
+      "path": "enterprise/postmortems/INC-2026-021.md"
+    }
+  },
+  {
+    "id": "KN-400",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T09:00:00Z",
+    "title": "Runbook: Cart Redis Primary Failover Recovery",
+    "body": "Operational runbook for restoring Cart Service (APP-004) write availability when the backing Redis primary fails over to a replica. Covers Sentinel-driven and forced promotion, degraded-mode write buffering, and pool reconnection to shorten the error window seen in INC-2026-001.",
+    "owner_team": "TEAM-004",
+    "app": "APP-004",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0001.md"
+    }
+  },
+  {
+    "id": "KN-401",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T09:05:00Z",
+    "title": "Runbook: Promotions Cache Invalidation & Emergency Flush",
+    "body": "Procedure for invalidating or flushing the Promotions Engine (APP-008) cache when a promotion-window change is not reflected at checkout. Prioritizes targeted per-offer invalidation over full flush and confirms the write-through path from INC-2026-018 remains enabled.",
+    "owner_team": "TEAM-008",
+    "app": "APP-008",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0002.md"
+    }
+  },
+  {
+    "id": "KN-402",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T09:10:00Z",
+    "title": "Runbook: Payments PSP Failover & Routing",
+    "body": "Runbook for failing payment authorization over to a secondary payment service provider when the primary PSP degrades (cf. INC-2026-009). Covers circuit-breaker engagement, idempotency-key-safe retries, and preserving the APP-012 PCI cardholder-data boundary.",
+    "owner_team": "TEAM-009",
+    "app": "APP-012",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0003.md"
+    }
+  },
+  {
+    "id": "KN-403",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T09:15:00Z",
+    "title": "Runbook: ATP Oversell Reconciliation",
+    "body": "Runbook for detecting and reconciling available-to-promise oversell caused by cross-warehouse reservation races (cf. INC-2026-012). Freezes reservations, reconciles the Inventory (APP-010) ledger against WMS counts, and coordinates cancellation or backorder with Order Management (APP-009).",
+    "owner_team": "TEAM-012",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0004.md"
+    }
+  },
+  {
+    "id": "KN-404",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T09:20:00Z",
+    "title": "Runbook: Edge Rate-Limit Tuning",
+    "body": "Runbook for adjusting API Gateway (APP-024) token-bucket rate limits when a too-aggressive threshold rejects legitimate traffic with HTTP 429 (cf. INC-2026-013). Covers per-route limiter inspection, safe widening of rate/burst, and canary rollout per region.",
+    "owner_team": "TEAM-030",
+    "app": "APP-024",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0005.md"
+    }
+  },
+  {
+    "id": "KN-405",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T09:25:00Z",
+    "title": "Runbook: Edge OIDC Clock-Skew Token Rejection",
+    "body": "Runbook for diagnosing valid-token rejection at the edge caused by OIDC clock-skew tolerance (cf. INC-2026-014). Covers NTP/time-sync checks on edge pods, widening verification leeway, JWKS freshness, and coordination with the Identity service (APP-014).",
+    "owner_team": "TEAM-030",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0006.md"
+    }
+  },
+  {
+    "id": "KN-406",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T09:30:00Z",
+    "title": "Runbook: Search Reindex Lag Recovery",
+    "body": "Runbook for recovering from catalog-to-index propagation lag that surfaces stale prices in Search & Browse (APP-006) results (cf. INC-2026-003). Covers measuring Kafka consumer lag, draining the backlog, and targeted partial reindex of affected SKUs.",
+    "owner_team": "TEAM-003",
+    "app": "APP-006",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0007.md"
+    }
+  },
+  {
+    "id": "KN-407",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T09:35:00Z",
+    "title": "Runbook: Edge Load-Shedding at Peak",
+    "body": "Runbook for enabling prioritized load-shedding at the API Gateway (APP-024) when origin saturates under peak load (cf. INC-2026-016). Sheds low-priority and bot traffic first to protect the checkout path and coordinates with Storefront (APP-001) autoscaling.",
+    "owner_team": "TEAM-030",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0008.md"
+    }
+  },
+  {
+    "id": "KN-408",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T09:40:00Z",
+    "title": "Runbook: Tier-0 Progressive Deploy & Rollback",
+    "body": "Generic golden-path progressive delivery runbook (canary to percentage rollout to full) with automated rollback on SLO breach, per CANON \u00a77. Includes the mandatory promotions-cache pre-release check introduced after INC-2026-018 and manual rollback procedure.",
+    "owner_team": "TEAM-031",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0009.md"
+    }
+  },
+  {
+    "id": "KN-409",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T09:45:00Z",
+    "title": "Runbook: Expand-Contract Database Migration",
+    "body": "Runbook for the backward-compatible expand-contract migration pattern so rollback never requires a schema down-migration under fire (CANON \u00a77.4). Walks the expand, backfill, migrate-reads, and contract phases with per-phase abort criteria and replication-lag monitoring.",
+    "owner_team": "TEAM-031",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0010.md"
+    }
+  },
+  {
+    "id": "KN-410",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T09:50:00Z",
+    "title": "Runbook: Incident Commander Checklist",
+    "body": "Process runbook for the Incident Commander role: declaring severity, opening the incident channel, assigning IC/comms/ops/scribe roles, running follow-the-sun handoff for Tier-0 incidents, deciding rollback versus fix-forward, and scheduling the postmortem. Referenced by the Escalation section of every other runbook.",
+    "owner_team": "TEAM-032",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0011.md"
+    }
+  },
+  {
+    "id": "KN-411",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T09:55:00Z",
+    "title": "Runbook: Checkout p99 Latency Regression",
+    "body": "Runbook for recovering checkout tail latency when a synchronous Promotions (APP-008) call on the checkout path regresses p99 (cf. INC-2026-019). Covers isolating the hot span in traces and switching the promo call to async/timeout-with-fallback via feature flag.",
+    "owner_team": "TEAM-004",
+    "app": "APP-003",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0012.md"
+    }
+  },
+  {
+    "id": "KN-412",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T10:00:00Z",
+    "title": "Runbook: Regional Pricing Rule Misconfiguration Rollback",
+    "body": "Runbook for rolling back a bad regional pricing rule such as the APAC currency-rounding misconfiguration in INC-2026-004. Identifies the offending config version, reverts it in the Pricing service (APP-007), re-resolves prices, and triggers downstream promo-cache invalidation.",
+    "owner_team": "TEAM-007",
+    "app": "APP-007",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0013.md"
+    }
+  },
+  {
+    "id": "KN-413",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T10:05:00Z",
+    "title": "Runbook: Guest-Checkout Orphaned Loyalty Account Recovery",
+    "body": "Runbook for containing and cleaning up orphaned Loyalty (APP-015) accounts provisioned by a guest-checkout regression (cf. INC-2026-002, hotfix PR-0312 on CHK-1421). Disables the guest-loyalty provisioning path via flag, identifies orphaned accounts, and quarantines them for reconciliation.",
+    "owner_team": "TEAM-004",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0014.md"
+    }
+  },
+  {
+    "id": "KN-414",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T10:10:00Z",
+    "title": "Runbook: Catalog Ingestion Stall Recovery",
+    "body": "Runbook for resuming Product Catalog (APP-005) offer ingestion after a data-platform (APP-020) outage stalls the pipeline (cf. INC-2026-021). Confirms upstream recovery, replays ingestion from the last committed offset, and verifies catch-up without duplicate offers.",
+    "owner_team": "TEAM-005",
+    "app": "APP-005",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0015.md"
+    }
+  },
+  {
+    "id": "KN-415",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T10:15:00Z",
+    "title": "Runbook: Self-Service Returns Eligibility Regression",
+    "body": "Runbook for correcting a returns-eligibility rule regression that shows delivered orders as ineligible in My Meridian (APP-021) (cf. INC-2026-015). Rolls back the offending BFF/rule change, clears the eligibility cache, and re-checks against Order Management (APP-009) state.",
+    "owner_team": "TEAM-001",
+    "app": "APP-021",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0016.md"
+    }
+  },
+  {
+    "id": "KN-416",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T10:20:00Z",
+    "title": "Runbook: Kafka Consumer Lag Recovery",
+    "body": "Generic runbook for recovering a Kafka consumer group that has fallen behind, applicable to Catalog (APP-005), Search (APP-006), and Order Management (APP-009) consumers. Covers measuring lag, isolating slow or poisoned partitions, dead-letter handling, scaling consumers, and authorized offset resets.",
+    "owner_team": "TEAM-030",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0017.md"
+    }
+  },
+  {
+    "id": "KN-417",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T10:25:00Z",
+    "title": "Runbook: Emergency Feature-Flag Kill Switch",
+    "body": "Runbook for safely disabling a bad code path via the platform feature-flag service without a deploy. Covers locating the flag, scoping the change by region/percentage/global, verifying propagation, the break-glass audit trail, and temporary-flag expiry guardrails.",
+    "owner_team": "TEAM-030",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0018.md"
+    }
+  },
+  {
+    "id": "KN-418",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T10:30:00Z",
+    "title": "Runbook: Canary Auto-Rollback on SLO Breach",
+    "body": "Runbook for handling automated canary analysis that trips an SLO guardrail (error rate, latency, or saturation) during progressive rollout. Covers confirming the auto-rollback completed, investigating canary metrics, when to override or hold, and re-attempting after a fix.",
+    "owner_team": "TEAM-031",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0019.md"
+    }
+  },
+  {
+    "id": "KN-419",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T10:35:00Z",
+    "title": "Runbook: Hotfix Cut-and-Deploy",
+    "body": "Runbook implementing the CANON \u00a77.3 hotfix procedure: cutting a hotfix/<INC-ID>-<slug> branch from the affected release tag, making a minimal targeted change, passing expedited but mandatory smoke and security gates, and forward-merging to main. Uses INC-2026-002's hotfix (PR-0312, CHK-1421) as the worked example.",
+    "owner_team": "TEAM-031",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0020.md"
+    }
+  },
+  {
+    "id": "KN-420",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T10:40:00Z",
+    "title": "Runbook: PostgreSQL Primary Failover & Connection-Pool Exhaustion",
+    "body": "Runbook for PostgreSQL primary loss or connection-pool exhaustion affecting PG-backed services such as Pricing (APP-007), Order Management (APP-009), and Payments (APP-012). Covers replica promotion, repointing services, killing idle-in-transaction sessions, tuning PgBouncer, and verifying replication catch-up.",
+    "owner_team": "TEAM-030",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0021.md"
+    }
+  },
+  {
+    "id": "KN-421",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T10:45:00Z",
+    "title": "Runbook: Payments PCI Incident Containment & Secret Rotation",
+    "body": "Runbook for containing a suspected credential exposure or PCI-boundary concern in Payments (APP-012). Covers revoking and rotating PSP and service credentials through the platform secret manager, confirming cardholder data never left the APP-012 boundary, and coordinating with Security Engineering.",
+    "owner_team": "TEAM-009",
+    "app": "APP-012",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0022.md"
+    }
+  },
+  {
+    "id": "KN-422",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T10:50:00Z",
+    "title": "Runbook: Cart Redis Cache Flush & Warm",
+    "body": "Runbook for clearing corrupted or poisoned entries from the Cart Service (APP-004) Redis cache (for example after a serialization or schema mismatch). Covers targeted pattern deletion, selective shard flush, guarded full flush of ephemeral cart state, and warm-up. Distinct from the failover procedure in RB-0001.",
+    "owner_team": "TEAM-004",
+    "app": "APP-004",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0023.md"
+    }
+  },
+  {
+    "id": "KN-423",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T10:55:00Z",
+    "title": "Runbook: Inventory Reservation Reconciliation Job",
+    "body": "Runbook for the reconciliation job that repairs drift between the Inventory (APP-010) reservation ledger, the PostgreSQL source of truth, and WMS (APP-011) counts. Covers dry-run versus apply, interpreting the drift report, releasing stale reservations, and preventing oversell. Complements RB-0004.",
+    "owner_team": "TEAM-012",
+    "app": "APP-010",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0024.md"
+    }
+  },
+  {
+    "id": "KN-424",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-06-15T11:00:00Z",
+    "title": "Runbook: Storefront Origin Saturation & Edge Cache Recovery",
+    "body": "Runbook for relieving Storefront Web (APP-001) origin saturation under peak by scaling the Node BFF, raising CDN/edge cache hit ratio with extended TTLs and stale-while-revalidate, and shedding non-critical requests (cf. INC-2026-016). Coordinates edge load-shedding with the Core Platform team via RB-0008.",
+    "owner_team": "TEAM-001",
+    "sensitivity": "internal",
+    "authority": "owner-approved",
+    "version": 1,
+    "status": "published",
+    "metadata": {
+      "doc_type": "runbook",
+      "path": "enterprise/runbooks/RB-0025.md"
+    }
+  }
+]

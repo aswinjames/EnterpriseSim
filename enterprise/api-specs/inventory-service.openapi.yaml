@@ -1,0 +1,180 @@
+openapi: 3.1.0
+info:
+  title: Inventory Service API
+  version: 1.0.0
+  description: >
+    Real-time available-to-promise (ATP) inventory for MCG. Owned by TEAM-012
+    (Inventory), backing APP-010. Answers ATP queries for Checkout (APP-003) and
+    Storefront (APP-001), and manages soft reservations during checkout. Depends on WMS
+    (APP-011). Ingress via API Gateway (APP-024).
+  contact:
+    name: Inventory Squad
+    email: team-inventory@meridian.example
+servers:
+  - url: https://api.meridian.com/inventory/v1
+    description: Production (via API Gateway APP-024)
+security:
+  - bearerAuth: []
+tags:
+  - name: availability
+  - name: reservations
+paths:
+  /availability:query:
+    post:
+      operationId: queryAvailability
+      summary: Query available-to-promise for SKUs in a region
+      tags: [availability]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AtpQuery'
+      responses:
+        '200':
+          description: ATP results per SKU
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AtpResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /reservations:
+    post:
+      operationId: createReservation
+      summary: Create a soft inventory reservation for a checkout
+      description: Reserves ATP for a short TTL; released automatically on expiry. Idempotent.
+      tags: [reservations]
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservationRequest'
+      responses:
+        '201':
+          description: Reservation created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+        '409':
+          description: Insufficient ATP to reserve
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /reservations/{reservationId}:
+    delete:
+      operationId: releaseReservation
+      summary: Release a reservation
+      tags: [reservations]
+      parameters:
+        - name: reservationId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204':
+          description: Reservation released
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+  responses:
+    BadRequest:
+      description: Malformed request
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Reservation not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    TooManyRequests:
+      description: Rate limit exceeded at the gateway
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    AtpQuery:
+      type: object
+      required: [skus, region]
+      properties:
+        skus:
+          type: array
+          minItems: 1
+          items: { type: string }
+        region: { type: string, enum: [NA, LATAM, EU, APAC] }
+        postalCode: { type: string }
+    AtpResponse:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AtpLine'
+    AtpLine:
+      type: object
+      properties:
+        sku: { type: string }
+        availableQuantity: { type: integer }
+        availability:
+          type: string
+          enum: [in_stock, low_stock, out_of_stock]
+        nearestFulfillmentCenter: { type: string }
+    ReservationRequest:
+      type: object
+      required: [checkoutId, lines, ttlSeconds]
+      properties:
+        checkoutId: { type: string, format: uuid }
+        ttlSeconds: { type: integer, minimum: 30, maximum: 1800, default: 600 }
+        lines:
+          type: array
+          items:
+            type: object
+            properties:
+              sku: { type: string }
+              quantity: { type: integer, minimum: 1 }
+    Reservation:
+      type: object
+      required: [reservationId, status, expiresAt]
+      properties:
+        reservationId: { type: string, format: uuid }
+        status:
+          type: string
+          enum: [held, released, committed, expired]
+        expiresAt: { type: string, format: date-time }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, traceId]
+          properties:
+            code: { type: string, example: inventory.insufficient_atp }
+            message: { type: string }
+            traceId: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field: { type: string }
+                  issue: { type: string }

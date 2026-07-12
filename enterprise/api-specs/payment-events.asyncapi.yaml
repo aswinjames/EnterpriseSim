@@ -1,0 +1,101 @@
+asyncapi: 2.6.0
+info:
+  title: Payment Events
+  version: 1.0.0
+  description: >
+    Kafka event contract published by the Payments Service (APP-012), owned by TEAM-009.
+    Emits payment lifecycle events (PCI scope) consumed by Order Management (APP-009),
+    Wallet (APP-013) and the Data Platform (APP-020). Payloads carry only tokenized
+    references; no cardholder data (PAN) is ever published. Schemas evolve
+    backward-compatibly (CANON 4.8).
+defaultContentType: application/json
+servers:
+  production:
+    url: kafka.meridian.internal:9093
+    protocol: kafka-secure
+    description: Production Kafka backbone (mTLS, SASL, PCI-segmented topics).
+channels:
+  mcg.payments.authorized:
+    description: Emitted when a payment authorization is approved.
+    subscribe:
+      operationId: onPaymentAuthorized
+      message:
+        $ref: '#/components/messages/PaymentAuthorized'
+  mcg.payments.captured:
+    description: Emitted when authorized funds are captured.
+    subscribe:
+      operationId: onPaymentCaptured
+      message:
+        $ref: '#/components/messages/PaymentCaptured'
+  mcg.payments.refunded:
+    description: Emitted when a refund settles.
+    subscribe:
+      operationId: onPaymentRefunded
+      message:
+        $ref: '#/components/messages/PaymentRefunded'
+components:
+  messages:
+    PaymentAuthorized:
+      name: PaymentAuthorized
+      title: Payment Authorized
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/PaymentAuthorizedPayload'
+    PaymentCaptured:
+      name: PaymentCaptured
+      title: Payment Captured
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/PaymentCapturedPayload'
+    PaymentRefunded:
+      name: PaymentRefunded
+      title: Payment Refunded
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/PaymentRefundedPayload'
+  schemas:
+    EventEnvelope:
+      type: object
+      required: [eventId, eventType, occurredAt, source]
+      properties:
+        eventId: { type: string, format: uuid }
+        eventType: { type: string }
+        occurredAt: { type: string, format: date-time }
+        source: { type: string, example: APP-012 }
+        traceId: { type: string }
+    PaymentAuthorizedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [paymentId, orderRef, amount, currency]
+          properties:
+            paymentId: { type: string }
+            orderRef: { type: string }
+            amount: { type: number }
+            currency: { type: string }
+            paymentMethodToken:
+              type: string
+              description: PSP token reference only; never a raw PAN.
+            threeDsUsed: { type: boolean }
+    PaymentCapturedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [paymentId, orderRef, amount]
+          properties:
+            paymentId: { type: string }
+            orderRef: { type: string }
+            amount: { type: number }
+            currency: { type: string }
+    PaymentRefundedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [refundId, paymentId, amount, reason]
+          properties:
+            refundId: { type: string }
+            paymentId: { type: string }
+            amount: { type: number }
+            reason:
+              type: string
+              enum: [customer_return, cancellation, goodwill, chargeback]

@@ -1,0 +1,98 @@
+asyncapi: 2.6.0
+info:
+  title: Catalog Events
+  version: 1.0.0
+  description: >
+    Kafka event contract published by the Product Catalog Service (APP-005), owned by
+    TEAM-005. Emits product and offer change events consumed by Search (APP-006),
+    Storefront (APP-001), Pricing (APP-007) and the Data Platform (APP-020). Schemas
+    evolve backward-compatibly (CANON 4.8).
+defaultContentType: application/json
+servers:
+  production:
+    url: kafka.meridian.internal:9093
+    protocol: kafka-secure
+    description: Production Kafka backbone (mTLS, SASL).
+channels:
+  mcg.catalog.product-published:
+    description: Emitted when a product transitions to published.
+    subscribe:
+      operationId: onProductPublished
+      message:
+        $ref: '#/components/messages/ProductPublished'
+  mcg.catalog.product-updated:
+    description: Emitted when a published product's attributes change.
+    subscribe:
+      operationId: onProductUpdated
+      message:
+        $ref: '#/components/messages/ProductUpdated'
+  mcg.catalog.offer-updated:
+    description: Emitted when a 1P or 3P offer changes availability or condition.
+    subscribe:
+      operationId: onOfferUpdated
+      message:
+        $ref: '#/components/messages/OfferUpdated'
+components:
+  messages:
+    ProductPublished:
+      name: ProductPublished
+      title: Product Published
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ProductPublishedPayload'
+    ProductUpdated:
+      name: ProductUpdated
+      title: Product Updated
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ProductUpdatedPayload'
+    OfferUpdated:
+      name: OfferUpdated
+      title: Offer Updated
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/OfferUpdatedPayload'
+  schemas:
+    EventEnvelope:
+      type: object
+      required: [eventId, eventType, occurredAt, source]
+      properties:
+        eventId: { type: string, format: uuid }
+        eventType: { type: string }
+        occurredAt: { type: string, format: date-time }
+        source: { type: string, example: APP-005 }
+        traceId: { type: string }
+    ProductPublishedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [sku, title]
+          properties:
+            sku: { type: string }
+            title: { type: string }
+            brand: { type: string }
+            category: { type: string }
+    ProductUpdatedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [sku, changedFields]
+          properties:
+            sku: { type: string }
+            changedFields:
+              type: array
+              items: { type: string }
+    OfferUpdatedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [offerId, sku, availability]
+          properties:
+            offerId: { type: string }
+            sku: { type: string }
+            sellerType:
+              type: string
+              enum: [first_party, third_party]
+            availability:
+              type: string
+              enum: [in_stock, out_of_stock, preorder]

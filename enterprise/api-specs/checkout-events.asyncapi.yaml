@@ -1,0 +1,96 @@
+asyncapi: 2.6.0
+info:
+  title: Checkout Events
+  version: 1.0.0
+  description: >
+    Kafka event contract published by the Checkout Service (APP-003), owned by TEAM-004.
+    Emits checkout funnel events consumed by Marketing Automation (APP-016), Retail Media
+    (APP-022) and the Data Platform (APP-020) for conversion analytics. Schemas evolve
+    backward-compatibly (CANON 4.8).
+defaultContentType: application/json
+servers:
+  production:
+    url: kafka.meridian.internal:9093
+    protocol: kafka-secure
+    description: Production Kafka backbone (mTLS, SASL).
+channels:
+  mcg.checkout.started:
+    description: Emitted when a checkout session is created from a cart.
+    subscribe:
+      operationId: onCheckoutStarted
+      message:
+        $ref: '#/components/messages/CheckoutStarted'
+  mcg.checkout.completed:
+    description: Emitted when a checkout results in a placed order.
+    subscribe:
+      operationId: onCheckoutCompleted
+      message:
+        $ref: '#/components/messages/CheckoutCompleted'
+  mcg.checkout.abandoned:
+    description: Emitted when a checkout session expires without an order.
+    subscribe:
+      operationId: onCheckoutAbandoned
+      message:
+        $ref: '#/components/messages/CheckoutAbandoned'
+components:
+  messages:
+    CheckoutStarted:
+      name: CheckoutStarted
+      title: Checkout Started
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CheckoutStartedPayload'
+    CheckoutCompleted:
+      name: CheckoutCompleted
+      title: Checkout Completed
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CheckoutCompletedPayload'
+    CheckoutAbandoned:
+      name: CheckoutAbandoned
+      title: Checkout Abandoned
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CheckoutAbandonedPayload'
+  schemas:
+    EventEnvelope:
+      type: object
+      required: [eventId, eventType, occurredAt, source]
+      properties:
+        eventId: { type: string, format: uuid }
+        eventType: { type: string }
+        occurredAt: { type: string, format: date-time }
+        source: { type: string, example: APP-003 }
+        traceId: { type: string }
+    CheckoutStartedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [checkoutId, cartId]
+          properties:
+            checkoutId: { type: string, format: uuid }
+            cartId: { type: string, format: uuid }
+            customerId: { type: string }
+            region: { type: string, enum: [NA, LATAM, EU, APAC] }
+            grandTotal: { type: number }
+    CheckoutCompletedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [checkoutId, orderId]
+          properties:
+            checkoutId: { type: string, format: uuid }
+            orderId: { type: string }
+            grandTotal: { type: number }
+            currency: { type: string }
+    CheckoutAbandonedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [checkoutId, lastStage]
+          properties:
+            checkoutId: { type: string, format: uuid }
+            cartId: { type: string, format: uuid }
+            lastStage:
+              type: string
+              enum: [open, payment, review]

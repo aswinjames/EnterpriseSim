@@ -1,0 +1,158 @@
+openapi: 3.1.0
+info:
+  title: Loyalty (Meridian Rewards) API
+  version: 1.0.0
+  description: >
+    Points, tiers and rewards for the Meridian Rewards program. Owned by TEAM-011
+    (Loyalty), backing APP-015. Exposes member balances, points accrual/redemption and
+    tier status. Consumes order events from OMS (APP-009) for accrual and reads identity
+    from Identity (APP-014). Ingress via API Gateway (APP-024).
+  contact:
+    name: Loyalty Squad
+    email: team-loyalty@meridian.example
+servers:
+  - url: https://api.meridian.com/loyalty/v1
+    description: Production (via API Gateway APP-024)
+security:
+  - bearerAuth: []
+tags:
+  - name: members
+  - name: points
+paths:
+  /members/{customerId}:
+    get:
+      operationId: getMember
+      summary: Get a loyalty member's status
+      tags: [members]
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+      responses:
+        '200':
+          description: Member status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /members/{customerId}/points:
+    get:
+      operationId: listPointsHistory
+      summary: List points ledger entries (paginated)
+      tags: [points]
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/PageToken'
+      responses:
+        '200':
+          description: Points ledger page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PointsPage'
+  /members/{customerId}/points:redeem:
+    post:
+      operationId: redeemPoints
+      summary: Redeem points for a reward
+      tags: [points]
+      parameters:
+        - $ref: '#/components/parameters/CustomerId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [points, rewardId]
+              properties:
+                points: { type: integer, minimum: 1 }
+                rewardId: { type: string }
+      responses:
+        '200':
+          description: Points redeemed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+        '409':
+          description: Insufficient points balance
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    CustomerId:
+      name: customerId
+      in: path
+      required: true
+      schema: { type: string }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+    PageSize:
+      name: page_size
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 25 }
+    PageToken:
+      name: page_token
+      in: query
+      schema: { type: string }
+  responses:
+    NotFound:
+      description: Member not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    Member:
+      type: object
+      required: [customerId, tier, pointsBalance]
+      properties:
+        customerId: { type: string }
+        tier:
+          type: string
+          enum: [bronze, silver, gold, platinum]
+        pointsBalance: { type: integer }
+        tierExpiresAt: { type: string, format: date-time }
+    PointsPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              entryId: { type: string }
+              type: { type: string, enum: [earned, redeemed, expired, adjusted] }
+              points: { type: integer }
+              orderRef: { type: string }
+              occurredAt: { type: string, format: date-time }
+        nextPageToken: { type: string }
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, traceId]
+          properties:
+            code: { type: string, example: loyalty.insufficient_points }
+            message: { type: string }
+            traceId: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field: { type: string }
+                  issue: { type: string }

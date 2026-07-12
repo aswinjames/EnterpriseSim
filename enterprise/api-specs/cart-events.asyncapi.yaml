@@ -1,0 +1,76 @@
+asyncapi: 2.6.0
+info:
+  title: Cart Events
+  version: 1.0.0
+  description: >
+    Kafka event contract published by the Cart Service (APP-004), owned by TEAM-004.
+    Emits cart activity events consumed by Marketing Automation (APP-016), the Data
+    Platform (APP-020) and Search (APP-006) for behavioral signals. Schemas evolve
+    backward-compatibly (CANON 4.8).
+defaultContentType: application/json
+servers:
+  production:
+    url: kafka.meridian.internal:9093
+    protocol: kafka-secure
+    description: Production Kafka backbone (mTLS, SASL).
+channels:
+  mcg.cart.updated:
+    description: Emitted when a cart's line items change.
+    subscribe:
+      operationId: onCartUpdated
+      message:
+        $ref: '#/components/messages/CartUpdated'
+  mcg.cart.abandoned:
+    description: Emitted when a cart is inactive past the abandonment threshold.
+    subscribe:
+      operationId: onCartAbandoned
+      message:
+        $ref: '#/components/messages/CartAbandoned'
+components:
+  messages:
+    CartUpdated:
+      name: CartUpdated
+      title: Cart Updated
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CartUpdatedPayload'
+    CartAbandoned:
+      name: CartAbandoned
+      title: Cart Abandoned
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CartAbandonedPayload'
+  schemas:
+    EventEnvelope:
+      type: object
+      required: [eventId, eventType, occurredAt, source]
+      properties:
+        eventId: { type: string, format: uuid }
+        eventType: { type: string }
+        occurredAt: { type: string, format: date-time }
+        source: { type: string, example: APP-004 }
+        traceId: { type: string }
+    CartUpdatedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [cartId, itemCount, subtotal]
+          properties:
+            cartId: { type: string, format: uuid }
+            customerId: { type: string }
+            itemCount: { type: integer }
+            subtotal: { type: number }
+            currency: { type: string }
+    CartAbandonedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [cartId, lastActivityAt]
+          properties:
+            cartId: { type: string, format: uuid }
+            customerId: { type: string }
+            lastActivityAt: { type: string, format: date-time }
+            subtotal: { type: number }
+            skus:
+              type: array
+              items: { type: string }

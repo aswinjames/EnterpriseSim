@@ -1,0 +1,74 @@
+asyncapi: 2.6.0
+info:
+  title: Customer Identity Events
+  version: 1.0.0
+  description: >
+    Kafka event contract published by the Identity & Customer Profile Service (APP-014),
+    owned by TEAM-014. Emits customer registration and profile change events consumed by
+    Loyalty (APP-015), Marketing Automation (APP-016), Notifications (APP-023) and the
+    Data Platform (APP-020). Payloads are PII-classified and access-controlled at the
+    topic level; only minimal identifiers are published. Schemas evolve
+    backward-compatibly (CANON 4.8).
+defaultContentType: application/json
+servers:
+  production:
+    url: kafka.meridian.internal:9093
+    protocol: kafka-secure
+    description: Production Kafka backbone (mTLS, SASL, PII-restricted topics).
+channels:
+  mcg.customers.registered:
+    description: Emitted when a new customer completes registration.
+    subscribe:
+      operationId: onCustomerRegistered
+      message:
+        $ref: '#/components/messages/CustomerRegistered'
+  mcg.customers.profile-updated:
+    description: Emitted when a customer updates profile or consent settings.
+    subscribe:
+      operationId: onProfileUpdated
+      message:
+        $ref: '#/components/messages/ProfileUpdated'
+components:
+  messages:
+    CustomerRegistered:
+      name: CustomerRegistered
+      title: Customer Registered
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/CustomerRegisteredPayload'
+    ProfileUpdated:
+      name: ProfileUpdated
+      title: Profile Updated
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ProfileUpdatedPayload'
+  schemas:
+    EventEnvelope:
+      type: object
+      required: [eventId, eventType, occurredAt, source]
+      properties:
+        eventId: { type: string, format: uuid }
+        eventType: { type: string }
+        occurredAt: { type: string, format: date-time }
+        source: { type: string, example: APP-014 }
+        traceId: { type: string }
+    CustomerRegisteredPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [customerId, region]
+          properties:
+            customerId: { type: string }
+            region: { type: string, enum: [NA, LATAM, EU, APAC] }
+            marketingConsent: { type: boolean }
+    ProfileUpdatedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [customerId, changedFields]
+          properties:
+            customerId: { type: string }
+            changedFields:
+              type: array
+              items: { type: string }
+            marketingConsent: { type: boolean }

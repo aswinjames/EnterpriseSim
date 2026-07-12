@@ -1,0 +1,99 @@
+asyncapi: 2.6.0
+info:
+  title: Notification Events
+  version: 1.0.0
+  description: >
+    Kafka event contract for the Notifications Service (APP-023), owned by TEAM-019. The
+    service consumes NotificationRequested commands from any producing domain and emits
+    NotificationDelivered / NotificationFailed events consumed by the Data Platform
+    (APP-020) and originating services for delivery tracking. Schemas evolve
+    backward-compatibly (CANON 4.8).
+defaultContentType: application/json
+servers:
+  production:
+    url: kafka.meridian.internal:9093
+    protocol: kafka-secure
+    description: Production Kafka backbone (mTLS, SASL).
+channels:
+  mcg.notifications.requested:
+    description: Command consumed by Notifications to send a transactional message.
+    publish:
+      operationId: requestNotification
+      message:
+        $ref: '#/components/messages/NotificationRequested'
+  mcg.notifications.delivered:
+    description: Emitted when a notification is confirmed delivered by the channel provider.
+    subscribe:
+      operationId: onNotificationDelivered
+      message:
+        $ref: '#/components/messages/NotificationDelivered'
+  mcg.notifications.failed:
+    description: Emitted when delivery permanently fails after retries.
+    subscribe:
+      operationId: onNotificationFailed
+      message:
+        $ref: '#/components/messages/NotificationFailed'
+components:
+  messages:
+    NotificationRequested:
+      name: NotificationRequested
+      title: Notification Requested
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/NotificationRequestedPayload'
+    NotificationDelivered:
+      name: NotificationDelivered
+      title: Notification Delivered
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/NotificationDeliveredPayload'
+    NotificationFailed:
+      name: NotificationFailed
+      title: Notification Failed
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/NotificationFailedPayload'
+  schemas:
+    EventEnvelope:
+      type: object
+      required: [eventId, eventType, occurredAt, source]
+      properties:
+        eventId: { type: string, format: uuid }
+        eventType: { type: string }
+        occurredAt: { type: string, format: date-time }
+        source: { type: string, example: APP-023 }
+        traceId: { type: string }
+    NotificationRequestedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [notificationId, channel, template, recipientRef]
+          properties:
+            notificationId: { type: string, format: uuid }
+            channel: { type: string, enum: [email, sms, push] }
+            template: { type: string, example: order_shipped }
+            recipientRef:
+              type: string
+              description: Customer id reference; contact details are resolved internally.
+            data:
+              type: object
+              additionalProperties: { type: string }
+    NotificationDeliveredPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [notificationId, channel]
+          properties:
+            notificationId: { type: string, format: uuid }
+            channel: { type: string, enum: [email, sms, push] }
+            providerMessageId: { type: string }
+    NotificationFailedPayload:
+      allOf:
+        - $ref: '#/components/schemas/EventEnvelope'
+        - type: object
+          required: [notificationId, reason]
+          properties:
+            notificationId: { type: string, format: uuid }
+            reason:
+              type: string
+              enum: [bounced, unsubscribed, invalid_recipient, provider_error]
