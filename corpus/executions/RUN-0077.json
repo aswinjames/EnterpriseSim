@@ -1,0 +1,263 @@
+{
+  "run_id": "RUN-0077",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-05-12T09:00:00Z",
+  "worker": "software-engineering-worker",
+  "task": {
+    "type": "feature",
+    "ref": "POR-643",
+    "app": "APP-021",
+    "repo": "mcg-customer-portal",
+    "sprint": 10,
+    "family": "returns-portal"
+  },
+  "knowledge_retrieved": [
+    "KN-310",
+    "KN-201"
+  ],
+  "experience_retrieved": [
+    "EXP-208"
+  ],
+  "prior_executions": [
+    "RUN-0067"
+  ],
+  "context": {
+    "id": "CTX-1077",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-12T09:00:00Z",
+    "task": {
+      "type": "jira_story",
+      "ref": "POR-643",
+      "app": "APP-021",
+      "repo": "mcg-customer-portal"
+    },
+    "intent_ref": "PLAN-1077",
+    "model_budget": {
+      "window_tokens": 200000,
+      "reserved_output": 8000
+    },
+    "included": [
+      {
+        "source": "KN-310",
+        "kind": "knowledge",
+        "reason": "relevant returns-portal rule/doc",
+        "score": 0.83
+      },
+      {
+        "source": "KN-201",
+        "kind": "knowledge",
+        "reason": "relevant returns-portal rule/doc",
+        "score": 0.83
+      },
+      {
+        "source": "EXP-208",
+        "kind": "experience",
+        "reason": "prior returns-portal lesson",
+        "score": 0.8
+      }
+    ],
+    "excluded": [
+      {
+        "source": "KN-047",
+        "kind": "knowledge",
+        "reason": "lower-relevance doc dropped for budget",
+        "score": 0.4
+      }
+    ],
+    "coverage_confidence": 0.63,
+    "signals": {
+      "hit_ratio": 0.67,
+      "budget_utilization": 0.55,
+      "staleness_index": 0.1
+    }
+  },
+  "decision": {
+    "id": "DEC-0077",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-12T11:00:00Z",
+    "plan": "PLAN-1077",
+    "choice": "proceed",
+    "rationale": "Applied EXP-208; fused confidence adequate.",
+    "fused_confidence": 0.72,
+    "inputs": {
+      "context": 0.63,
+      "knowledge": 0.75,
+      "experience": 0.74,
+      "evaluation": 0.74
+    },
+    "worker": "software-engineering-worker",
+    "trace_seq": 1
+  },
+  "plan": {
+    "id": "PLAN-1077",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-12T10:00:00Z",
+    "task": "POR-643",
+    "app": "APP-021",
+    "intent": "Feature for returns-portal: Returns-eligibility rules need a golden-case suite across or",
+    "success_criteria": [
+      "Task acceptance criteria met.",
+      "No regression of the known failure class.",
+      "Applies prior lesson EXP-208"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "action": "analyze returns-portal change site",
+        "tool": "repo"
+      },
+      {
+        "n": 2,
+        "action": "implement returns-portal change",
+        "tool": "repo"
+      },
+      {
+        "n": 3,
+        "action": "add regression test for Returns-eligibility rules need a golden-",
+        "tool": "repo"
+      },
+      {
+        "n": 4,
+        "action": "run tests",
+        "tool": "ci",
+        "expect": "TR pass"
+      },
+      {
+        "n": 5,
+        "action": "open PR",
+        "tool": "github"
+      }
+    ],
+    "rollback": "Feature-flag or revert; expand-contract migration if schema touched.",
+    "risk_tier": 1,
+    "routing": {
+      "model_class": "balanced",
+      "reason": "tier 1 returns-portal change"
+    },
+    "applied_experience": [
+      "EXP-208"
+    ]
+  },
+  "execution": {
+    "id": "EXE-0077",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-13T14:00:00Z",
+    "plan": "PLAN-1077",
+    "step": 5,
+    "tool": "github",
+    "directives": {
+      "open_pr": true
+    },
+    "artifacts": [
+      {
+        "id": "PR-6077",
+        "schema_version": "2020-12.v1",
+        "created_at": "2026-05-13T14:00:00Z",
+        "artifact_type": "pull_request",
+        "ref": "PR-6077",
+        "uri": "mcg-customer-portal#6077",
+        "repo": "mcg-customer-portal"
+      }
+    ],
+    "status": "succeeded",
+    "worker": "software-engineering-worker",
+    "run_id": "RUN-0077"
+  },
+  "evaluation": {
+    "id": "EVAL-1077",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-14T12:00:00Z",
+    "execution": "PR-6077",
+    "plan": "PLAN-1077",
+    "task": "POR-643",
+    "rubric": {
+      "id": "RUBRIC-feature",
+      "version": 2
+    },
+    "objective": [
+      {
+        "gate": "unit_tests",
+        "result": "pass",
+        "evidence": "TR-7077",
+        "weight": 0.3
+      },
+      {
+        "gate": "coverage",
+        "result": "pass",
+        "value": 0.81,
+        "threshold": 0.8,
+        "evidence": "TR-7077",
+        "weight": 0.2
+      },
+      {
+        "gate": "dependency_rule",
+        "result": "pass",
+        "weight": 0.2
+      },
+      {
+        "gate": "security_scan",
+        "result": "pass",
+        "weight": 0.15
+      },
+      {
+        "gate": "regression_check",
+        "result": "pass",
+        "weight": 0.15
+      }
+    ],
+    "rubric_items": [
+      {
+        "item": "returns-portal change is correct and maintainable",
+        "result": "pass",
+        "evidence": "reviewer notes",
+        "judgment_confidence": 0.82
+      }
+    ],
+    "verdict": {
+      "outcome": "pass",
+      "score": 0.74,
+      "outcome_confidence": 0.76,
+      "judgment_confidence": 0.82
+    },
+    "regression_check": {
+      "reintroduced_defect": false,
+      "checked_against": [
+        "EXP-208"
+      ]
+    }
+  },
+  "reflection": {
+    "id": "REF-1077",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-14T16:00:00Z",
+    "evaluation": "EVAL-1077",
+    "execution": "PR-6077",
+    "plan": "PLAN-1077",
+    "what_happened": "returns-portal task succeeded, applying accumulated experience.",
+    "root_cause": {
+      "category": "missing_experience",
+      "detail": "Applying EXP-208 kept the returns-portal failure class from recurring; loop closed.",
+      "confidence": 0.83
+    },
+    "lessons": [],
+    "policy_updates": [],
+    "loop_closed_by": "PR-6077"
+  },
+  "experience_update": {
+    "action": "reinforced",
+    "experience": "EXP-208",
+    "delta": {
+      "application_frequency_inc": 1,
+      "outcome": "pass"
+    }
+  },
+  "confidence": {
+    "context_coverage": 0.63,
+    "knowledge_authority": 0.75,
+    "experience_applicability": 0.74,
+    "evaluation_outcome": 0.74,
+    "evaluation_judgment": 0.82,
+    "fused": 0.72
+  },
+  "outcome": "pass"
+}

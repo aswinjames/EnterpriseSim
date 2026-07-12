@@ -1,0 +1,256 @@
+{
+  "run_id": "RUN-0075",
+  "schema_version": "2020-12.v1",
+  "created_at": "2026-05-12T09:00:00Z",
+  "worker": "software-engineering-worker",
+  "task": {
+    "type": "feature",
+    "ref": "PRC-1133",
+    "app": "APP-007",
+    "repo": "mcg-pricing-service",
+    "sprint": 10,
+    "family": "pricing-regional"
+  },
+  "knowledge_retrieved": [
+    "KN-100",
+    "KN-303"
+  ],
+  "experience_retrieved": [
+    "EXP-201"
+  ],
+  "prior_executions": [
+    "RUN-0065"
+  ],
+  "context": {
+    "id": "CTX-1075",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-12T09:00:00Z",
+    "task": {
+      "type": "jira_story",
+      "ref": "PRC-1133",
+      "app": "APP-007",
+      "repo": "mcg-pricing-service"
+    },
+    "intent_ref": "PLAN-1075",
+    "model_budget": {
+      "window_tokens": 200000,
+      "reserved_output": 8000
+    },
+    "included": [
+      {
+        "source": "KN-100",
+        "kind": "knowledge",
+        "reason": "relevant pricing-regional rule/doc",
+        "score": 0.9
+      },
+      {
+        "source": "KN-303",
+        "kind": "knowledge",
+        "reason": "relevant pricing-regional rule/doc",
+        "score": 0.9
+      },
+      {
+        "source": "EXP-201",
+        "kind": "experience",
+        "reason": "prior pricing-regional lesson",
+        "score": 0.9
+      }
+    ],
+    "excluded": [],
+    "coverage_confidence": 0.96,
+    "signals": {
+      "hit_ratio": 0.9,
+      "budget_utilization": 0.45,
+      "staleness_index": 0.1
+    }
+  },
+  "decision": {
+    "id": "DEC-0075",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-12T11:00:00Z",
+    "plan": "PLAN-1075",
+    "choice": "proceed",
+    "rationale": "Applied EXP-201; fused confidence adequate.",
+    "fused_confidence": 0.95,
+    "inputs": {
+      "context": 0.96,
+      "knowledge": 0.93,
+      "experience": 0.9,
+      "evaluation": 1.0
+    },
+    "worker": "software-engineering-worker",
+    "trace_seq": 1
+  },
+  "plan": {
+    "id": "PLAN-1075",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-12T10:00:00Z",
+    "task": "PRC-1133",
+    "app": "APP-007",
+    "intent": "Feature for pricing-regional: Regional rounding rules must be validated per-currency befor",
+    "success_criteria": [
+      "Task acceptance criteria met.",
+      "No regression of the known failure class.",
+      "Applies prior lesson EXP-201"
+    ],
+    "steps": [
+      {
+        "n": 1,
+        "action": "analyze pricing-regional change site",
+        "tool": "repo"
+      },
+      {
+        "n": 2,
+        "action": "implement pricing-regional change",
+        "tool": "repo"
+      },
+      {
+        "n": 3,
+        "action": "add regression test for Regional rounding rules must be validate",
+        "tool": "repo"
+      },
+      {
+        "n": 4,
+        "action": "run tests",
+        "tool": "ci",
+        "expect": "TR pass"
+      },
+      {
+        "n": 5,
+        "action": "open PR",
+        "tool": "github"
+      }
+    ],
+    "rollback": "Feature-flag or revert; expand-contract migration if schema touched.",
+    "risk_tier": 0,
+    "routing": {
+      "model_class": "high-reasoning",
+      "reason": "tier 0 pricing-regional change"
+    },
+    "applied_experience": [
+      "EXP-201"
+    ]
+  },
+  "execution": {
+    "id": "EXE-0075",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-13T14:00:00Z",
+    "plan": "PLAN-1075",
+    "step": 5,
+    "tool": "github",
+    "directives": {
+      "open_pr": true
+    },
+    "artifacts": [
+      {
+        "id": "PR-6075",
+        "schema_version": "2020-12.v1",
+        "created_at": "2026-05-13T14:00:00Z",
+        "artifact_type": "pull_request",
+        "ref": "PR-6075",
+        "uri": "mcg-pricing-service#6075",
+        "repo": "mcg-pricing-service"
+      }
+    ],
+    "status": "succeeded",
+    "worker": "software-engineering-worker",
+    "run_id": "RUN-0075"
+  },
+  "evaluation": {
+    "id": "EVAL-1075",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-14T12:00:00Z",
+    "execution": "PR-6075",
+    "plan": "PLAN-1075",
+    "task": "PRC-1133",
+    "rubric": {
+      "id": "RUBRIC-feature",
+      "version": 2
+    },
+    "objective": [
+      {
+        "gate": "unit_tests",
+        "result": "pass",
+        "evidence": "TR-7075",
+        "weight": 0.3
+      },
+      {
+        "gate": "coverage",
+        "result": "pass",
+        "value": 0.88,
+        "threshold": 0.8,
+        "evidence": "TR-7075",
+        "weight": 0.2
+      },
+      {
+        "gate": "dependency_rule",
+        "result": "pass",
+        "weight": 0.2
+      },
+      {
+        "gate": "security_scan",
+        "result": "pass",
+        "weight": 0.15
+      },
+      {
+        "gate": "regression_check",
+        "result": "pass",
+        "weight": 0.15
+      }
+    ],
+    "rubric_items": [
+      {
+        "item": "pricing-regional change is correct and maintainable",
+        "result": "pass",
+        "evidence": "reviewer notes",
+        "judgment_confidence": 0.9
+      }
+    ],
+    "verdict": {
+      "outcome": "pass",
+      "score": 1.0,
+      "outcome_confidence": 1.0,
+      "judgment_confidence": 0.9
+    },
+    "regression_check": {
+      "reintroduced_defect": false,
+      "checked_against": [
+        "EXP-201"
+      ]
+    }
+  },
+  "reflection": {
+    "id": "REF-1075",
+    "schema_version": "2020-12.v1",
+    "created_at": "2026-05-14T16:00:00Z",
+    "evaluation": "EVAL-1075",
+    "execution": "PR-6075",
+    "plan": "PLAN-1075",
+    "what_happened": "pricing-regional task succeeded, applying accumulated experience.",
+    "root_cause": {
+      "category": "missing_experience",
+      "detail": "Applying EXP-201 kept the pricing-regional failure class from recurring; loop closed.",
+      "confidence": 0.9
+    },
+    "lessons": [],
+    "policy_updates": [],
+    "loop_closed_by": "PR-6075"
+  },
+  "experience_update": {
+    "action": "reinforced",
+    "experience": "EXP-201",
+    "delta": {
+      "application_frequency_inc": 1,
+      "outcome": "pass"
+    }
+  },
+  "confidence": {
+    "context_coverage": 0.96,
+    "knowledge_authority": 0.93,
+    "experience_applicability": 0.9,
+    "evaluation_outcome": 1.0,
+    "evaluation_judgment": 0.9,
+    "fused": 0.95
+  },
+  "outcome": "pass"
+}
