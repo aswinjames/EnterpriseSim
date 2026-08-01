@@ -48,8 +48,19 @@ Twelve top-level folders, but they group into four ideas — think *building a g
 | 📊 **Score it** | [`benchmarks/`](benchmarks/), [`corpus/`](corpus/) | 13 scoring suites + 100 recorded runs of a Worker improving over time |
 | 📚 **Planning & docs** | [`docs/`](docs/), [`ecosystem/`](ecosystem/), [`research/`](research/), [`review/`](review/), [`evolution/`](evolution/), [`tools/`](tools/) | ADRs/RFCs, the V2 open-standards vision, studies, sprint history — safe to skip at first |
 
-> **New here?** Start with [`CANON.md`](CANON.md) (the world) → skim a run in
-> [`corpus/`](corpus/) → then the [examples](#getting-started--examples) below.
+> **New here?** Run the [10-minute quickstart](examples/quickstart/) (no deps, no API
+> key) → skim [`CANON.md`](CANON.md) (the world) and a run in [`corpus/`](corpus/) → then
+> the [examples](#getting-started--examples) below.
+
+### Try it in one command
+
+```bash
+python examples/quickstart/run_quickstart.py
+```
+
+Runs a baseline Worker against a real benchmark case (`BC-0101`, context assembly) and
+prints an objective score — deterministic, zero dependencies. It scores **0.79 (PARTIAL)**,
+just under the pass bar: your baseline to beat. See [`examples/quickstart/`](examples/quickstart/).
 
 ---
 
