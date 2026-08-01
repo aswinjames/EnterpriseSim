@@ -1,14 +1,55 @@
 # EnterpriseSim
 
-> **The Open Benchmark for Enterprise AI Workers.**
->
-> A fully fictional but engineering-realistic Fortune 500 enterprise you can drop AI
-> agents into — so you can **build, run, and _measure_ how well an AI "worker" does real
-> enterprise software-engineering work, independent of which model sits underneath.**
+> **A benchmark for AI agents on a _realistic enterprise_ — measuring the agent, not the
+> model, and whether it actually _learns_ over time. Reproducible, and with zero data risk.**
 
-EnterpriseSim optimizes for **software-engineering realism, not business realism**. It
-provides a coherent, versioned world (a fictional omnichannel retailer), a record of AI
-workers operating inside it, and a reproducible benchmark for scoring them.
+Coding benchmarks test agents on isolated, toy repositories. Real enterprises are the
+opposite: legacy debt, cross-team dependencies, incidents, governance rules, half-strangled
+monoliths. **EnterpriseSim is a coherent, fictional Fortune 500 you can drop an AI agent
+into — plus a fair scoreboard to prove how well it does the work.**
+
+---
+
+## Why use it
+
+- **A realistic enterprise, already built.** A believable fake company — 24 apps, 30 teams,
+  internally-consistent Jira, PRs, incidents, and API specs that all reference each other
+  correctly — is months of work. It's here, done, and enforced by a single canon. Point your
+  agent at it today.
+- **It measures the _agent_, not the model.** Swap Claude → GPT → Gemini underneath the same
+  agent and get comparable scores — so you can answer *"does my agent architecture add value
+  beyond the raw LLM?"* and *"which model is best for my agent?"*
+- **It measures _learning over time_.** A 100-run reference corpus and the benchmark are built
+  to show whether an agent improves as it accumulates experience — not just one-shot accuracy.
+- **Results are reproducible.** Frozen test cases + recorded model/seed/version + deterministic
+  replay = a number you can trust and compare fairly.
+- **Zero data risk.** Everything is 100% synthetic — demo it, publish results, reason about
+  enterprise scenarios without touching any real company or customer data.
+
+**Who it's for:** agent builders who need a hard, realistic proving ground · evaluators &
+buyers comparing agents on enterprise-shaped work · researchers testing whether agent
+memory / reflection actually helps.
+
+> **Status — read this first.** V1 ships as **data + schemas + interface contracts** (the
+> world, the corpus, the schemas, the benchmark spec). There is **no turnkey runner yet** —
+> today you wire the contracts to your own model/runtime. A reference runtime is on the
+> roadmap. See [Status](#status).
+
+---
+
+## Find your way around (4 buckets)
+
+Twelve top-level folders, but they group into four ideas — think *building a game to test AI players*:
+
+| Bucket | Folders | In plain terms |
+|---|---|---|
+| 🌍 **The world** | [`CANON.md`](CANON.md), [`enterprise/`](enterprise/) | The rulebook + the populated fictional company (Jira, PRs, incidents, specs) |
+| 🤖 **Build an agent** | [`sdk/`](sdk/), [`schemas/`](schemas/), [`connectors/`](connectors/) | The contracts you implement to create a "Worker," and the data shapes it must produce |
+| 📊 **Score it** | [`benchmarks/`](benchmarks/), [`corpus/`](corpus/) | 13 scoring suites + 100 recorded runs of a Worker improving over time |
+| 📚 **Planning & docs** | [`docs/`](docs/), [`ecosystem/`](ecosystem/), [`research/`](research/), [`review/`](review/), [`evolution/`](evolution/), [`tools/`](tools/) | ADRs/RFCs, the V2 open-standards vision, studies, sprint history — safe to skip at first |
+
+> **New here?** Start with [`CANON.md`](CANON.md) (the world) → skim a run in
+> [`corpus/`](corpus/) → then the [examples](#getting-started--examples) below.
 
 ---
 
