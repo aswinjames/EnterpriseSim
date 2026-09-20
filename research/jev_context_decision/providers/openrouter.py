@@ -60,8 +60,6 @@ def post_json(path: str, payload: Mapping[str, Any], api_key: str, timeout: floa
         headers={
             "Content-Type": "application/json",
             "Authorization": f"Bearer {api_key}",
-            # Recommended (not required) by OpenRouter for attribution/rankings.
-            "HTTP-Referer": "https://github.com/aswinjames/EnterpriseSim",
             "X-Title": "EnterpriseSim jev_context_decision experiment",
         },
     )

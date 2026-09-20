@@ -1,9 +1,7 @@
 # Semantic Experience Similarity
 
-> **Proprietary — Bytesurge Runtime research. Not part of EnterpriseSim; not Apache-2.0.**
->
-> This document designs a core Bytesurge algorithm. It is proprietary and is **not** governed
-> by EnterpriseSim's Apache-2.0 license. See [`NOTICE.md`](NOTICE.md).
+> This document is part of EnterpriseSim's reference-runtime algorithm research (see
+> [`README.md`](README.md) and [`NOTICE.md`](NOTICE.md)).
 
 | Field | Value |
 |---|---|
@@ -21,7 +19,7 @@
 `RFC-0004` fixes the retrieval contract: `retrieve(situation: SituationDescriptor, top_k)` returns
 `Sequence[ExperienceMatch]`, each wrapping an `ExperienceObject` with **two separate** `Confidence`
 scores — `applicability` (how well this lesson fits the situation) and `value` (its demonstrated
-worth, dominated by measured outcome lift). `RFC-0004` is emphatic on one point Bytesurge must
+worth, dominated by measured outcome lift). `RFC-0004` is emphatic on one point the runtime must
 honor above all: matching is **structural, not merely semantic** (`ADR-0019`). "Same app + same
 failure class" beats "sounds similar," because pure semantic similarity is precisely what causes a
 narrow lesson to be misapplied to a superficially-similar-but-different situation — the
@@ -33,7 +31,7 @@ The input is a `SituationDescriptor` — `task_type` (e.g. `feature_change`), `a
 `ExperienceObject` mirrors this in its required `situation` block, so incoming situation and stored
 lesson are compared on the same structural keys.
 
-Bytesurge must therefore design a similarity function and retrieval index that:
+The runtime must therefore design a similarity function and retrieval index that:
 
 1. compute **structural applicability** dominated by exact/graded agreement on `task_type`, `apps`,
    `failure_class`, with semantic similarity as a *secondary* signal, not the primary one;
@@ -174,7 +172,7 @@ Cross-cutting tensions:
 
 - **Cold start (value).** A young corpus has lessons with no `outcome_lift`; ranking degenerates to
   structural applicability + corroboration until history accumulates (`RFC-0004` §5 acknowledges
-  this). Bytesurge must capture aggressively to warm it.
+  this). The runtime must capture aggressively to warm it.
 - **Structural-block quality dependence.** If Reflection (`RFC-0016`) captures a weak/inconsistent
   `situation` block, structural matching degrades toward the semantic guessing it was meant to avoid
   (`RFC-0004` §5). Garbage structure in, overfitting out.
@@ -269,7 +267,7 @@ The `ExperienceMatch` and the lesson's mandatory `evidence` lineage are the audi
 
 ## 9. Recommendation
 
-Bytesurge should adopt the **hybrid gated matcher with value-weighted retrieval and per-class
+The recommended approach is the **hybrid gated matcher with value-weighted retrieval and per-class
 decay**:
 
 1. **Structural pre-filter first** on `task_type` and `failure_class`, with **graded `apps`

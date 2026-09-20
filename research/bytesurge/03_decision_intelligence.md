@@ -1,9 +1,7 @@
 # Decision Intelligence
 
-> **Proprietary — Bytesurge Runtime research. Not part of EnterpriseSim; not Apache-2.0.**
->
-> This document designs a core Bytesurge algorithm. It is proprietary and is **not** governed
-> by EnterpriseSim's Apache-2.0 license. See [`NOTICE.md`](NOTICE.md).
+> This document is part of EnterpriseSim's reference-runtime algorithm research (see
+> [`README.md`](README.md) and [`NOTICE.md`](NOTICE.md)).
 
 | Field | Value |
 |---|---|
@@ -24,12 +22,12 @@ DecisionObject`, and `trace(run_id) -> Sequence[DecisionObject]` — driving the
 **Interpret → Plan → Route → Reason → Act → Evaluate → Decide**. Each `decide` turn must emit an
 immutable `DecisionObject` whose `choice` is a `Control` value (`proceed`, `re-retrieve`, `replan`,
 `retry`, `escalate`, `abort`), carrying a fused confidence, a rationale, and the per-layer
-confidences fused (`ADR-0021`). Bytesurge must design the **control policy** that lives inside
+confidences fused (`ADR-0021`). The runtime must design the **control policy** that lives inside
 `decide` — the logic that turns `(plan, context, evaluation)` into the next `Control`.
 
 The contract fixes the loop's *shape* and delegates the pieces: planning to `RFC-0008`, confidence
 math to `sdk.decision.ConfidencePolicy` (`RFC-0009`), model selection to the Router (`RFC-0010`),
-guardrails to `sdk.decision.PolicyGuard` (`RFC-0030`). What remains open — and what Bytesurge owns —
+guardrails to `sdk.decision.PolicyGuard` (`RFC-0030`). What remains open — and what the runtime owns —
 is the **orchestration algorithm** that sequences these under three hard constraints from `ARCH-06`:
 
 1. **Confidence-gated autonomy** (`ADR-0014`) — never take a high-stakes action at low fused
@@ -262,7 +260,7 @@ self-explaining.
 
 ## 9. Recommendation
 
-Bytesurge should adopt a **guarded behavior-tree / FSM controller with deterministic confidence-and-
+The recommended approach is a **guarded behavior-tree / FSM controller with deterministic confidence-and-
 policy gates, extensible to a learned proposer**:
 
 1. **Core driver: an explicit behavior tree over the `ARCH-06` lifecycle** (equivalently a rule FSM).

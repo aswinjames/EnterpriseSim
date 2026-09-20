@@ -318,8 +318,8 @@ isotonic / **conformal prediction** for distribution-free coverage guarantees); 
 separate **epistemic** (reducible by retrieval) from **aleatoric** (irreducible) uncertainty —
 they imply different actions (retrieve-more vs escalate); **(3)** a **monitored combiner**
 (track ECE / reliability diagrams; recalibrate) rather than frozen weights. The repo's own
-Bytesurge "Confidence Engine" research gets this right — but the *open* architecture must
-mandate calibration as a first-class requirement, not outsource it to a proprietary runtime.
+"Confidence Engine" research gets this right — but the *open* architecture must
+mandate calibration as a first-class requirement, not outsource it to a runtime layered on top.
 
 **Verdict on Part 5:** *Major revision.* Rename "Decision Intelligence" to what it is today
 (an **Orchestrator/Control** capability) and introduce a genuine **Decision** capability that
@@ -478,7 +478,7 @@ multi-step credit assignment for enterprise learning; calibrated cross-layer con
 outcome-verified enterprise-cognition benchmark; intent/goal/time/policy-conditioned retrieval.
 
 **Commercial opportunities:** the benchmark-as-a-service; the memory graph service; a governed
-runtime (Bytesurge). **Academic opportunities:** the benchmark + reference corpus (ICSE/NeurIPS
+runtime offering. **Academic opportunities:** the benchmark + reference corpus (ICSE/NeurIPS
 datasets & benchmarks track); the memory graph (SIGMOD); governance/observability of agents
 (OSDI + OTel semantic conventions for agents).
 

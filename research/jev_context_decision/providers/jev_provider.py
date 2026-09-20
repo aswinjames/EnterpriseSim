@@ -29,7 +29,7 @@ from datetime import datetime, timezone
 from ..candidates import Candidate
 from ..decision import ContextDecision
 from . import openrouter
-from .base import PROMPT_VERSION, TASK_STATEMENT, ContextDecisionProvider, ProviderNotConfigured
+from .base import DecisionCase, DEFAULT_CASE, ContextDecisionProvider, ProviderNotConfigured
 
 #: Pinned OpenRouter model slug for the Jev side of this experiment. Confirmed via
 #: OpenRouter's own model page (openrouter.ai/typesafe/jev-1.13) and cookbook
@@ -42,24 +42,20 @@ DEFAULT_MODEL = os.environ.get("JEV_CONTEXT_DECISION_MODEL", "typesafe/jev-1.13"
 #: OpenRouter to native noul-style binary INCLUDE/EXCLUDE semantics.
 _QUESTION_KEY = "include_in_context"
 
-_INCLUDE_CRITERIA_TRUE = (
-    "This candidate artifact should be included in the Worker's working context "
-    "for this task: its content is relevant to guest checkout order placement "
-    "(CHK-1421, APP-003) and materially helps complete it correctly."
-)
-_INCLUDE_CRITERIA_FALSE = (
-    "This candidate artifact should be excluded from the Worker's working context "
-    "for this task: it is out of scope, a distractor, or its content is not "
-    "resolvable/available to judge."
-)
 
+def _build_request(candidate: Candidate, case: DecisionCase, model: str) -> dict:
+    """Pure: build the OpenRouter Decisions API request body. No network.
 
-def _build_request(candidate: Candidate, task_statement: str, model: str) -> dict:
-    """Pure: build the OpenRouter Decisions API request body. No network."""
+    The question's instructions/criteria come from ``case``, not from a fixed
+    module constant -- this is what actually lets a different DecisionCase (e.g.
+    BC-0102) ask Jev a different question. ``case.task_statement`` alone would
+    NOT do this: it only ever reaches ``state.task``, which is context handed
+    to the model, not the instructions/criteria of the noul question itself.
+    """
     return {
         "model": model,
         "state": {
-            "task": task_statement,
+            "task": case.task_statement,
             "candidate_id": candidate.id,
             "candidate_kind": candidate.kind,
             "candidate_title": candidate.title,
@@ -68,14 +64,10 @@ def _build_request(candidate: Candidate, task_statement: str, model: str) -> dic
         "questions": {
             _QUESTION_KEY: {
                 "type": "noul",
-                "instructions": (
-                    "Should this ONE candidate artifact be included in the Worker's "
-                    "working context for this task? Judge it strictly on its own "
-                    "content -- do not assume information about any other candidate."
-                ),
+                "instructions": case.jev_instructions,
                 "criteria": {
-                    "true": _INCLUDE_CRITERIA_TRUE,
-                    "false": _INCLUDE_CRITERIA_FALSE,
+                    "true": case.jev_criteria_true,
+                    "false": case.jev_criteria_false,
                 },
             }
         },
@@ -129,9 +121,9 @@ class JevProvider(ContextDecisionProvider):
             )
         return self._api_key
 
-    def decide(self, candidate: Candidate, *, task_statement: str = TASK_STATEMENT) -> ContextDecision:
+    def decide(self, candidate: Candidate, *, case: DecisionCase = DEFAULT_CASE) -> ContextDecision:
         api_key = self._require_key()
-        request_body = _build_request(candidate, task_statement, self.model)
+        request_body = _build_request(candidate, case, self.model)
 
         start = time.monotonic()
         response = openrouter.post_json(openrouter.DECISIONS_PATH, request_body, api_key)
@@ -147,7 +139,7 @@ class JevProvider(ContextDecisionProvider):
             rationale=parsed["rationale"],
             confidence=parsed["confidence"],
             model=parsed["model"] or self.model,
-            prompt_version=PROMPT_VERSION,
+            prompt_version=case.prompt_version,
             latency_ms=latency_ms,
             input_tokens=parsed["input_tokens"],
             output_tokens=parsed["output_tokens"],

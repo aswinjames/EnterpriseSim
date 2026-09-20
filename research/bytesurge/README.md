@@ -1,22 +1,20 @@
-# Bytesurge Runtime — Algorithm Research
+# Reference Runtime — Algorithm Research
 
-> ⚠️ **PROPRIETARY RESEARCH — NOT PART OF ENTERPRISESIM.**
->
-> This directory contains research for the **proprietary Bytesurge Runtime**, a commercial
-> Enterprise AI Worker runtime. It is **not** part of the open-source, Apache-2.0-licensed
-> EnterpriseSim project and is **not** governed by EnterpriseSim's license. It is included in
-> this working tree only as a research workspace and should be relocated to a private
-> repository before any public release of EnterpriseSim. See [`NOTICE.md`](NOTICE.md).
+This directory contains design-only algorithm research for a reference runtime
+implementing EnterpriseSim's ECL interfaces. It is part of the EnterpriseSim
+project, under the same terms as the rest of this repository. See
+[`NOTICE.md`](NOTICE.md).
 
 ## What this is
 
-EnterpriseSim (Apache-2.0) provides the **synthetic enterprise, the ECL architecture, the SDK
-contracts, the schemas, the benchmarks and the learning corpus**. It deliberately ships
-**interfaces, not algorithms** — the *how* behind each ECL layer is left open.
+EnterpriseSim provides the **synthetic enterprise, the ECL architecture, the SDK
+contracts, the schemas, the benchmarks and the learning corpus**. It deliberately
+ships **interfaces, not algorithms** — the *how* behind each ECL layer is left
+open.
 
-**Bytesurge** is a commercial runtime that *implements* those interfaces. This research
-designs the core algorithms Bytesurge will use to satisfy the ECL contracts at enterprise
-scale. Each algorithm targets a specific EnterpriseSim SDK interface:
+This research designs the core algorithms a runtime would use to satisfy the
+ECL contracts at enterprise scale. Each algorithm targets a specific
+EnterpriseSim SDK interface:
 
 | # | Algorithm | Satisfies (EnterpriseSim contract) |
 |---|---|---|
@@ -40,13 +38,16 @@ structure so approaches can be compared consistently:
 6. Computational complexity
 7. Enterprise scalability
 8. Explainability
-9. **Recommendation** (the approach Bytesurge should adopt, and why)
+9. **Recommendation** (the approach a runtime should adopt, and why)
 
-## Boundary with EnterpriseSim
+## Relationship to the rest of EnterpriseSim
 
-- Bytesurge **depends on** EnterpriseSim's open contracts (schemas, SDK interfaces) — never
-  the reverse. EnterpriseSim has no knowledge of Bytesurge.
-- Bytesurge remains **model-agnostic** by honoring `sdk.models.ModelGateway` (`ADR-0009/0010`)
-  and **learns outside the model** (`ADR-0003`).
-- Bytesurge's quality is measured by EnterpriseSim's benchmark suites
-  ([`../../benchmarks/`](../../benchmarks/)) — the open benchmark, the proprietary runtime.
+- This research **depends on** EnterpriseSim's open contracts (schemas, SDK
+  interfaces) — never the reverse. No other part of EnterpriseSim depends on
+  this directory.
+- A runtime built from this research remains **model-agnostic** by honoring
+  `sdk.models.ModelGateway` (`ADR-0009/0010`) and **learns outside the model**
+  (`ADR-0003`).
+- Runtime quality is measured by EnterpriseSim's benchmark suites
+  ([`../../benchmarks/`](../../benchmarks/)) — the same open benchmark any
+  runtime, reference or third-party, is scored on.

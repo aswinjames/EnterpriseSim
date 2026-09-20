@@ -364,7 +364,7 @@ are the same artifact type on the same schemas.
 - **Project D (OEAS).** The schemas the runtime validates against are the standard; the runtime
   is a conformance witness for OEAS. Where the runtime needs a shape the schema lacks, that is an
   OEAS change request, decided in the open.
-- **Commercial runtimes (e.g. Bytesurge).** They implement the same EWSDK and OEAS and compete on
+- **Commercial runtimes (e.g. proprietary vendor implementations).** They implement the same EWSDK and OEAS and compete on
   the EnterpriseSim benchmark using proprietary strategy plugins. The Reference Runtime is their
   shared, readable baseline and the thing that proves the contract is neutral — it deliberately
   does **not** compete with them (§14). Healthy ecosystem: one open floor, many commercial

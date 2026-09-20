@@ -23,7 +23,7 @@ class _FailsOnSecondRepeatProvider(ContextDecisionProvider):
         self._repeats_started = 0
         self._candidates_seen_this_repeat = 0
 
-    def decide(self, candidate, *, task_statement=None):
+    def decide(self, candidate, *, case=None):
         # A "repeat" is 7 decide() calls; fail partway through the second one.
         self._candidates_seen_this_repeat += 1
         if self._candidates_seen_this_repeat == 1:
@@ -45,6 +45,7 @@ class TestRunExperimentCLI(unittest.TestCase):
             data = json.loads(out_path.read_text())
             self.assertEqual(data["provider"], "mock")
             self.assertEqual(data["case_id"], "BC-0101")
+            self.assertEqual(data["criterion_id"], "BC-0101", "default criterion must still be BC-0101")
             self.assertEqual(len(data["repeats"]), 2)
             self.assertEqual(data["summary"]["n_repeats"], 2)
 
@@ -53,9 +54,10 @@ class TestRunExperimentCLI(unittest.TestCase):
                     "timestamp", "provider", "model", "prompt_version", "selected",
                     "required_present", "required_missing", "forbidden_selected",
                     "recall", "precision", "score", "verdict", "latency_ms",
-                    "tokens", "confidence", "raw_decisions",
+                    "tokens", "confidence", "raw_decisions", "criterion_id",
                 ):
                     self.assertIn(field, repeat)
+                self.assertEqual(repeat["criterion_id"], "BC-0101")
                 self.assertEqual(len(repeat["raw_decisions"]), 7)
 
     def test_live_provider_without_flag_is_refused(self):

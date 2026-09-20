@@ -41,7 +41,7 @@ flowchart TB
         RR["Reference Runtime<br/>open, simple, educational executor"]
         CONF["Conformance & Certification suite + Leaderboards"]
     end
-    COMM["Commercial runtimes (Bytesurge, cloud vendors)"]
+    COMM["Commercial runtimes (proprietary implementations, cloud vendors)"]
     APPS["Enterprise applications & domain workers"]
 
     OEAS -->|defines contracts for| SIM & SDK & RR & COMM
@@ -231,7 +231,7 @@ Copy the CNCF/Apache pattern that demonstrably works; do not invent governance.
   community capability packs; "write a worker" means "declare a profile + a few capabilities."
 - **The Reference Runtime** became the teaching runtime and the conformance oracle. Nobody runs
   it in production (by design); everybody learns from it and tests against it. Commercial
-  runtimes (cloud vendors, Bytesurge-class engines) compete on the leaderboard.
+  runtimes (cloud vendors, proprietary commercial engines) compete on the leaderboard.
 - **Enterprises** run governed fleets of Missions over an Enterprise Memory graph; audits query
   the bitemporal event log ("what did the org know at incident time?"); humans and AI actors
   share mission state.

@@ -1,0 +1,2101 @@
+{
+  "provider": "gpt",
+  "case_id": "BC-0101",
+  "criterion_id": "BC-0102",
+  "repeats": [
+    {
+      "timestamp": "2026-09-20T15:56:00.405854+00:00",
+      "provider": "gpt",
+      "case_id": "BC-0101",
+      "criterion_id": "BC-0102",
+      "model": "gpt-5-mini-2025-08-07",
+      "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+      "selected": {
+        "included": [
+          "EXP-090",
+          "KN-045",
+          "KN-052",
+          "KN-101"
+        ],
+        "excluded": [
+          "EXP-055",
+          "KN-047",
+          "KN-063"
+        ]
+      },
+      "required_present": [
+        "EXP-090",
+        "KN-045",
+        "KN-052"
+      ],
+      "required_missing": [],
+      "forbidden_selected": [
+        "KN-101"
+      ],
+      "recall": 0.6,
+      "precision": 0.75,
+      "score": 0.367,
+      "verdict": "fail",
+      "gate_pass": false,
+      "latency_ms": {
+        "total": 435902.954122,
+        "per_candidate": {
+          "KN-045": 61806.890708,
+          "KN-052": 62537.490374999994,
+          "KN-063": 63403.73079099999,
+          "KN-047": 61733.31191600002,
+          "KN-101": 62295.606916,
+          "EXP-090": 62132.064458,
+          "EXP-055": 61993.85895800003
+        }
+      },
+      "tokens": {
+        "input_total": 1818,
+        "output_total": 789
+      },
+      "cost_usd_total": null,
+      "confidence": {
+        "per_candidate": {
+          "KN-045": 0.88,
+          "KN-052": 0.96,
+          "KN-063": 0.86,
+          "KN-047": 0.89,
+          "KN-101": 0.54,
+          "EXP-090": 0.88,
+          "EXP-055": 0.75
+        },
+        "mean": 0.8228571428571428
+      },
+      "raw_decisions": [
+        {
+          "candidate_id": "KN-045",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "The task is implementing guest checkout order placement. These domain rules are directly relevant: they state guest checkout must not create a loyalty account, the required ordering of payment authorization before inventory commitment, and the need for idempotency keys. Omitting them would materially reduce correctness. Confidence: high.",
+          "confidence": 0.88,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 61806.890708,
+          "input_tokens": 228,
+          "output_tokens": 87,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T15:49:46.306795+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQE5R18WtakLqbeQZqAm32nQXH6Ia",
+            "object": "chat.completion",
+            "created": 1789919385,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"The task is implementing guest checkout order placement. These domain rules are directly relevant: they state guest checkout must not create a loyalty account, the required ordering of payment authorization before inventory commitment, and the need for idempotency keys. Omitting them would materially reduce correctness. Confidence: high.\",\"confidence\":0.88}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 228,
+              "completion_tokens": 87,
+              "total_tokens": 315,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-052",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "The task is to implement guest checkout order placement in APP-003. Idempotency behavior for order placement and payment calls directly affects correctness (preventing duplicate orders/charges on retries). The candidate specifies required header, key format, storage duration, replay semantics, scoping, and error behavior\u2014concrete constraints the implementer must follow. Omitting it would materially increase risk of incorrect behavior. Although it references KN-045, this candidate is self-contained enough to be actionable.",
+          "confidence": 0.96,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62537.490374999994,
+          "input_tokens": 306,
+          "output_tokens": 126,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T15:50:48.844802+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQE6RnnXNIowLRmKRb5jXD8YQTEcQ",
+            "object": "chat.completion",
+            "created": 1789919447,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"The task is to implement guest checkout order placement in APP-003. Idempotency behavior for order placement and payment calls directly affects correctness (preventing duplicate orders/charges on retries). The candidate specifies required header, key format, storage duration, replay semantics, scoping, and error behavior\u2014concrete constraints the implementer must follow. Omitting it would materially increase risk of incorrect behavior. Although it references KN-045, this candidate is self-contained enough to be actionable.\", \"confidence\":0.96}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 306,
+              "completion_tokens": 126,
+              "total_tokens": 432,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-063",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "exclude",
+          "rationale": "The task is implementing guest checkout order placement (APP-003 Checkout Service). This candidate describes promotion cache invalidation rules for APP-008 Promotions Engine and cache semantics. While promotions affect pricing, the rule is specific to how promotion updates must be written to the promotions cache; it is operational policy for the promotions service rather than needed to implement order placement logic for guest checkout. The Checkout worker can read current promotion info from the promotions API/cache; knowledge of atomic write-through cache update behavior and versioned keys is not required to implement placing an order for a guest. Omitting this would not materially reduce the worker's ability to complete the guest checkout implementation correctly.",
+          "confidence": 0.86,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 63403.73079099999,
+          "input_tokens": 289,
+          "output_tokens": 160,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T15:51:52.249003+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQE7SrJ8bpKf0eZx7g92T2KC3VBkX",
+            "object": "chat.completion",
+            "created": 1789919510,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"exclude\",\"rationale\":\"The task is implementing guest checkout order placement (APP-003 Checkout Service). This candidate describes promotion cache invalidation rules for APP-008 Promotions Engine and cache semantics. While promotions affect pricing, the rule is specific to how promotion updates must be written to the promotions cache; it is operational policy for the promotions service rather than needed to implement order placement logic for guest checkout. The Checkout worker can read current promotion info from the promotions API/cache; knowledge of atomic write-through cache update behavior and versioned keys is not required to implement placing an order for a guest. Omitting this would not materially reduce the worker's ability to complete the guest checkout implementation correctly.\",\"confidence\":0.86}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 289,
+              "completion_tokens": 160,
+              "total_tokens": 449,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-047",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "exclude",
+          "rationale": "The candidate has no content; it's a provenance-only stub with unavailable knowledge. Including it would not provide actionable information and could confuse the implementer. Omitting it does not reduce ability to implement guest checkout because there is no substantive content to assist the task and ground truth treats it as a non-required legacy artifact.",
+          "confidence": 0.89,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 61733.31191600002,
+          "input_tokens": 271,
+          "output_tokens": 91,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T15:52:53.982780+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQE8Sx7kJLYuZQ73B0S86ocvCthZz",
+            "object": "chat.completion",
+            "created": 1789919572,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"exclude\",\"rationale\":\"The candidate has no content; it's a provenance-only stub with unavailable knowledge. Including it would not provide actionable information and could confuse the implementer. Omitting it does not reduce ability to implement guest checkout because there is no substantive content to assist the task and ground truth treats it as a non-required legacy artifact.\",\"confidence\":0.89}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 271,
+              "completion_tokens": 91,
+              "total_tokens": 362,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-101",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "Guest checkout order placement must determine correct prices and validate whether SKUs are sellable in the buyer's market/currency. This artifact specifies how pricing is resolved by region/country and currency bindings, fallbacks, and the rule that prices are not converted \u2014 all material to correctly compute order totals and availability during checkout. Omitting it would risk incorrect pricing or allowing non-sellable SKUs.",
+          "confidence": 0.54,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62295.606916,
+          "input_tokens": 331,
+          "output_tokens": 109,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T15:53:56.278866+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQE9TdZE53Tv9kopWKZGE2lgMK5hZ",
+            "object": "chat.completion",
+            "created": 1789919635,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"Guest checkout order placement must determine correct prices and validate whether SKUs are sellable in the buyer's market/currency. This artifact specifies how pricing is resolved by region/country and currency bindings, fallbacks, and the rule that prices are not converted \u2014 all material to correctly compute order totals and availability during checkout. Omitting it would risk incorrect pricing or allowing non-sellable SKUs.\",\"confidence\":0.54}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 331,
+              "completion_tokens": 109,
+              "total_tokens": 440,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "EXP-090",
+          "candidate_kind": "experience",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "This experience warns that guest checkout flows must not create Loyalty accounts and references a prior bug causing orphaned loyalty accounts. For implementing guest checkout order placement, that constraint is directly relevant: it prevents unintended side effects (provisioning loyalty accounts) and points to a past incident to avoid. Omitting it could lead to repeating the bug and require data cleanup, so it materially aids correct implementation.",
+          "confidence": 0.88,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62132.064458,
+          "input_tokens": 207,
+          "output_tokens": 107,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T15:54:58.411398+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEATA59uSx37OvXhDFHyVhpZMkMP",
+            "object": "chat.completion",
+            "created": 1789919697,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"This experience warns that guest checkout flows must not create Loyalty accounts and references a prior bug causing orphaned loyalty accounts. For implementing guest checkout order placement, that constraint is directly relevant: it prevents unintended side effects (provisioning loyalty accounts) and points to a past incident to avoid. Omitting it could lead to repeating the bug and require data cleanup, so it materially aids correct implementation.\",\"confidence\":0.88}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 207,
+              "completion_tokens": 107,
+              "total_tokens": 314,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "EXP-055",
+          "candidate_kind": "experience",
+          "provider": "gpt",
+          "verdict": "exclude",
+          "rationale": "The candidate states a brief operational note about write-through cache flush during promo windows (APP-008). The guest checkout order placement task (CHK-1421, APP-003 Checkout Service) does not require knowledge about promo window cache flush behavior to implement basic guest checkout flow. The artifact is too specific and lacks implementation details; omitting it would not materially reduce ability to implement guest checkout orders correctly.",
+          "confidence": 0.75,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 61993.85895800003,
+          "input_tokens": 186,
+          "output_tokens": 109,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T15:56:00.405714+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEBToSaHNrUO3OQt9T4fbvDUcJ6W",
+            "object": "chat.completion",
+            "created": 1789919759,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"exclude\",\"rationale\":\"The candidate states a brief operational note about write-through cache flush during promo windows (APP-008). The guest checkout order placement task (CHK-1421, APP-003 Checkout Service) does not require knowledge about promo window cache flush behavior to implement basic guest checkout flow. The artifact is too specific and lacks implementation details; omitting it would not materially reduce ability to implement guest checkout orders correctly.\",\"confidence\":0.75}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 186,
+              "completion_tokens": 109,
+              "total_tokens": 295,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-09-20T16:03:15.080730+00:00",
+      "provider": "gpt",
+      "case_id": "BC-0101",
+      "criterion_id": "BC-0102",
+      "model": "gpt-5-mini-2025-08-07",
+      "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+      "selected": {
+        "included": [
+          "EXP-090",
+          "KN-045",
+          "KN-052",
+          "KN-063",
+          "KN-101"
+        ],
+        "excluded": [
+          "EXP-055",
+          "KN-047"
+        ]
+      },
+      "required_present": [
+        "EXP-090",
+        "KN-045",
+        "KN-052"
+      ],
+      "required_missing": [],
+      "forbidden_selected": [
+        "KN-101"
+      ],
+      "recall": 0.8,
+      "precision": 0.8,
+      "score": 0.4,
+      "verdict": "fail",
+      "gate_pass": false,
+      "latency_ms": {
+        "total": 434668.26674899994,
+        "per_candidate": {
+          "KN-045": 61825.22895799997,
+          "KN-052": 62450.540166,
+          "KN-063": 61753.27008299996,
+          "KN-047": 61920.97512500004,
+          "KN-101": 62252.563083000045,
+          "EXP-090": 61861.3426249999,
+          "EXP-055": 62604.34670899997
+        }
+      },
+      "tokens": {
+        "input_total": 1818,
+        "output_total": 743
+      },
+      "cost_usd_total": null,
+      "confidence": {
+        "per_candidate": {
+          "KN-045": 0.88,
+          "KN-052": 0.8,
+          "KN-063": 0.92,
+          "KN-047": 0.57,
+          "KN-101": 0.86,
+          "EXP-090": 0.86,
+          "EXP-055": 0.7
+        },
+        "mean": 0.7985714285714286
+      },
+      "raw_decisions": [
+        {
+          "candidate_id": "KN-045",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "These are explicit, high-priority domain rules directly governing guest checkout order placement: prohibition on creating loyalty accounts, required sequencing of payment before inventory commit, and mandatory idempotency keys. Omitting them would likely cause incorrect implementations of the checkout flow. They are directly relevant to APP-003 and concise.",
+          "confidence": 0.88,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 61825.22895799997,
+          "input_tokens": 228,
+          "output_tokens": 90,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T15:57:02.235020+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQECThpJ9VDtNbdCpTFgDN9mMk4WX",
+            "object": "chat.completion",
+            "created": 1789919821,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"These are explicit, high-priority domain rules directly governing guest checkout order placement: prohibition on creating loyalty accounts, required sequencing of payment before inventory commit, and mandatory idempotency keys. Omitting them would likely cause incorrect implementations of the checkout flow. They are directly relevant to APP-003 and concise.\",\"confidence\":0.88}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 228,
+              "completion_tokens": 90,
+              "total_tokens": 318,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-052",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "The task is implementing guest checkout order placement in the Checkout Service; the idempotency standard directly affects how order-placement calls must be handled (requirement for Idempotency-Key, storage/response semantics, error handling on mismatched bodies). Omitting this would materially reduce the worker's ability to implement correct request handling and avoid duplicate orders/charges. The artifact is specific and actionable for this task.",
+          "confidence": 0.8,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62450.540166,
+          "input_tokens": 306,
+          "output_tokens": 109,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T15:58:04.686016+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEDTEnYYQRBMOCGZx7Mk84NcKrFo",
+            "object": "chat.completion",
+            "created": 1789919883,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"The task is implementing guest checkout order placement in the Checkout Service; the idempotency standard directly affects how order-placement calls must be handled (requirement for Idempotency-Key, storage/response semantics, error handling on mismatched bodies). Omitting this would materially reduce the worker's ability to implement correct request handling and avoid duplicate orders/charges. The artifact is specific and actionable for this task.\",\"confidence\":0.8}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 306,
+              "completion_tokens": 109,
+              "total_tokens": 415,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-063",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "Guest checkout order placement (APP-003 Checkout) computes totals and applies promotions; this rule specifies required behavior for promotions cache invalidation and read semantics to avoid stale pricing. Omitting it would risk incorrect pricing during active promotion windows and materially reduce ability to implement correct checkout behavior, especially regarding cache versioning and write-through updates. This knowledge is actionable for developers of Checkout and Cart integrations with APP-008.",
+          "confidence": 0.92,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 61753.27008299996,
+          "input_tokens": 289,
+          "output_tokens": 110,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T15:59:06.439721+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEETtQ5am0a36xxSci16v3VqvTBX",
+            "object": "chat.completion",
+            "created": 1789919945,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"Guest checkout order placement (APP-003 Checkout) computes totals and applies promotions; this rule specifies required behavior for promotions cache invalidation and read semantics to avoid stale pricing. Omitting it would risk incorrect pricing during active promotion windows and materially reduce ability to implement correct checkout behavior, especially regarding cache versioning and write-through updates. This knowledge is actionable for developers of Checkout and Cart integrations with APP-008.\",\"confidence\":0.92}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 289,
+              "completion_tokens": 110,
+              "total_tokens": 399,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-047",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "exclude",
+          "rationale": "The candidate has no substantive content \u2014 only a provenance stub \u2014 so it cannot provide actionable information for implementing guest checkout order placement. Omitting it will not reduce the Worker's ability to complete the task because there is nothing of use to include; including a blank/unknown artifact could introduce confusion. The repository's note that it is a legacy monolith reference is insufficient on its own and should not be treated as required documentation.",
+          "confidence": 0.57,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 61920.97512500004,
+          "input_tokens": 271,
+          "output_tokens": 113,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:00:08.361106+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEFSdFQujzBZunl7FQ5YZCEhHu0N",
+            "object": "chat.completion",
+            "created": 1789920006,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"exclude\",\"rationale\":\"The candidate has no substantive content \u2014 only a provenance stub \u2014 so it cannot provide actionable information for implementing guest checkout order placement. Omitting it will not reduce the Worker's ability to complete the task because there is nothing of use to include; including a blank/unknown artifact could introduce confusion. The repository's note that it is a legacy monolith reference is insufficient on its own and should not be treated as required documentation.\",\"confidence\":0.57}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 271,
+              "completion_tokens": 113,
+              "total_tokens": 384,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-101",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "Guest checkout order placement must determine item prices and ensure correct currency and market sellability. This artifact specifies how pricing is resolved by region/country and the currency bindings (which markets use which currency), plus rules about fallbacks and non-conversion. Omitting it would materially hinder correct implementation of order placement (price lookup, currency, sellability checks).",
+          "confidence": 0.86,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62252.563083000045,
+          "input_tokens": 331,
+          "output_tokens": 100,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:01:10.614081+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEGT8pnq53dq5CYodkgDEX8f5Qt6",
+            "object": "chat.completion",
+            "created": 1789920069,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"Guest checkout order placement must determine item prices and ensure correct currency and market sellability. This artifact specifies how pricing is resolved by region/country and the currency bindings (which markets use which currency), plus rules about fallbacks and non-conversion. Omitting it would materially hinder correct implementation of order placement (price lookup, currency, sellability checks).\",\"confidence\":0.86}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 331,
+              "completion_tokens": 100,
+              "total_tokens": 431,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "EXP-090",
+          "candidate_kind": "experience",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "This experience warns that guest checkout flows accidentally created loyalty accounts, which is directly relevant to implementing guest order placement. Omitting it could lead to the same bug (provisioning loyalty accounts for guests). It materially helps avoid a known pitfall and doesn't rely on other artifacts.",
+          "confidence": 0.86,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 61861.3426249999,
+          "input_tokens": 207,
+          "output_tokens": 84,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:02:12.475863+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEHT3kWyfJoIC3PP1006Ns18qjB7",
+            "object": "chat.completion",
+            "created": 1789920131,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"This experience warns that guest checkout flows accidentally created loyalty accounts, which is directly relevant to implementing guest order placement. Omitting it could lead to the same bug (provisioning loyalty accounts for guests). It materially helps avoid a known pitfall and doesn't rely on other artifacts.\",\"confidence\":0.86}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 207,
+              "completion_tokens": 84,
+              "total_tokens": 291,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "EXP-055",
+          "candidate_kind": "experience",
+          "provider": "gpt",
+          "verdict": "exclude",
+          "rationale": "The candidate note refers to cache-flush behavior for pricing/promotion changes during a promo window (APP-008) \u2014 a backend operational detail about write-through cache invalidation. The task is implementing guest checkout order placement (APP-003). On its own, this short statement lacks specifics about how to handle pricing, promotions, or checkout flows for guests, and does not provide procedures, APIs, or required data. Omitting it would not materially reduce a worker's ability to implement guest checkout; it's not necessary for the task by itself.",
+          "confidence": 0.7,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62604.34670899997,
+          "input_tokens": 186,
+          "output_tokens": 137,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:03:15.080676+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEITRFJqY5qBVXMSd3qFao4hcrxF",
+            "object": "chat.completion",
+            "created": 1789920193,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"exclude\",\"rationale\":\"The candidate note refers to cache-flush behavior for pricing/promotion changes during a promo window (APP-008) \u2014 a backend operational detail about write-through cache invalidation. The task is implementing guest checkout order placement (APP-003). On its own, this short statement lacks specifics about how to handle pricing, promotions, or checkout flows for guests, and does not provide procedures, APIs, or required data. Omitting it would not materially reduce a worker's ability to implement guest checkout; it's not necessary for the task by itself.\",\"confidence\":0.7}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 186,
+              "completion_tokens": 137,
+              "total_tokens": 323,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-09-20T16:10:30.477048+00:00",
+      "provider": "gpt",
+      "case_id": "BC-0101",
+      "criterion_id": "BC-0102",
+      "model": "gpt-5-mini-2025-08-07",
+      "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+      "selected": {
+        "included": [
+          "EXP-090",
+          "KN-045",
+          "KN-052",
+          "KN-101"
+        ],
+        "excluded": [
+          "EXP-055",
+          "KN-047",
+          "KN-063"
+        ]
+      },
+      "required_present": [
+        "EXP-090",
+        "KN-045",
+        "KN-052"
+      ],
+      "required_missing": [],
+      "forbidden_selected": [
+        "KN-101"
+      ],
+      "recall": 0.6,
+      "precision": 0.75,
+      "score": 0.367,
+      "verdict": "fail",
+      "gate_pass": false,
+      "latency_ms": {
+        "total": 435390.80920899997,
+        "per_candidate": {
+          "KN-045": 61826.69483300003,
+          "KN-052": 61971.253416999956,
+          "KN-063": 62359.83662499996,
+          "KN-047": 61950.98654200001,
+          "KN-101": 62379.552625000084,
+          "EXP-090": 62139.070167,
+          "EXP-055": 62763.41499999989
+        }
+      },
+      "tokens": {
+        "input_total": 1818,
+        "output_total": 784
+      },
+      "cost_usd_total": null,
+      "confidence": {
+        "per_candidate": {
+          "KN-045": 0.78,
+          "KN-052": 0.84,
+          "KN-063": 0.85,
+          "KN-047": 0.9,
+          "KN-101": 0.58,
+          "EXP-090": 0.86,
+          "EXP-055": 0.86
+        },
+        "mean": 0.8099999999999999
+      },
+      "raw_decisions": [
+        {
+          "candidate_id": "KN-045",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "The candidate contains specific, actionable domain invariants directly relevant to implementing guest checkout order placement: prohibition on creating a loyalty account for guests, required ordering of payment authorization before inventory commitment, and the requirement to use an idempotency key. Omitting these rules would materially increase risk of incorrect behavior and integration errors, so they should be included.",
+          "confidence": 0.78,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 61826.69483300003,
+          "input_tokens": 228,
+          "output_tokens": 97,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:04:16.909629+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEJTSFDA0RJLIAGTjc2H17fOBdDI",
+            "object": "chat.completion",
+            "created": 1789920255,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"The candidate contains specific, actionable domain invariants directly relevant to implementing guest checkout order placement: prohibition on creating a loyalty account for guests, required ordering of payment authorization before inventory commitment, and the requirement to use an idempotency key. Omitting these rules would materially increase risk of incorrect behavior and integration errors, so they should be included.\",\"confidence\":0.78}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 228,
+              "completion_tokens": 97,
+              "total_tokens": 325,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-052",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "This artifact specifies mandatory idempotency behavior for order-placement and payment calls to the Checkout Service (APP-003) and Payments Service (APP-012). Implementing guest checkout order placement requires correct handling of retries, duplicate submissions, and consistent responses; the idempotency contract directly informs API headers, storage, error handling, and validation behavior. Omitting it would materially impair correct implementation and interoperability.",
+          "confidence": 0.84,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 61971.253416999956,
+          "input_tokens": 306,
+          "output_tokens": 110,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:05:18.881449+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEKTm133HfqNTAV12WowQKHuKFZi",
+            "object": "chat.completion",
+            "created": 1789920317,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"This artifact specifies mandatory idempotency behavior for order-placement and payment calls to the Checkout Service (APP-003) and Payments Service (APP-012). Implementing guest checkout order placement requires correct handling of retries, duplicate submissions, and consistent responses; the idempotency contract directly informs API headers, storage, error handling, and validation behavior. Omitting it would materially impair correct implementation and interoperability.\",\"confidence\":0.84}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 306,
+              "completion_tokens": 110,
+              "total_tokens": 416,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-063",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "exclude",
+          "rationale": "The task is implementing guest checkout order placement (APP-003). This artifact concerns promotion cache invalidation rules for the Promotions Engine (APP-008). While promotions affect pricing, the guidance is operational for how APP-008 updates cache and is targeted at promotion authors/engine implementers, not at the checkout worker implementation. The checkout implementation only needs to read current promotions (consume), not enforce cache write-through semantics. The artifact does not add necessary details for implementing guest checkout order placement and omitting it would not materially reduce the Worker's ability to complete the task correctly.",
+          "confidence": 0.85,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62359.83662499996,
+          "input_tokens": 289,
+          "output_tokens": 143,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:06:21.241767+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQELTnZTh5pMMYukNowBomrStBRny",
+            "object": "chat.completion",
+            "created": 1789920379,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"exclude\",\"rationale\":\"The task is implementing guest checkout order placement (APP-003). This artifact concerns promotion cache invalidation rules for the Promotions Engine (APP-008). While promotions affect pricing, the guidance is operational for how APP-008 updates cache and is targeted at promotion authors/engine implementers, not at the checkout worker implementation. The checkout implementation only needs to read current promotions (consume), not enforce cache write-through semantics. The artifact does not add necessary details for implementing guest checkout order placement and omitting it would not materially reduce the Worker's ability to complete the task correctly.\",\"confidence\":0.85}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 289,
+              "completion_tokens": 143,
+              "total_tokens": 432,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-047",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "exclude",
+          "rationale": "The candidate has no content available; it's provenance-only and cannot provide actionable information. Omitting it will not reduce the Worker's ability to implement guest checkout: there is no substantive knowledge to use, and the ground truth already treats it as non-essential. Including a blank/unknown artifact would not help and could mislead.",
+          "confidence": 0.9,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 61950.98654200001,
+          "input_tokens": 271,
+          "output_tokens": 94,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:07:23.193223+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEMUQ3uSj4vMvsNAneV9c4SSAOII",
+            "object": "chat.completion",
+            "created": 1789920442,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"exclude\",\"rationale\":\"The candidate has no content available; it's provenance-only and cannot provide actionable information. Omitting it will not reduce the Worker's ability to implement guest checkout: there is no substantive knowledge to use, and the ground truth already treats it as non-essential. Including a blank/unknown artifact would not help and could mislead.\",\"confidence\":0.9}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 271,
+              "completion_tokens": 94,
+              "total_tokens": 365,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-101",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "Guest checkout order placement must determine correct prices to charge based on SKU, region, and market currency. This artifact describes how pricing resolution and currency binding work (region/country fallback, market currencies, non-convertible prices, sellability rules), which is essential to correctly compute order totals, validate availability for a market, and avoid incorrect FX conversions. Omitting it would materially reduce correctness of checkout implementation.",
+          "confidence": 0.58,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62379.552625000084,
+          "input_tokens": 331,
+          "output_tokens": 110,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:08:25.573241+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQENTyBppBLoq519rNbzEzq7t2eY5",
+            "object": "chat.completion",
+            "created": 1789920503,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"Guest checkout order placement must determine correct prices to charge based on SKU, region, and market currency. This artifact describes how pricing resolution and currency binding work (region/country fallback, market currencies, non-convertible prices, sellability rules), which is essential to correctly compute order totals, validate availability for a market, and avoid incorrect FX conversions. Omitting it would materially reduce correctness of checkout implementation.\",\"confidence\":0.58}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 331,
+              "completion_tokens": 110,
+              "total_tokens": 441,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "EXP-090",
+          "candidate_kind": "experience",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "This experience directly warns that guest checkout flows should not provision Loyalty accounts and cites a past incident (orphaned loyalty accounts). That is material to implementing guest checkout order placement: it prevents creating side effects and data cleanup issues. It informs a specific constraint and potential pitfall developers must avoid, so including it aids correct implementation.",
+          "confidence": 0.86,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62139.070167,
+          "input_tokens": 207,
+          "output_tokens": 94,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:09:27.712811+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEOUwtr1dPgsOui5s8ZCYd5HPLL0",
+            "object": "chat.completion",
+            "created": 1789920566,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"This experience directly warns that guest checkout flows should not provision Loyalty accounts and cites a past incident (orphaned loyalty accounts). That is material to implementing guest checkout order placement: it prevents creating side effects and data cleanup issues. It informs a specific constraint and potential pitfall developers must avoid, so including it aids correct implementation.\",\"confidence\":0.86}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 207,
+              "completion_tokens": 94,
+              "total_tokens": 301,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "EXP-055",
+          "candidate_kind": "experience",
+          "provider": "gpt",
+          "verdict": "exclude",
+          "rationale": "The candidate is a brief note about caching behavior for pricing/promotion changes during a promo window and references APP-008 cache flush. For implementing guest checkout order placement (CHK-1421, APP-003 Checkout Service), this single-line artifact does not provide specific requirements, API details, or necessary steps for guest checkout functionality. Omitting it would not materially reduce the worker's ability to complete guest checkout implementation; caching/promotion write-through may be relevant in broader system operations but is not essential or sufficiently detailed for this specific task.",
+          "confidence": 0.86,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62763.41499999989,
+          "input_tokens": 186,
+          "output_tokens": 136,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:10:30.476768+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEPUNeAxs9kQmhVKNseIQaDaoX1X",
+            "object": "chat.completion",
+            "created": 1789920628,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"exclude\",\"rationale\":\"The candidate is a brief note about caching behavior for pricing/promotion changes during a promo window and references APP-008 cache flush. For implementing guest checkout order placement (CHK-1421, APP-003 Checkout Service), this single-line artifact does not provide specific requirements, API details, or necessary steps for guest checkout functionality. Omitting it would not materially reduce the worker's ability to complete guest checkout implementation; caching/promotion write-through may be relevant in broader system operations but is not essential or sufficiently detailed for this specific task.\", \"confidence\":0.86}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 186,
+              "completion_tokens": 136,
+              "total_tokens": 322,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-09-20T16:17:49.380115+00:00",
+      "provider": "gpt",
+      "case_id": "BC-0101",
+      "criterion_id": "BC-0102",
+      "model": "gpt-5-mini-2025-08-07",
+      "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+      "selected": {
+        "included": [
+          "EXP-090",
+          "KN-045",
+          "KN-052",
+          "KN-063",
+          "KN-101"
+        ],
+        "excluded": [
+          "EXP-055",
+          "KN-047"
+        ]
+      },
+      "required_present": [
+        "EXP-090",
+        "KN-045",
+        "KN-052"
+      ],
+      "required_missing": [],
+      "forbidden_selected": [
+        "KN-101"
+      ],
+      "recall": 0.8,
+      "precision": 0.8,
+      "score": 0.4,
+      "verdict": "fail",
+      "gate_pass": false,
+      "latency_ms": {
+        "total": 438895.6047909996,
+        "per_candidate": {
+          "KN-045": 62685.067333000006,
+          "KN-052": 62896.92258300011,
+          "KN-063": 63246.42099999983,
+          "KN-047": 62441.9134169998,
+          "KN-101": 62697.07504100006,
+          "EXP-090": 62258.35474999985,
+          "EXP-055": 62669.85066699999
+        }
+      },
+      "tokens": {
+        "input_total": 1818,
+        "output_total": 704
+      },
+      "cost_usd_total": null,
+      "confidence": {
+        "per_candidate": {
+          "KN-045": 0.77,
+          "KN-052": 0.86,
+          "KN-063": 0.92,
+          "KN-047": 0.87,
+          "KN-101": 0.85,
+          "EXP-090": 0.9,
+          "EXP-055": 0.49
+        },
+        "mean": 0.8085714285714286
+      },
+      "raw_decisions": [
+        {
+          "candidate_id": "KN-045",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "The task is implementing guest checkout order placement. This artifact contains direct, relevant invariants: prohibition on creating a loyalty account for guests, required ordering of payment authorization before inventory commitment, and the idempotency-key requirement. Omitting it would risk violating these critical business rules. It is concise and necessary for correct implementation.",
+          "confidence": 0.77,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62685.067333000006,
+          "input_tokens": 228,
+          "output_tokens": 93,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:11:33.166236+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEQVbsRk94JZQRYIpEdyvlVIFMmc",
+            "object": "chat.completion",
+            "created": 1789920691,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"The task is implementing guest checkout order placement. This artifact contains direct, relevant invariants: prohibition on creating a loyalty account for guests, required ordering of payment authorization before inventory commitment, and the idempotency-key requirement. Omitting it would risk violating these critical business rules. It is concise and necessary for correct implementation.\",\"confidence\":0.77}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 228,
+              "completion_tokens": 93,
+              "total_tokens": 321,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-052",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "The checkout task (guest checkout order placement) involves creating orders and calling payment services. This idempotency standard directly dictates required headers, behavior on retries, and error handling to prevent duplicate orders/charges \u2014 information that materially affects correct implementation. Omitting it would risk incorrect idempotency handling.",
+          "confidence": 0.86,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62896.92258300011,
+          "input_tokens": 306,
+          "output_tokens": 89,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:12:36.063734+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQERWTBRFWlXPRmHf4W3nLvcgLZrP",
+            "object": "chat.completion",
+            "created": 1789920754,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"The checkout task (guest checkout order placement) involves creating orders and calling payment services. This idempotency standard directly dictates required headers, behavior on retries, and error handling to prevent duplicate orders/charges \u2014 information that materially affects correct implementation. Omitting it would risk incorrect idempotency handling.\",\"confidence\":0.86}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 306,
+              "completion_tokens": 89,
+              "total_tokens": 395,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-063",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "The guest checkout order placement (APP-003) reads promotions to calculate totals and must avoid using stale promotion data. This rule specifies mandatory cache invalidation/refresh semantics, cache key versioning, and that consumers (including APP-003 Checkout) must read current versions. Omitting this could lead to mispriced orders during active promotion changes, directly impacting correctness of guest checkout. Including it materially helps implementers ensure correct promotion reads and cache handling.",
+          "confidence": 0.92,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 63246.42099999983,
+          "input_tokens": 289,
+          "output_tokens": 118,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:13:39.310688+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQESW47ciM1y3wiUnJoRjPNudp2kf",
+            "object": "chat.completion",
+            "created": 1789920816,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"The guest checkout order placement (APP-003) reads promotions to calculate totals and must avoid using stale promotion data. This rule specifies mandatory cache invalidation/refresh semantics, cache key versioning, and that consumers (including APP-003 Checkout) must read current versions. Omitting this could lead to mispriced orders during active promotion changes, directly impacting correctness of guest checkout. Including it materially helps implementers ensure correct promotion reads and cache handling.\",\"confidence\":0.92}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 289,
+              "completion_tokens": 118,
+              "total_tokens": 407,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-047",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "exclude",
+          "rationale": "The candidate has no content (metadata-only stub). It provides no actionable information for implementing guest checkout order placement; including it would not help and could mislead. Omitting it does not reduce the Worker's ability to complete the task because there is no substantive content to use. The repository notes treat it as legacy and non-required, supporting exclusion.",
+          "confidence": 0.87,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62441.9134169998,
+          "input_tokens": 271,
+          "output_tokens": 98,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:14:41.753140+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQETYWOv51p0PPlFUleVx7S7sIyjq",
+            "object": "chat.completion",
+            "created": 1789920880,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"exclude\",\"rationale\":\"The candidate has no content (metadata-only stub). It provides no actionable information for implementing guest checkout order placement; including it would not help and could mislead. Omitting it does not reduce the Worker's ability to complete the task because there is no substantive content to use. The repository notes treat it as legacy and non-required, supporting exclusion.\",\"confidence\":0.87}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 271,
+              "completion_tokens": 98,
+              "total_tokens": 369,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-101",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "Guest checkout needs correct price resolution and currency binding to show and charge correct amounts without user account context. The artifact specifies how to request prices by region/country, currency binding per market, and rules about fallbacks and non-convertibility \u2014 information that materially affects order placement logic for guests. Omitting it would risk incorrect pricing/currency handling during guest checkout.",
+          "confidence": 0.85,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62697.07504100006,
+          "input_tokens": 331,
+          "output_tokens": 101,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:15:44.450702+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEUY4ThyvJn921Q4WOHouetos1Gu",
+            "object": "chat.completion",
+            "created": 1789920942,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"Guest checkout needs correct price resolution and currency binding to show and charge correct amounts without user account context. The artifact specifies how to request prices by region/country, currency binding per market, and rules about fallbacks and non-convertibility \u2014 information that materially affects order placement logic for guests. Omitting it would risk incorrect pricing/currency handling during guest checkout.\",\"confidence\":0.85}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 331,
+              "completion_tokens": 101,
+              "total_tokens": 432,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "EXP-090",
+          "candidate_kind": "experience",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "This experience directly warns that guest checkout flows previously created unintended Loyalty accounts, causing incidents. For implementing guest checkout order placement, that is a critical behavioral constraint and a specific pitfall to avoid; including it will materially reduce risk of regressions.",
+          "confidence": 0.9,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62258.35474999985,
+          "input_tokens": 207,
+          "output_tokens": 78,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:16:46.709570+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEVZ07OiaNwmgiwJtSAD8hU5xpLf",
+            "object": "chat.completion",
+            "created": 1789921005,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"This experience directly warns that guest checkout flows previously created unintended Loyalty accounts, causing incidents. For implementing guest checkout order placement, that is a critical behavioral constraint and a specific pitfall to avoid; including it will materially reduce risk of regressions.\",\"confidence\":0.9}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 207,
+              "completion_tokens": 78,
+              "total_tokens": 285,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "EXP-055",
+          "candidate_kind": "experience",
+          "provider": "gpt",
+          "verdict": "exclude",
+          "rationale": "The note references a write-through cache flush related to pricing/promotions during a promo window (APP-008). The guest checkout order placement task (CHK-1421, APP-003 Checkout Service) does not, by itself, require details about promotional cache flush mechanics unless the checkout service must handle mid-promo pricing changes. The candidate is brief and lacks specifics linking it to guest checkout behavior; omitting it would not materially reduce the worker's ability to implement guest checkout order placement correctly.",
+          "confidence": 0.49,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62669.85066699999,
+          "input_tokens": 186,
+          "output_tokens": 127,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:17:49.379980+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEWZMvxRkYn510Is2PpCs0MbKrn6",
+            "object": "chat.completion",
+            "created": 1789921067,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"exclude\",\"rationale\":\"The note references a write-through cache flush related to pricing/promotions during a promo window (APP-008). The guest checkout order placement task (CHK-1421, APP-003 Checkout Service) does not, by itself, require details about promotional cache flush mechanics unless the checkout service must handle mid-promo pricing changes. The candidate is brief and lacks specifics linking it to guest checkout behavior; omitting it would not materially reduce the worker's ability to implement guest checkout order placement correctly.\",\"confidence\":0.49}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 186,
+              "completion_tokens": 127,
+              "total_tokens": 313,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-09-20T16:34:32.684359+00:00",
+      "provider": "gpt",
+      "case_id": "BC-0101",
+      "criterion_id": "BC-0102",
+      "model": "gpt-5-mini-2025-08-07",
+      "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+      "selected": {
+        "included": [
+          "EXP-090",
+          "KN-045",
+          "KN-052",
+          "KN-063",
+          "KN-101"
+        ],
+        "excluded": [
+          "EXP-055",
+          "KN-047"
+        ]
+      },
+      "required_present": [
+        "EXP-090",
+        "KN-045",
+        "KN-052"
+      ],
+      "required_missing": [],
+      "forbidden_selected": [
+        "KN-101"
+      ],
+      "recall": 0.8,
+      "precision": 0.8,
+      "score": 0.4,
+      "verdict": "fail",
+      "gate_pass": false,
+      "latency_ms": {
+        "total": 558592.0446259998,
+        "per_candidate": {
+          "KN-045": 62077.186334000085,
+          "KN-052": 62759.59766699998,
+          "KN-063": 62617.24216699986,
+          "KN-047": 183504.839833,
+          "KN-101": 62767.93449999968,
+          "EXP-090": 62287.265458000096,
+          "EXP-055": 62577.978667000025
+        }
+      },
+      "tokens": {
+        "input_total": 1818,
+        "output_total": 780
+      },
+      "cost_usd_total": null,
+      "confidence": {
+        "per_candidate": {
+          "KN-045": 0.91,
+          "KN-052": 0.81,
+          "KN-063": 0.9,
+          "KN-047": 0.92,
+          "KN-101": 0.92,
+          "EXP-090": 0.93,
+          "EXP-055": 0.9
+        },
+        "mean": 0.8985714285714286
+      },
+      "raw_decisions": [
+        {
+          "candidate_id": "KN-045",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "The task is implementing guest checkout order placement. The artifact specifies critical domain rules directly relevant to that task: prohibition on creating a Loyalty account for guests, required sequencing of payment authorization before inventory commitment, and mandatory idempotency keys. Omitting these would materially risk incorrect behavior. Confidence: high.",
+          "confidence": 0.91,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62077.186334000085,
+          "input_tokens": 228,
+          "output_tokens": 88,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:18:51.463094+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEXaZDswJjaEDXAoyp9A1BkDo3CB",
+            "object": "chat.completion",
+            "created": 1789921130,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"The task is implementing guest checkout order placement. The artifact specifies critical domain rules directly relevant to that task: prohibition on creating a Loyalty account for guests, required sequencing of payment authorization before inventory commitment, and mandatory idempotency keys. Omitting these would materially risk incorrect behavior. Confidence: high.\",\"confidence\":0.91}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 228,
+              "completion_tokens": 88,
+              "total_tokens": 316,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-052",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "Implementing guest checkout order placement requires correct handling of duplicate requests and retries. This idempotency standard specifies mandatory client-generated Idempotency-Key behaviour, storage duration, replay semantics (return original result, no duplicate side effects), error behavior on body mismatch, and scoping \u2014 all directly relevant to building a correct, robust checkout endpoint and preventing duplicate orders/charges. Omitting it would materially increase risk of incorrect behavior. Confidence:0.81} PMID-like model error? Sorry.{",
+          "confidence": 0.81,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62759.59766699998,
+          "input_tokens": 306,
+          "output_tokens": 143,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:19:54.223256+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEYar4fSIScWXPVJYSuJ1g5aw1u5",
+            "object": "chat.completion",
+            "created": 1789921192,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"Implementing guest checkout order placement requires correct handling of duplicate requests and retries. This idempotency standard specifies mandatory client-generated Idempotency-Key behaviour, storage duration, replay semantics (return original result, no duplicate side effects), error behavior on body mismatch, and scoping \u2014 all directly relevant to building a correct, robust checkout endpoint and preventing duplicate orders/charges. Omitting it would materially increase risk of incorrect behavior. Confidence:0.81} PMID-like model error? Sorry.{\"\n\n  \t\t\t\t\t\t\t\t\t\t\n   \n   \n   \n   \n   \n  \n \r \n\n\n\n                                \n,\"confidence\":0.81}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 306,
+              "completion_tokens": 143,
+              "total_tokens": 449,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-063",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "The promotion cache invalidation rule directly affects pricing and promotion application during checkout. For guest checkout order placement, ensuring the Promotions Engine cache is current is necessary to compute correct totals and avoid mispriced orders. Omitting this could lead to incorrect order totals for promotions that change during an active window. The artifact provides concrete cache-update semantics and specifies which services (including APP-003 Checkout) must read current versions, which materially aids correct implementation and testing of guest checkout pricing behavior.",
+          "confidence": 0.9,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62617.24216699986,
+          "input_tokens": 289,
+          "output_tokens": 123,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:20:56.841090+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEZaoJFedm6e3wx8kPZsz5jopu4M",
+            "object": "chat.completion",
+            "created": 1789921254,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"The promotion cache invalidation rule directly affects pricing and promotion application during checkout. For guest checkout order placement, ensuring the Promotions Engine cache is current is necessary to compute correct totals and avoid mispriced orders. Omitting this could lead to incorrect order totals for promotions that change during an active window. The artifact provides concrete cache-update semantics and specifies which services (including APP-003 Checkout) must read current versions, which materially aids correct implementation and testing of guest checkout pricing behavior.\",\"confidence\":0.9}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 289,
+              "completion_tokens": 123,
+              "total_tokens": 412,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-047",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "exclude",
+          "rationale": "The candidate has no content; it's a provenance-only stub with no substantive information. Including it would not provide any usable details for implementing guest checkout and could mislead. Omitting it does not reduce ability to complete the task because there is no actionable knowledge to extract; ground truth even treats it as a non-required legacy item.",
+          "confidence": 0.92,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 183504.839833,
+          "input_tokens": 271,
+          "output_tokens": 95,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:31:25.049770+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEjjHh4muUFEf1voGF0liHhdcEbV",
+            "object": "chat.completion",
+            "created": 1789921883,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"exclude\",\"rationale\":\"The candidate has no content; it's a provenance-only stub with no substantive information. Including it would not provide any usable details for implementing guest checkout and could mislead. Omitting it does not reduce ability to complete the task because there is no actionable knowledge to extract; ground truth even treats it as a non-required legacy item.\",\"confidence\":0.92}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 271,
+              "completion_tokens": 95,
+              "total_tokens": 366,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "KN-101",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "Guest checkout order placement must determine correct item prices and currencies for orders without user account context. This artifact defines how prices are resolved by region/country and the binding of selling currency per market, including fallback rules and the requirement that prices are authored for each market. Omitting it would risk incorrect price resolution (e.g., using foreign-currency prices or missing fallbacks), leading to wrong order totals or selling items in unsanctioned markets. Therefore it materially aids correct implementation.",
+          "confidence": 0.92,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62767.93449999968,
+          "input_tokens": 331,
+          "output_tokens": 125,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:32:27.818187+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEkkB3bmw2JVG6zFb63wyvn40ZT9",
+            "object": "chat.completion",
+            "created": 1789921946,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"Guest checkout order placement must determine correct item prices and currencies for orders without user account context. This artifact defines how prices are resolved by region/country and the binding of selling currency per market, including fallback rules and the requirement that prices are authored for each market. Omitting it would risk incorrect price resolution (e.g., using foreign-currency prices or missing fallbacks), leading to wrong order totals or selling items in unsanctioned markets. Therefore it materially aids correct implementation.\",\"confidence\":0.92}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 331,
+              "completion_tokens": 125,
+              "total_tokens": 456,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "EXP-090",
+          "candidate_kind": "experience",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "This experience directly warns that guest checkout flows must not provision Loyalty accounts and cites a real past incident. For implementing guest checkout order placement, this constraint is critical to avoid creating orphaned loyalty accounts and subsequent data cleanup. Omitting it could lead to the exact bug it's warning about, so include it.",
+          "confidence": 0.93,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62287.265458000096,
+          "input_tokens": 207,
+          "output_tokens": 89,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:33:30.105905+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQElkZN1bQAV0X3CDXHpunqGhe4ns",
+            "object": "chat.completion",
+            "created": 1789922008,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"This experience directly warns that guest checkout flows must not provision Loyalty accounts and cites a real past incident. For implementing guest checkout order placement, this constraint is critical to avoid creating orphaned loyalty accounts and subsequent data cleanup. Omitting it could lead to the exact bug it's warning about, so include it.\",\"confidence\":0.93}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 207,
+              "completion_tokens": 89,
+              "total_tokens": 296,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        },
+        {
+          "candidate_id": "EXP-055",
+          "candidate_kind": "experience",
+          "provider": "gpt",
+          "verdict": "exclude",
+          "rationale": "The candidate notes a requirement about pricing/promotion changes during a promo window needing a write-through cache flush for APP-008. The current task is implementing guest checkout order placement (APP-003). This single-line experience about cache flushing for promo windows does not provide information necessary to implement guest checkout flow, payment processing, order creation, or guest-specific requirements. Omitting it would not materially reduce the worker's ability to complete the task correctly.",
+          "confidence": 0.9,
+          "model": "gpt-5-mini-2025-08-07",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 62577.978667000025,
+          "input_tokens": 186,
+          "output_tokens": 117,
+          "cost_usd": null,
+          "timestamp": "2026-09-20T16:34:32.684300+00:00",
+          "raw_output": {
+            "id": "chatcmpl-EQEmkvCO53ppMWwOICcVGy4VQTpJX",
+            "object": "chat.completion",
+            "created": 1789922070,
+            "model": "gpt-5-mini-2025-08-07",
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"exclude\",\"rationale\":\"The candidate notes a requirement about pricing/promotion changes during a promo window needing a write-through cache flush for APP-008. The current task is implementing guest checkout order placement (APP-003). This single-line experience about cache flushing for promo windows does not provide information necessary to implement guest checkout flow, payment processing, order creation, or guest-specific requirements. Omitting it would not materially reduce the worker's ability to complete the task correctly.\",\"confidence\":0.9}",
+                  "refusal": null,
+                  "annotations": []
+                },
+                "finish_reason": "stop"
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 186,
+              "completion_tokens": 117,
+              "total_tokens": 303,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "audio_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "audio_tokens": 0,
+                "accepted_prediction_tokens": 0,
+                "rejected_prediction_tokens": 0
+              }
+            },
+            "service_tier": "default",
+            "system_fingerprint": null
+          }
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "n_repeats": 5,
+    "score_mean": 0.3868,
+    "score_stddev": 0.0162,
+    "verdicts": [
+      "fail",
+      "fail",
+      "fail",
+      "fail",
+      "fail"
+    ],
+    "gate_pass_all": false
+  },
+  "complete": true
+}

@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 
 from ..candidates import Candidate
 from ..decision import ContextDecision
-from .base import PROMPT_VERSION, TASK_STATEMENT, ContextDecisionProvider
+from .base import DecisionCase, DEFAULT_CASE, ContextDecisionProvider
 
 _TASK_KEYWORDS = {
     "checkout", "guest", "order", "idempotency", "loyalty", "payment", "cart",
@@ -29,7 +29,7 @@ class MockProvider(ContextDecisionProvider):
     def __init__(self, model: str = "mock-heuristic-v1") -> None:
         self.model = model
 
-    def decide(self, candidate: Candidate, *, task_statement: str = TASK_STATEMENT) -> ContextDecision:
+    def decide(self, candidate: Candidate, *, case: DecisionCase = DEFAULT_CASE) -> ContextDecision:
         start = time.monotonic()
 
         if not candidate.content_available:
@@ -59,7 +59,7 @@ class MockProvider(ContextDecisionProvider):
             rationale=rationale,
             confidence=confidence,
             model=self.model,
-            prompt_version=PROMPT_VERSION,
+            prompt_version=case.prompt_version,
             latency_ms=latency_ms,
             input_tokens=None,
             output_tokens=None,

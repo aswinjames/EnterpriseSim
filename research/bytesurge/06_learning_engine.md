@@ -1,10 +1,7 @@
-# Bytesurge Learning Engine — Algorithm Research
+# Learning Engine — Algorithm Research
 
-> **Proprietary — Bytesurge Runtime research. Not part of EnterpriseSim; not Apache-2.0.**
->
-> © Bytesurge. Commercial runtime research. This document designs proprietary algorithms; it
-> is not part of the open-source, Apache-2.0 EnterpriseSim project and is not governed by its
-> license.
+> This document is part of EnterpriseSim's reference-runtime algorithm research (see
+> [`README.md`](README.md) and [`NOTICE.md`](NOTICE.md)).
 
 **EnterpriseSim interface satisfied:** `sdk.learning.LearningEngine` — `distill(...)`, `emit(...)`,
 `loop_closed(...)`, `systemic_patterns(...)`, and the associated `PromotionPolicy.ready(...)`
@@ -275,4 +272,4 @@ lineage — loop closure becomes unmeasurable, so `ADR-0034` cannot even be eval
 delivers durable improvement with the exact opposite properties — additive, reversible, auditable,
 provider-portable, and measured by loop closure. **The same stateless model gets better every day
 because the ECL around it learned — which is the entire thesis of EnterpriseSim, implemented by
-Bytesurge without ever touching a weight.**
+the runtime without ever touching a weight.**

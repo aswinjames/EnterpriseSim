@@ -1,12 +1,8 @@
-# NOTICE — Proprietary Research
+# NOTICE
 
-The contents of `research/bytesurge/` are **proprietary research materials for the commercial
-Bytesurge Runtime**. They are **not** part of the open-source EnterpriseSim project and are
-**not** licensed under Apache-2.0 or any other open-source license.
-
-- Do **not** publish this directory as part of any public EnterpriseSim release.
-- Relocate it to a private repository prior to open-sourcing EnterpriseSim.
-- EnterpriseSim (the Apache-2.0 project) has **no dependency** on this directory; removing it
-  leaves EnterpriseSim complete and self-consistent.
-
-© Bytesurge. All rights reserved. Design/research only; contains no implementation.
+The contents of `research/bytesurge/` are part of the EnterpriseSim open-source
+research project, under the same terms as the rest of this repository. This
+directory holds design-only algorithm research for a reference runtime that
+implements EnterpriseSim's SDK interfaces (`sdk.context`, `sdk.experience`,
+`sdk.decision`, `sdk.learning`) — see [`README.md`](README.md) for what each
+document covers.

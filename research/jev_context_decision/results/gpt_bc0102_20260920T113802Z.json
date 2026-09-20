@@ -1,0 +1,1130 @@
+{
+  "provider": "gpt",
+  "case_id": "BC-0101",
+  "criterion_id": "BC-0102",
+  "repeats": [
+    {
+      "timestamp": "2026-09-20T11:38:14.501216+00:00",
+      "provider": "gpt",
+      "case_id": "BC-0101",
+      "criterion_id": "BC-0102",
+      "model": "openai/gpt-5-mini",
+      "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+      "selected": {
+        "included": [
+          "EXP-090",
+          "KN-045",
+          "KN-052",
+          "KN-063",
+          "KN-101"
+        ],
+        "excluded": [
+          "EXP-055",
+          "KN-047"
+        ]
+      },
+      "required_present": [
+        "EXP-090",
+        "KN-045",
+        "KN-052"
+      ],
+      "required_missing": [],
+      "forbidden_selected": [
+        "KN-101"
+      ],
+      "recall": 0.8,
+      "precision": 0.8,
+      "score": 0.4,
+      "verdict": "fail",
+      "gate_pass": false,
+      "latency_ms": {
+        "total": 12300.076876000001,
+        "per_candidate": {
+          "KN-045": 2087.7855419999996,
+          "KN-052": 1765.6429170000001,
+          "KN-063": 1480.5143749999997,
+          "KN-047": 2041.9305420000003,
+          "KN-101": 1559.914000000001,
+          "EXP-090": 1710.5363750000001,
+          "EXP-055": 1653.7531250000015
+        }
+      },
+      "tokens": {
+        "input_total": 1790,
+        "output_total": 753
+      },
+      "cost_usd_total": 0.0019535,
+      "confidence": {
+        "per_candidate": {
+          "KN-045": 0.96,
+          "KN-052": 0.75,
+          "KN-063": 0.71,
+          "KN-047": 0.95,
+          "KN-101": 0.9,
+          "EXP-090": 0.7,
+          "EXP-055": 0.85
+        },
+        "mean": 0.8314285714285715
+      },
+      "raw_decisions": [
+        {
+          "candidate_id": "KN-045",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "The task is to implement guest checkout order placement. These domain rules directly constrain correct behavior: preventing creation of loyalty accounts for guests, ensuring payment authorization precedes inventory commit, and requiring idempotency keys. Omitting them would materially risk incorrect implementation. They are concise and specific to APP-003, so include.",
+          "confidence": 0.96,
+          "model": "openai/gpt-5-mini",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 2087.7855419999996,
+          "input_tokens": 224,
+          "output_tokens": 101,
+          "cost_usd": 0.000258,
+          "timestamp": "2026-09-20T11:38:04.287352+00:00",
+          "raw_output": {
+            "id": "gen-1789904282-vfUa1GuojHnOMVJQ4rWM",
+            "object": "chat.completion",
+            "created": 1789904282,
+            "model": "openai/gpt-5-mini",
+            "provider": "OpenAI",
+            "system_fingerprint": null,
+            "service_tier": "default",
+            "choices": [
+              {
+                "index": 0,
+                "logprobs": null,
+                "finish_reason": "stop",
+                "native_finish_reason": "completed",
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"The task is to implement guest checkout order placement. These domain rules directly constrain correct behavior: preventing creation of loyalty accounts for guests, ensuring payment authorization precedes inventory commit, and requiring idempotency keys. Omitting them would materially risk incorrect implementation. They are concise and specific to APP-003, so include.\",\"confidence\":0.96}",
+                  "refusal": null,
+                  "reasoning": null,
+                  "reasoning_details": [
+                    {
+                      "type": "reasoning.encrypted",
+                      "data": "gAAAAABqr8WbHA1SMxsPVDjHz1hOK0sWrfy0uWk9zvpReSqEwvbOCyeRhv4spN_5-YVxO5u75b99hB5MgnRc7kMSH9CwF4gMNpWbGPhUnnxrhzEkKXRMOEOWQuGCNKAPygiWcOkCocgRJfZi3qAZPx7ylTxMRrYUD1yNOc88dPzHAwTM1L2yliuesXyNGW2hOGpni8rgXzzvW1LIIkhYlQPdr427B8FVexUJU6_pua0WBMBLiD3zOYzqExUfp1vpXYsIX1tgCioZJGN-CXnYRFHjpTvspPg8uOFqGV_iobxLouQsPJIhMzxFF3nnr6YTAxaZjCkKFNAC7Ccg4sp2RlBZkaDH83P4i1hRs00qo5gSV4OmyCVqP8-D6thl3BWBIrM4mlxSo09Ea0NhhtNWFOInaQ2chyk2WtztPJv-2IlTpTMPbV8SxloyfsWo8ht8r_ke97G7UoJBQx7uYqj-FS84lPKCZL6cCQmHQmjQ6TTQAfhFkS2Cjdhu7hXu87Ey7RzhU2K0z2DUlknxyufALzA7Vszoc9LXNTpWxKQZO3m4s8EFmroNV03rKYw5QAv9ymPkw0KLX31X8RPs35sTrJ_nF-zpGlnoNYHC6ibwRjSx5_9VipoP56_cuVdJYjpnjxQ0NCAFK0MtWKo9FnCh91ZwSqUnWoF3HgX6fZLIAEw_wIt7TVONmLbi9ouLmlVp7o5YQCF_-S_sq1MVACNPfsDKdvhZvcx1oJjpDtbv-PEBADsz3QSPM_ACbhWBVikuQO6zPj-9x3jDS01JypduzU6mJQlqdgD_-MAIf5gDd9ZTm11oBr_trR2nT0u7kliEiaPYWJfLuJApsXT2YADeDzD4eAk4lwnungwNBlFTG99bFBnuModpNVwe2rvKvg3uyau7f2g2F7GyPPjzGy03HII933Gwte_mBB8beRIVUTQo0Z-fpg5Yek-Ow6Ie0z5QnOHkMECOokQ8Kujn8cX3jH4lvr7dUNLHSS1T14ZhA93mvE6VYJEgHt5PJJgtpgPuZ8RBmuk9_egrQdf8A7OZqDwrI65EbwSWm6hE79trTIkiw4MeMdSQafz0KxNLCDXqcjNRmfb6M4QzbXZoDUPNn-nKP9P6umOThNCEujVCErliI8BAcf7OyC8GioCZa1P3bzbD3aiWEQmr-yzP2RbyNqN9UX7MY1kwP9qZ_y3UFuHebn1fWqPMpJHdBMZJ14LJtyKKMzF7fxX8VzGfizESSbxUU96yo6w9nILKoFisz5-eFINkz0QmhqGISUzn5Wzw6ghK07jGXQ1z-nITQBVN_CtlBrvD_DNc8ukiM7WzEY7Lc_SBgrYWeJn8p5dyrzHhyt-xOUY_gqDeohIneMkuo3W0XCz5ktBagx2C_KbNIXZF938aULfQnb2QhRAwMju9Q2owuYnHOzDs0rw5lrGxp8thXSkN9U2hJA==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC01LW1pbmktMjAyNS0wOC0wN3xvcGVuYWkifQ",
+                      "format": "openai-responses-v1",
+                      "id": "rs_095cfead85f988d5016aafc59ba11c87d1a56b374007164de3",
+                      "index": 0
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 224,
+              "completion_tokens": 101,
+              "total_tokens": 325,
+              "cost": 0.000258,
+              "is_byok": false,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0,
+                "audio_tokens": 0,
+                "video_tokens": 0
+              },
+              "cost_details": {
+                "upstream_inference_cost": 0.000258,
+                "upstream_inference_prompt_cost": 5.6e-05,
+                "upstream_inference_completions_cost": 0.000202
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "image_tokens": 0,
+                "audio_tokens": 0
+              }
+            }
+          }
+        },
+        {
+          "candidate_id": "KN-052",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "This artifact specifies the idempotency contract for order-placement and payment calls, which is directly relevant to implementing guest checkout order placement to prevent duplicate orders/charges on retries. Omitting it would materially increase risk of incorrect behavior (duplicate orders) and missing required headers/handling, so include it.",
+          "confidence": 0.75,
+          "model": "openai/gpt-5-mini",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 1765.6429170000001,
+          "input_tokens": 302,
+          "output_tokens": 97,
+          "cost_usd": 0.0002695,
+          "timestamp": "2026-09-20T11:38:06.053097+00:00",
+          "raw_output": {
+            "id": "gen-1789904284-TIvQ0ymY4NN6OZD9wFFG",
+            "object": "chat.completion",
+            "created": 1789904284,
+            "model": "openai/gpt-5-mini",
+            "provider": "OpenAI",
+            "system_fingerprint": null,
+            "service_tier": "default",
+            "choices": [
+              {
+                "index": 0,
+                "logprobs": null,
+                "finish_reason": "stop",
+                "native_finish_reason": "completed",
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"This artifact specifies the idempotency contract for order-placement and payment calls, which is directly relevant to implementing guest checkout order placement to prevent duplicate orders/charges on retries. Omitting it would materially increase risk of incorrect behavior (duplicate orders) and missing required headers/handling, so include it.\",\"confidence\":0.75}",
+                  "refusal": null,
+                  "reasoning": null,
+                  "reasoning_details": [
+                    {
+                      "type": "reasoning.encrypted",
+                      "data": "gAAAAABqr8Wd-Kmg6rXdP1iHB2gD6Gak3z-k5rqt_5RAFxlHfTiztAyh71-85qAxVn3hVlJ5PkDGzRXM4V5O5z-2SEUtYnd1Ic1pzPAHmuuwNW5gfs_u9VfMKtar0w41WhKof_tf5O3ZjcW8Qo2xmJ-pFQ_Is3CIxU0rZJh_n8EFIxHzCTCltMGq3rj5P94yKoqyoZI-qP0DL4UUYa5nGWEsv2pEgAPJhWjQ0p51kfRIbDgFlzIdAB_U0dXh_rTnOc5feN8TGWgGxH4gS8NjLBo-uoqtkSfX158nWftDlsXn27AravmkxodSAb10J44lXR9slp5Zgk2shgicxwDbOdmEq7D9l2TW8qXSPPL_xVHLdY_eKDVHzPV-JQ1EmfX0Z-Jb1Zmf5Yw_mfJzBNyAsXl37qKR9u3pAZXt_yBSLZwRHeMWxUJGOJKgtpDnaqTSaj9j62YaReUOaWlATfjrpJ5Ck13qWao54ckBxh_OTK3XBRaTOXKLdMzD-4K6xOrcpqQTfJ5tqW3M6V-eIJsguvkQmfxlU2W7aKoArgxW6KoaTWWrTus_tMa2LZMbHzHNfoxps-7RYQU2Qml2zeqEXs-M6WtilFYcMbgwSF3qPmrQqdPOyKBhtkoFHtZXh_2ICwCx9CzndV7nP8agUyok3hvpsB63-egWjck1PkU5KBgIYKuO8WpJBhC8g-lu9Aa1OlqAQraY5kecK3wf2C_AsfVqyQUNWgrdb6_Hn-uH0FrBjURkjwTYS6T_Wfs0Yul3Bw681R_XClDVDPmX3YneIwsbZ5jWh4hwXySvb1S5pLtMsl5bWpe3JT_yc-XIRMuObgp_XBImzEmQAwr3Zz-pFDhT8at2ZDLGAYu1OhJ1jPGlLdJspaM9FnuzLYmFpUunh7L63zkCDMxsITMLm_zBiVi1ZFa4WYg9TSJNI9uEEJoiaqPFz_eJbuqcueeWfsXLsdhSmB4NftFcqnvhGpASRtuR8prkd1H9YN-Sn02y9lbDUklQVQHtZvc99m8dUJ3xbT2jNoY_-N9hlA5ziyniP9SLcb635v6VXA0iW-dFCVXOI26IpQZCOzJo1hrKNOxO5fxGqOh5jf1CwDgj610u2XVpRiSHsTkYu8R9JIgoLO83Z5hbn8q5vLQyBtt9TvA8RD_Oo16IdJPdojbVEOEiRW5qFVkvoqz_rJ4cM_QhoeHlPs-L8ai-q2KSZV0bEfaXOsFO4QoSRcPw17N4gIoKO8bDdPFJ2D4U55W0q9629Kg1KefqYue_ykultQ6zolbVWXY1d8QPAWxfCVA0w7REzpVH9exrxLtf3e7N2EcT8pt3BG8XdTUxVrcYdAIhcpihHAz8fOkFjU02Su8mPtT3pGgiiJ2nr96NHCeJgVj7QTpKbfX8JJy3ExV28gVkxHmAPVtACEEaNvq5PpaMMo309KAeXrdA8h5PYw==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC01LW1pbmktMjAyNS0wOC0wN3xvcGVuYWkifQ",
+                      "format": "openai-responses-v1",
+                      "id": "rs_078b7e274e1c645c016aafc59d29c087d1ab74c355421bdb83",
+                      "index": 0
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 302,
+              "completion_tokens": 97,
+              "total_tokens": 399,
+              "cost": 0.0002695,
+              "is_byok": false,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0,
+                "audio_tokens": 0,
+                "video_tokens": 0
+              },
+              "cost_details": {
+                "upstream_inference_cost": 0.0002695,
+                "upstream_inference_prompt_cost": 7.55e-05,
+                "upstream_inference_completions_cost": 0.000194
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "image_tokens": 0,
+                "audio_tokens": 0
+              }
+            }
+          }
+        },
+        {
+          "candidate_id": "KN-063",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "Guest checkout (APP-003 Checkout Service) must apply current promotions/pricing when placing orders. This rule specifies cache invalidation behavior and that Checkout must read current promotion versioned keys to avoid mispricing; omitting it would risk incorrect totals. It materially affects correct implementation of order placement under active promotions.",
+          "confidence": 0.71,
+          "model": "openai/gpt-5-mini",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 1480.5143749999997,
+          "input_tokens": 285,
+          "output_tokens": 100,
+          "cost_usd": 0.00027125,
+          "timestamp": "2026-09-20T11:38:07.533858+00:00",
+          "raw_output": {
+            "id": "gen-1789904286-vHalWaKkHd508vcLeQHA",
+            "object": "chat.completion",
+            "created": 1789904286,
+            "model": "openai/gpt-5-mini",
+            "provider": "OpenAI",
+            "system_fingerprint": null,
+            "service_tier": "default",
+            "choices": [
+              {
+                "index": 0,
+                "logprobs": null,
+                "finish_reason": "stop",
+                "native_finish_reason": "completed",
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"Guest checkout (APP-003 Checkout Service) must apply current promotions/pricing when placing orders. This rule specifies cache invalidation behavior and that Checkout must read current promotion versioned keys to avoid mispricing; omitting it would risk incorrect totals. It materially affects correct implementation of order placement under active promotions.\",\"confidence\":0.71}",
+                  "refusal": null,
+                  "reasoning": null,
+                  "reasoning_details": [
+                    {
+                      "type": "reasoning.encrypted",
+                      "data": "gAAAAABqr8Wfgs_ycv0s4w2DMTL5OqmDUrVFNd_2mEhkPDcZbi50zN_op0GSco3bmMxVP2In76vdQJTaJIPJeBjIBDWVAU0sjf9DnoKSFsAamMtTsqjROwxvbTVY5IteMGd1-QvS9EcxZjDMv_S090GxDRU17w42-YZwwisHgmySqWPrxZXW-P0GfAlf6hDKar1oKHGy1oo0Le4Cg0HoWvw64a2VBnGD6Jdhhzpbf32AL8STStrEcLtLJyJQsdmYo_01KWjVr7ov9ojVmBRI2m9in9LcAY6ZJU27qwOSwRDXst5_oygmKyuIh3uIFBgj1HrbOWOEARhVTfKXde6oT0hWkuOnshmBp5hTkv0sK12MGhwZJlJOgLwQJN4CpQFl760klktrR8f3wZdwv5cLzp9pZmiBNxBVUfS9b1Z_Ajg-qvfUZZe-F6W7c-EwgBe82M5vdIDx_7-ScOySIBDvB0u7uTq05rASkDQIokynzOlmDNq3PPZRlmyv9EF32iT3fU_C7oDCLh_1X-rITt8FrM2Cy6bPn1-NvYAHHZFORziDms6WxPKG7jttPhpJo1b7C8XwKgcd90JwEk1YKJJ9XYI6mqg8hTqBOgh0CqACRBBAmosbMsNna-ODFK1nRRVKlwXfKEm-5s_lF39gGRoYybeo1AX9bo1au-fClF9but2WwNkWpQaP6j3cZIdqY9u_KhaGPLaUDcRwEmE1oqHHvgK4UZ4aB89uZpo_YQhhh3nUtb9qAkKB6GvE6giPxQiamFSnvNc3CIq0dMobYx7YLtVCIsnNKTJKSFF4qBss1mFuzEd8JU4i9RJNxwJg1vPSCFe2JowOk4T91PpA9IT5_TE9KGpFvhlDk8Z-lMxgiIdukdOk0vZ8-Bf4C13XtvRi9kL1JDZQyREqCQUTDV7oW9h8Vg5sYr_E_ICK2fLkQyCYTHYTWtuTHJkc3pV8gJVzNDPV-A4oglTHt61Whx22WSNn7JKpeZ1ReFnnEMbstIFeiHuqTdVTjR4J_gKN4iX9GmJINulIet_czZhDImH7Wijhie6WZFZ8aJ_ls3tj5PaqZXOdgKqgUKChbmrTW0FQTDAYox0_p0iHbPn2pzKfZQ6tcY8P5KSAl-d6AePhlkGiwvV35_S84CfA4YEIMnxfIq9F1FytN9Cf-lGwSrXnFzT3JVDGToFbsGnac0l5siYsYC94Fx-Fl6fSVTWznc_3C2u1ZJI2PDQYV2ebNMrEAXO88fBDt1c4AD1je2t9GWZy58zsD0kcq9jW4ivQotd5RL6LiPWUofJCf5h8328Bw8qUIjyQ9SBOtyditpNxhnw1xNMRVaxVAWZCdX5M5HUzUVcXXKJMkTJ9iUSCqUZ6WHOLJBgxALvR2qzvySAr-0tdJXHiFwrDtha2RAbuJfKg4Z0nUTZkWEcl4ZzTTeXa2IrU8cNg_B4A3g==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC01LW1pbmktMjAyNS0wOC0wN3xvcGVuYWkifQ",
+                      "format": "openai-responses-v1",
+                      "id": "rs_0b2ed15bc61cdc65016aafc59ee74887d1afbf0aa53d12db3b",
+                      "index": 0
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 285,
+              "completion_tokens": 100,
+              "total_tokens": 385,
+              "cost": 0.00027125,
+              "is_byok": false,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0,
+                "audio_tokens": 0,
+                "video_tokens": 0
+              },
+              "cost_details": {
+                "upstream_inference_cost": 0.00027125,
+                "upstream_inference_prompt_cost": 7.125e-05,
+                "upstream_inference_completions_cost": 0.0002
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "image_tokens": 0,
+                "audio_tokens": 0
+              }
+            }
+          }
+        },
+        {
+          "candidate_id": "KN-047",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "exclude",
+          "rationale": "The candidate provides no substantive content\u2014only a placeholder noting the ID is unavailable. It offers no technical details, requirements, APIs, or implementation guidance for guest checkout order placement. Including it would not help the Worker and could cause confusion; omitting it does not reduce ability to implement the task because it supplies no actionable information. The repository's provenance note can be referenced separately if needed, but the artifact itself is unnecessary.",
+          "confidence": 0.95,
+          "model": "openai/gpt-5-mini",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 2041.9305420000003,
+          "input_tokens": 267,
+          "output_tokens": 122,
+          "cost_usd": 0.00031075,
+          "timestamp": "2026-09-20T11:38:09.575991+00:00",
+          "raw_output": {
+            "id": "gen-1789904287-LbctMalHDx9KWH2nuaZb",
+            "object": "chat.completion",
+            "created": 1789904287,
+            "model": "openai/gpt-5-mini",
+            "provider": "OpenAI",
+            "system_fingerprint": null,
+            "service_tier": "default",
+            "choices": [
+              {
+                "index": 0,
+                "logprobs": null,
+                "finish_reason": "stop",
+                "native_finish_reason": "completed",
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"exclude\",\"rationale\":\"The candidate provides no substantive content\u2014only a placeholder noting the ID is unavailable. It offers no technical details, requirements, APIs, or implementation guidance for guest checkout order placement. Including it would not help the Worker and could cause confusion; omitting it does not reduce ability to implement the task because it supplies no actionable information. The repository's provenance note can be referenced separately if needed, but the artifact itself is unnecessary.\",\"confidence\":0.95}",
+                  "refusal": null,
+                  "reasoning": null,
+                  "reasoning_details": [
+                    {
+                      "type": "reasoning.encrypted",
+                      "data": "gAAAAABqr8WgmSEFhxwa8ghL90XOKzHTHnMkeU--9f4_r-o13c5ZSnxJrnIlZRNcfJv4pRGt3kIaxs682ahXdzIDehpzOqDaeeKNB4bstAlKsznnJ9N--vLox2fRbAw_gwmRuF1eO5eRABRIlhMyrmi2xSRXA17EFMkMAiesFkPofLQDH7vS0ItLfuuE0bqmLDTbBJUXu2OVBfixciCVapMyrwyxiJAu_pqmxZPhAlfE1_HRvkABnvOaf6Kc4j3_46ky0Yk3sCW7wWnfEp-tHy_JIj-xGZ8nt1bWUN1F_GjM1H50Fth_Ipzhip8XhVeBdm83vEmTpNJn_yNcJbbm8KutG1uRDrCjr1il8v7NNysmuavqNkA9lx6iCxnoAQymbeAV8C9a13C41vWqRRCKt1rCEZk8qWAF5tTKomzZBuczItxJeZ193YxLz_vijdsTZ8D_MHy0IPVveL5W-LV4bqQH9U94K40iZ35cIaU3oiFBuR5J_GN-shNm9eNk0wUX_ABFRym2QvM9Wev-SYiGV7Ek-Rwa_blokx_ReZY-9fZzTeKfcrMTvJFgQsZTrqq5XlhB3E5TgOFxuJ3c5Bo2InpCfMrd45LY0HTYhL4x4KwD00buEI1f70AbRiyRk6OAVAhi6wDRTH8xBht5Jt8yLtWl6Aef6U4JX7bwSsiSP8nDn2ccOitsVl4fRM4z_vs-UpBKK0-eY2YSdhweUu1oirnh1HrD2Y2ldKkl6FbgBJXdnPHpCz7oSgi-G8tesYRBhBII5QkDPxh11tktNVBlPhI-k80dBNoOeOGlwcgSuSMcAed98AJdG3YqNcz_olLd6KdCoXKhu8Dseu8o08xxCwNTst2wJGzQboWAcnlELEk9eJRUVGIF8yBtuWAtkdGfeIdfuy3Q9jfLxvlxVksk3LYJiFMnAztARBpF6SEC_-2Q3UO-nM01PRdx6DEwvDvJsfGkjmCDSzOzCV8f0i-H7tSlTvenzi03LWI8XgdYyRXsyzo2M6i0NdDc3L4vUxPIzFwIbFYWXeiy17c6oq3ArFMggVZe7wFrvig3cRpodDx8vFWb0hbXvp7qbXcXvubVKdcLDayLYkmGWC5MigDT-asf8sULVrcWFuwmGk8GHGDLo15kvDbxPcRirUun2-4Bniq9s7dc69I0bLa_mV2tL-GWycAaadr6sKkD6gNSa5EChGNQeqiKubmKsxaY5Yf1aLuqsk5TB0K9-zJM6__dTn8i4sJDfgEcwnCk90fkpYDbC4SVIKx5SUk8y4CqS2IqA2ZEd61LwkTyJhPIQBv9t6B3Xj9Na3cH4D-lCg49vZbpd2IUGhyVPy7S764-Q2RR-1iMuShxRDiZigc90EHastOyIxXGhozOuFTDk2MZHXFw7UjP2MjmH7DUrlYnvvZ9X4G0SJPGxv7X6io0Zn2FnDDCN2nRBCLZjA==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC01LW1pbmktMjAyNS0wOC0wN3xvcGVuYWkifQ",
+                      "format": "openai-responses-v1",
+                      "id": "rs_0849fbcdaac00053016aafc5a0648087d18e49e0a04c9b5921",
+                      "index": 0
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 267,
+              "completion_tokens": 122,
+              "total_tokens": 389,
+              "cost": 0.00031075,
+              "is_byok": false,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0,
+                "audio_tokens": 0,
+                "video_tokens": 0
+              },
+              "cost_details": {
+                "upstream_inference_cost": 0.00031075,
+                "upstream_inference_prompt_cost": 6.675e-05,
+                "upstream_inference_completions_cost": 0.000244
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "image_tokens": 0,
+                "audio_tokens": 0
+              }
+            }
+          }
+        },
+        {
+          "candidate_id": "KN-101",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "Guest checkout order placement must determine correct prices and currencies for sold SKUs. This document specifies how Pricing Service resolves prices by region/country and that each market binds to a selling currency (no runtime FX), which is essential to ensure orders use correct currency and detect non-sellable SKUs. Omitting it would risk incorrect pricing/currency handling in guest checkout.",
+          "confidence": 0.9,
+          "model": "openai/gpt-5-mini",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 1559.914000000001,
+          "input_tokens": 327,
+          "output_tokens": 112,
+          "cost_usd": 0.00030575,
+          "timestamp": "2026-09-20T11:38:11.136146+00:00",
+          "raw_output": {
+            "id": "gen-1789904289-BUTRXaYrizJETUbvAxV3",
+            "object": "chat.completion",
+            "created": 1789904289,
+            "model": "openai/gpt-5-mini",
+            "provider": "OpenAI",
+            "system_fingerprint": null,
+            "service_tier": "default",
+            "choices": [
+              {
+                "index": 0,
+                "logprobs": null,
+                "finish_reason": "stop",
+                "native_finish_reason": "completed",
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"Guest checkout order placement must determine correct prices and currencies for sold SKUs. This document specifies how Pricing Service resolves prices by region/country and that each market binds to a selling currency (no runtime FX), which is essential to ensure orders use correct currency and detect non-sellable SKUs. Omitting it would risk incorrect pricing/currency handling in guest checkout.\",\"confidence\":0.9}",
+                  "refusal": null,
+                  "reasoning": null,
+                  "reasoning_details": [
+                    {
+                      "type": "reasoning.encrypted",
+                      "data": "gAAAAABqr8WiNJ_s2suuUb3EVb5WbZ4I55q1FjN15mtIV7GqpQ0LN7YPNCj2rACmkvaW75aDZD2wh5CDNTm1dlHYgoaqr7GiupGkLqIOCbfeNL4epBpYRhasvj_YvwG9QKIdi3X7wZisutdTjkk1Yrqg5_mZHtnwqZoCQO8DCMWhYp4iw3ILlDjVmR0sBC-8vOapCJelaV2SroinsgBi_XabtSOjT7_iLEHFGlKByMocLxMuHB3gL0EwtCi6mFWt7M2J7D-ohBriGw3ibcBp23HRGnbN_QQXXkA4ozuk2S52j8ewbj6WMOo8BGYWR5cpoyebRe0drgjIBHF7mr7M2y0DvPdzaMdHvsjdHWAuphUE5UU0QJvmDcto20Nm0Wb7tS3sc0Pmou07bENuQ3I0kgAxyOJqPRXrE3IftwDPbcB9SjkZy1llxPvTwUqevnmC0X0bekVk9_XP-pZOTvjOXvQ-X-ALDBV2K9Af3GzVicpohrL_4e7To5D5HFbj28tyt9AeQqqR2cVf2xhzyl5TZUzmXySLX72Xj2I9BxfB4I9FW5pgiSHnUrub13iAnu1w3VKj-6JbZTIIbWWkrXpXlM3DONUBxM4hFF2_910g-XXzY6AeRWY40D7gMo3nwZ7ENoq-5ASAJWehr-i9PAQRyqtmN2n_E_jFSbv351Xerdu6DDBMX1RwOlfWCCLKC8FENK40ZUfibAA42eXKQCNX8Kf3XKDZI_5pOJEe1LC9-RynYjtNSIXpmo5P-oiydbOMFhigw-I63fIHCF0tqpK0ofZvRglE7WIf-pBfSjH5dCYQgCaOgiKA2AxNVQEcOTMmwUl8ggjbXgJ6n3RSuduLyEkLjmQvHfb_LM65FrldvIwKZk0EvPWLP6GmFWhQ2whgiAOvRYwyqHw68iiWwoPMqOhYZuUzgHsyrwHVzhljYGVDD6I35GbLRFE-UQIoZjhHXKkMxFdEk4vex2o6V1RjlPpRfesyL4tfIKz-detfcBbqL_jPIPmq98Zic5RCmEDkn0ryx_agb4mVHn8P1jAfJCl_uPNEMUpTFbY8baCW-JplbFdfl_b5n_7uK5KXRZbd6yunAiKdrfOubsGkVEkAPfcJROcp2ISK8WQ0ZeEksuvobKy-KLnkiR3qZBsU65K1ewUwjm-_Ad61d6vF7zRTT9JJmITzy_c6ITa0VFl1dj7bERRWtAG8g2Qc9wTYDJHPPQtqXBnFplFN1Pn64iiYNfBmcqk_cGQhf0LpSqINKlXtNYn902eUl1-2vhgHIutejKh3dEdzu5viXoxsQgb3D-ry6VrsjK8DDwGI5k7EbzWKsNrByXZd4VPnEcLfKRWc6WJyi2cEvbjP2SsvCuPEMESFFabc2h0V8QI9jp9luDxIloB5VWB31FCgFp5onfP74xMXLvTDO5Gq0NkqaTokr3bRSY9y3fwZAw==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC01LW1pbmktMjAyNS0wOC0wN3xvcGVuYWkifQ",
+                      "format": "openai-responses-v1",
+                      "id": "rs_048fd96fcb4b7626016aafc5a2839887d1ae5b9a00e3eee934",
+                      "index": 0
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 327,
+              "completion_tokens": 112,
+              "total_tokens": 439,
+              "cost": 0.00030575,
+              "is_byok": false,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0,
+                "audio_tokens": 0,
+                "video_tokens": 0
+              },
+              "cost_details": {
+                "upstream_inference_cost": 0.00030575,
+                "upstream_inference_prompt_cost": 8.175e-05,
+                "upstream_inference_completions_cost": 0.000224
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "image_tokens": 0,
+                "audio_tokens": 0
+              }
+            }
+          }
+        },
+        {
+          "candidate_id": "EXP-090",
+          "candidate_kind": "experience",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "This experience directly warns about a prior bug where guest checkout paths inadvertently created Loyalty accounts. For implementing guest checkout order placement, that specific caution is highly relevant and would materially reduce the risk of repeating the error. It contains actionable constraints (ensure no code path provisions Loyalty accounts) that are not otherwise implied by the task description alone. Including it helps prevent a data-cleanup incident and is therefore necessary.",
+          "confidence": 0.7,
+          "model": "openai/gpt-5-mini",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 1710.5363750000001,
+          "input_tokens": 203,
+          "output_tokens": 117,
+          "cost_usd": 0.00028475,
+          "timestamp": "2026-09-20T11:38:12.846900+00:00",
+          "raw_output": {
+            "id": "gen-1789904291-PWZGO7kHOYWL24ecCaWv",
+            "object": "chat.completion",
+            "created": 1789904291,
+            "model": "openai/gpt-5-mini",
+            "provider": "OpenAI",
+            "system_fingerprint": null,
+            "service_tier": "default",
+            "choices": [
+              {
+                "index": 0,
+                "logprobs": null,
+                "finish_reason": "stop",
+                "native_finish_reason": "completed",
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"This experience directly warns about a prior bug where guest checkout paths inadvertently created Loyalty accounts. For implementing guest checkout order placement, that specific caution is highly relevant and would materially reduce the risk of repeating the error. It contains actionable constraints (ensure no code path provisions Loyalty accounts) that are not otherwise implied by the task description alone. Including it helps prevent a data-cleanup incident and is therefore necessary.\",\"confidence\":0.70}",
+                  "refusal": null,
+                  "reasoning": null,
+                  "reasoning_details": [
+                    {
+                      "type": "reasoning.encrypted",
+                      "data": "gAAAAABqr8WkZTfQ7zIIan8F61om7ljPkHKgpF69AW1tB1ziXbAwzE9sgTHjsLCjePa18MFAThXxB5WfxdNlCcLKvFZsx_L1LjFUM-NCW_gbCaQhXE_XkGR9uknkHit5CyWa4k_HJKzgPILkokM66YntZkLK7TlN93RgM7VapAXgVSjXABM9HYUwZp-XJQMLQga47gNrPBbPsSiATTN2CPmYlWnuJL7ony--6w4bJXj8v7mgCupSP-vnfmPC2wzdMfdvZGdRb6klHBhhvMgtXdjd2qZ0E5N5ZzfB5mhLDb5elE-azmf5yPzT6oCb1XEw_-78yj2VuLp8sLOSISjjf7iVAaT8DuGWqLll2gXJzZF9VbBgnm5ovEJ6zldF7PBILolJQ7gpq6kGVcghSv5BIfKh1NI-DIU3p5Vpt98esreuqY-vkUhP7O41FGGEW_3qaUNRwrW4_a2Cig3FM2FdTQOy2et5P_20OolveLvzwmncwZMisakUMBaShblFG25BGYjzR7Yr6ZzGi3cWtw6UoDWutfPSWDOV1EJWBOV02xswrkrKqjYpkoeyJIN_7SBwPfN3Fu7TS2iYwcgyD8cGnLXwAobElvLuLwx6SV5Ln23g8i11401hBNudqwCZxif-q-2jub7hmw_K_ofRBmfVpS9J_Gxj6QAf2KoituFWLjF61q_KryTXd5aEJmygMob3-B1T6YwxFzpRIPZ91N34ttN9vlKJcacdT02HYtReSDdBGyXm53BqopvB4GhDXdjdABEJqG08n9FRK-_J_0KI2HWqhGy6tvpWgEZPi1XpGAHBD_6l28Nnz3KlUkBfDo__C6VI13oAv52KVxObeDnCGWGWBuVwjNaZ9vWITinGAiTEnNHxEMeks-N22RSCIje9DCiONb9SKArRKCE0d83MTgy8b2z-WQLiv0L3ZsuxDrzr06gsEggS4tZpQfldwA8evmag23Jx6V0TQaYa319IjRxRxh-fhiEDqUBCfuP4JzAZQPKvSm7VRcjL7cAWVzTsxc1vtTv3pEfQxj6uOFXCxot9XLKB-5EZQW6yixom2elk21SiINrrBbRaseQ4cRwOVIRWxZMLsQwEYU8cczqLexwGer71-cLDeW2NYCbhsrw0YEdvcJnZU8K61CjAcB_p6vikVKohEs-eETEk9ZwiKsjG0NMasVVLGtnmhneUz1DEaaIHcmaG0Gxus90HUt02WnXvR2E1Ch34wNgfL7F8O0UkzHHsf7_sU7zJ3qHUaYNCiFIVvwg4gjRbG-VWStpdoGYD2cUnphR7RcdvyDhxuMazmtzYY71kLec7uAQdG_R98GDeb-nQM7BAoXCvwFLXFAyl4Soj_wp43_rbKOT9ylzObCxvscpa2kLIOaLprhJm7ImznlUHOirW1PsFHN14wY2xPEYJC2Dw.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC01LW1pbmktMjAyNS0wOC0wN3xvcGVuYWkifQ",
+                      "format": "openai-responses-v1",
+                      "id": "rs_073f91b5b5d8ed32016aafc5a4077087d197f0ac4627715292",
+                      "index": 0
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 203,
+              "completion_tokens": 117,
+              "total_tokens": 320,
+              "cost": 0.00028475,
+              "is_byok": false,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0,
+                "audio_tokens": 0,
+                "video_tokens": 0
+              },
+              "cost_details": {
+                "upstream_inference_cost": 0.00028475,
+                "upstream_inference_prompt_cost": 5.075e-05,
+                "upstream_inference_completions_cost": 0.000234
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "image_tokens": 0,
+                "audio_tokens": 0
+              }
+            }
+          }
+        },
+        {
+          "candidate_id": "EXP-055",
+          "candidate_kind": "experience",
+          "provider": "gpt",
+          "verdict": "exclude",
+          "rationale": "The content notes a cache-flush requirement for pricing/promotion changes during a promo window (APP-008) which is unrelated to implementing guest checkout order placement (CHK-1421, APP-003). This detail does not materially affect the worker's ability to implement guest checkout and is not needed to complete that specific task correctly.",
+          "confidence": 0.85,
+          "model": "openai/gpt-5-mini",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 1653.7531250000015,
+          "input_tokens": 182,
+          "output_tokens": 104,
+          "cost_usd": 0.0002535,
+          "timestamp": "2026-09-20T11:38:14.500866+00:00",
+          "raw_output": {
+            "id": "gen-1789904293-o5boqMLb8EldXt8GBdSA",
+            "object": "chat.completion",
+            "created": 1789904293,
+            "model": "openai/gpt-5-mini",
+            "provider": "OpenAI",
+            "system_fingerprint": null,
+            "service_tier": "default",
+            "choices": [
+              {
+                "index": 0,
+                "logprobs": null,
+                "finish_reason": "stop",
+                "native_finish_reason": "completed",
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"exclude\",\"rationale\":\"The content notes a cache-flush requirement for pricing/promotion changes during a promo window (APP-008) which is unrelated to implementing guest checkout order placement (CHK-1421, APP-003). This detail does not materially affect the worker's ability to implement guest checkout and is not needed to complete that specific task correctly.\",\"confidence\":0.85}",
+                  "refusal": null,
+                  "reasoning": null,
+                  "reasoning_details": [
+                    {
+                      "type": "reasoning.encrypted",
+                      "data": "gAAAAABqr8WlrqzODhVRFSIVF_NZeaMiwmzVaEv9f0i-3L3QVVIujDQPHkS4wvy2wGMpDnHV7bp6pG6Kkwb4gpZjBOwL9mP69UPi_MQi6mk8qHI-qokxbj_mM6iSMM5gi5U8pFwoGuOcqdeTXtwACpCNYM3fk2d_zSgm3U-Vio1cbmdps_KbCDIHIn_tqDD7rI3OZoboyesfuO3DdqPChaSF5GgOl-ouLaMayLleUBQUmjF-WR880M1yp8LL5FP-1MFJy2VJ5Wp263q15u0Sw-ZBlc96eOpvis7gRzh6qb3_W-9aaBbcz_ZEuIvFzEi4ZB08FuSA-DFV0NrIILrPoY9OSF3PQdEO3HEZytANFm_9BcaKYRREyCwgVvno--Hy5p68NXyGhTWtnDcWDsalJeunKLsFHWYROjE47foI9YtuGjHfGpWhfthwTYp8iCjxJy9MATbjT5ycot6xRSAKbPqdgOyReH-fNGqwKgfpIFgezDltq_S4eV9sTz4JXEYrJbM5YjDA1G82CbG5zX3Vs4bJRc44seGMrAMCpL3pe3yNTeYedQCXH0_D2GaioKdFvMwvDIeN2xpRc9CHZpRbouXlRR89oTPUTMoZgZYNLOpwWDYJhJgc4ZyEn8IzIlvxF7tXpCfXDL2u9U2Sv03bUxaJcyBBxd3ii86q1ND7JprjJYTKNheG_BOwUF4C41mRR_JCC2BjyiGFLP-Y_W5OEqHFIwrUvM9yd-o1mJY_rj1vgAQrapWAqJG23VV0VUCQt2bC-PEW6FXd7XwCRBigEm8OPmHr9ISRLs-6fA-b2FbWijXuE6fp7Y5yK-eiycUO1AIRDcySAruXePGCbg3OTVM0eFpU58JzEvb_jDQb8BLylLFvKKJGWOH8eqkRGOTJXmnNAXk30siU8iow4vNilOq8OyYsLO4sF1lQ4FunPnUG8Fp-pHcAe3prBaSpyZ7qDBbRp63r1nyLBNJY_wVOeGQnGg10qDSXf8U3Vy2wRoNCwkwYH7CzgwD8FGKUOUCfNr_F1Z6fkMQDPy_jd1rQLSQ-cicXHkKQ3RykIfavkpUp243WAaGT6HO21O3hQFy_nVXpOIdkvOQlDi2KnZvwzyu_2toJa3VYX-F2kCcbu3iNZ2fZIIsXQIqz8FP3iaeus6egg8Kxo0S7gYf8y5OUO0CGetlTvxaTE239f8JEWMo27Iv4JTAYgmuNnlpKFG6ciS126iHiz4ZaMk10cAfpavS1sgq-iRT53Jne9Il8AeUUh2flX1QKyZMKP_jn8nN8nXPy4d8MnlNRDB8qOhgHIryVFtP5Ca2s2LOzWEatEcj3DC4iWdVjU14m11Hnbe2Mo8MVZetiIE98HsSyeCJL3kRun0Jxw5g7JHis-QxfnKS3PjoPdfmk0M6HusvurCP15cBd9zI3deQUS7de_kGapPxktkdIooGnBA==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC01LW1pbmktMjAyNS0wOC0wN3xvcGVuYWkifQ",
+                      "format": "openai-responses-v1",
+                      "id": "rs_084143445b5035da016aafc5a5bf1c87d195f9032f26c294b3",
+                      "index": 0
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 182,
+              "completion_tokens": 104,
+              "total_tokens": 286,
+              "cost": 0.0002535,
+              "is_byok": false,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0,
+                "audio_tokens": 0,
+                "video_tokens": 0
+              },
+              "cost_details": {
+                "upstream_inference_cost": 0.0002535,
+                "upstream_inference_prompt_cost": 4.55e-05,
+                "upstream_inference_completions_cost": 0.000208
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "image_tokens": 0,
+                "audio_tokens": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-09-20T11:38:26.382628+00:00",
+      "provider": "gpt",
+      "case_id": "BC-0101",
+      "criterion_id": "BC-0102",
+      "model": "openai/gpt-5-mini",
+      "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+      "selected": {
+        "included": [
+          "EXP-090",
+          "KN-045",
+          "KN-052",
+          "KN-063",
+          "KN-101"
+        ],
+        "excluded": [
+          "EXP-055",
+          "KN-047"
+        ]
+      },
+      "required_present": [
+        "EXP-090",
+        "KN-045",
+        "KN-052"
+      ],
+      "required_missing": [],
+      "forbidden_selected": [
+        "KN-101"
+      ],
+      "recall": 0.8,
+      "precision": 0.8,
+      "score": 0.4,
+      "verdict": "fail",
+      "gate_pass": false,
+      "latency_ms": {
+        "total": 11874.607708000001,
+        "per_candidate": {
+          "KN-045": 1585.5507500000012,
+          "KN-052": 1684.5268330000015,
+          "KN-063": 1730.489582999999,
+          "KN-047": 1679.210084000001,
+          "KN-101": 1925.9683750000002,
+          "EXP-090": 1574.85475,
+          "EXP-055": 1694.0073329999982
+        }
+      },
+      "tokens": {
+        "input_total": 1790,
+        "output_total": 793
+      },
+      "cost_usd_total": 0.0020335,
+      "confidence": {
+        "per_candidate": {
+          "KN-045": 0.63,
+          "KN-052": 0.73,
+          "KN-063": 0.67,
+          "KN-047": 0.8,
+          "KN-101": 0.9,
+          "EXP-090": 0.81,
+          "EXP-055": 0.6
+        },
+        "mean": 0.7342857142857143
+      },
+      "raw_decisions": [
+        {
+          "candidate_id": "KN-045",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "The task is to implement guest checkout order placement. The candidate specifies critical domain invariants directly relevant to that implementation: preventing creation of Loyalty accounts for guests, required ordering of payment authorization before inventory commitment, and mandatory idempotency keys. Omitting these would materially increase risk of incorrect behavior. Thus it should be included.",
+          "confidence": 0.63,
+          "model": "openai/gpt-5-mini",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 1585.5507500000012,
+          "input_tokens": 224,
+          "output_tokens": 102,
+          "cost_usd": 0.00026,
+          "timestamp": "2026-09-20T11:38:16.092012+00:00",
+          "raw_output": {
+            "id": "gen-1789904294-MkqSFmxjnPqRGF4Kndkb",
+            "object": "chat.completion",
+            "created": 1789904294,
+            "model": "openai/gpt-5-mini",
+            "provider": "OpenAI",
+            "system_fingerprint": null,
+            "service_tier": "default",
+            "choices": [
+              {
+                "index": 0,
+                "logprobs": null,
+                "finish_reason": "stop",
+                "native_finish_reason": "completed",
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"The task is to implement guest checkout order placement. The candidate specifies critical domain invariants directly relevant to that implementation: preventing creation of Loyalty accounts for guests, required ordering of payment authorization before inventory commitment, and mandatory idempotency keys. Omitting these would materially increase risk of incorrect behavior. Thus it should be included.\",\"confidence\":0.63}",
+                  "refusal": null,
+                  "reasoning": null,
+                  "reasoning_details": [
+                    {
+                      "type": "reasoning.encrypted",
+                      "data": "gAAAAABqr8WnlVWY9i4L-li3hHpIvXZGZp38Ihiy2CKrLk8zqyJfSUrpjwkJa1oL1Ai4cidz5lzVwSdlj6wnTv6m-v7SkUsFb9MrdXiRwUT79IylWUBzdB5QH0LnsX-EyYZK__wcDvCIgDT8gumWYYK-We4oBaBjYM4F8jcAsSCftBbpmztq4nhu8h-9qwp3xRY9bVUTxqGFBoahTV24e4XFQ8pN1KX9754XwPgZT4R9op_Yrz77hiYOTUmgb74qn8Es6DH5LBpHCVfjlhgQs--U6G-SBHM6g0CG9IZFcbekA7Rk91ARqgHs4Tki-NQpABptzonxVfPbJWeeZpZtez-Qc2Tk0zW_wmkKxKL1Bvz7t8nLipFuBkqeNkIr9hHpX7rAdeeDI4WJ7H8VCm5NgstF1TBCHdR7rm2iJp4K7ymkHfSzzgSIzOZl0IjCiaTAsOez0qWrHzh2Tk7hBmxszk9FuLk9q-rfb6y0DLpL9nIx7vV9S55TEQEGFKubVL6a_5jgDh0x8LuA6aIdh-L4yDLa5qwV3bAjjTmr3wwubLOePWXxtdxX_gjsw3vmZYU5erYRqcch2pJQG7aKAozCppBIBqES5D_iwy5fNjWfNz5yj0tfnTwTMRr-d8kvE1PwFd3CCA50hU8vJf_jgbytyUUb_yXEfBMBVxNRVcmvqQu99AagzRkySEpALDaFsbAtBeAKf0yE_5KLWiZ-0_hhVpCRK3tu3DCpYYfXWqctJppCGmGuzKDOZl23V3HrtY2USm_oSQOrY0NmeHhoCZ7-WRQ20OVWZIcwxRDA5FP7CE1Pg_cmJ-C29sycJUjjW3UpY7EXovDP2h2CIyng9RVP8FFWJz8oBtuPmqaVSt-3IKi68KR7C_SZP3eOoZRgeLscdwyVXA5EOt9M5JkplSeQ9DTyqOqA-wziVVIJLDq1fB_bekIhP9d5kf2TWyuwtRQj1g4GV2g5LB_8PfUFemC92vjz6YO0Z6ne4n33IZWrCaiyCyoncn7fngxKo9tK2NMj0kM_taQbKjwTK7tn408FH3m3C0WkDS6hAFzIbKygB_C-81wZjSIuWHW2SjKZpkk4hND1D8Qe2NLfEHOGBTMD1S4Azs1DuX2IGN0Bul4gk6PKpwQERJV725MJ0R8cvCi_cbmZay6Ooer4DUCODn3RLuak_t3AtLEIvbMi0UqxgWucNnKRg9S_RLVsmdBU9yc4Azy5UTnieRCIDuNe8wAs60ucvnAtsRXSeKQXyA3roGILWqJOfID17PG-ey65z8sjZZc2kUPF_uGKj_jLTTiziGq--0wiqB2Ra1vRjE9KRApGiXIp6ZqJQUNp3LSbmPt7X33FOiWG55g1HV5jVLgFYFwNlx1eQ3lnLMag7xBbDHXdfofn0UrDRSToc2u2x34a6aixo4o5YCtVaFty50mUI5HGWKwLpXMo-A==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC01LW1pbmktMjAyNS0wOC0wN3xvcGVuYWkifQ",
+                      "format": "openai-responses-v1",
+                      "id": "rs_0d3b6a84d1f5ea8c016aafc5a7749c87d1bf699385bcd61fcd",
+                      "index": 0
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 224,
+              "completion_tokens": 102,
+              "total_tokens": 326,
+              "cost": 0.00026,
+              "is_byok": false,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0,
+                "audio_tokens": 0,
+                "video_tokens": 0
+              },
+              "cost_details": {
+                "upstream_inference_cost": 0.00026,
+                "upstream_inference_prompt_cost": 5.6e-05,
+                "upstream_inference_completions_cost": 0.000204
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "image_tokens": 0,
+                "audio_tokens": 0
+              }
+            }
+          }
+        },
+        {
+          "candidate_id": "KN-052",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "This artifact specifies mandatory idempotency behavior for order-placement calls into the Checkout Service (APP-003) and related Payments Service interactions. Implementing guest checkout order placement requires correct handling of retries to avoid duplicate orders/charges; the idempotency contract (header format, storage duration, replay behavior, scope) is essential to implement and test the endpoint correctly. Omitting it would materially reduce the Worker's ability to complete the task reliably.",
+          "confidence": 0.73,
+          "model": "openai/gpt-5-mini",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 1684.5268330000015,
+          "input_tokens": 302,
+          "output_tokens": 126,
+          "cost_usd": 0.0003275,
+          "timestamp": "2026-09-20T11:38:17.776848+00:00",
+          "raw_output": {
+            "id": "gen-1789904296-jymcWxkcaQh3Tj0ZgqJ4",
+            "object": "chat.completion",
+            "created": 1789904296,
+            "model": "openai/gpt-5-mini",
+            "provider": "OpenAI",
+            "system_fingerprint": null,
+            "service_tier": "default",
+            "choices": [
+              {
+                "index": 0,
+                "logprobs": null,
+                "finish_reason": "stop",
+                "native_finish_reason": "completed",
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"This artifact specifies mandatory idempotency behavior for order-placement calls into the Checkout Service (APP-003) and related Payments Service interactions. Implementing guest checkout order placement requires correct handling of retries to avoid duplicate orders/charges; the idempotency contract (header format, storage duration, replay behavior, scope) is essential to implement and test the endpoint correctly. Omitting it would materially reduce the Worker's ability to complete the task reliably.\",\"confidence\":0.73}",
+                  "refusal": null,
+                  "reasoning": null,
+                  "reasoning_details": [
+                    {
+                      "type": "reasoning.encrypted",
+                      "data": "gAAAAABqr8WpMrpKkcU1ZKve_VgVxyyinoug3Orjb2SoPSmMdrQOaE7uvY9-Ra4bRluSqN6KuWtRxpxMo-RSJq_UUDRcgZyvExlZt7z8USPH3WtUC9Lh7RZ2HT1b1zBQRyFdV-qbhNPo4tk2GFVhFF39bZJ4aszam2ou2HoUCIGHVAx4YTh3x9VTjcv3BuadhIzggsPLPQ3fZxWex7oXrIc7I3qt8zz-X1LHSB6Ol9VXQLqbdm73gjjcUxEshH_B8QMN-XNozf6jXMx9gpYO7lQVkC9NLz_KmzaL6WiYeLI6FyPTOb9Mo9Wp_5HCLnO10WvrElWNt2ZMH0iCIPAJnON4EnoFz3mi6ForLgyTHNhiLNwLLzQugKbtgDC-XzsNKQ0aFQmiS9If8vUwNWnkv5qt8XgoCWmsz2aKiOdCgfHi7Rlby5aEGpd_mw6_9yzgHIEv9MXstN10HJPxzDoslpMmJAKJ_rq9DYd-SvN2LUIOqr79d0yDyWeGeEutGxL-DtWRLgfwgjgfn2gXoKlctp4us8F1m1TdwCLfupCckNS3BMNN4bcdlYR_sSC139nh8EQVVgKaJ8ZefDyyhKoU33vK3HghX4jKoy9pBHhqUvw3S4kDMhZwcaWVzoLqRnd6lCYWRUW3Ik0fu4LkSweZgBYVs0x6CLeecspdRPJU0G4fJzLV5fPHTnjdDqAF9A0IveystYBob35_e2nG3AngC_km8QeDzzaatwnwDcCH3mh3Es9N16Gh5eyPGD-ZnK04oPUMF3N_v5aqxUL96OWpIKIUbApFgGfzAx9cCSfzM7Q3uQIGMvEZJAWTrVa9EbS9BHNYaUFC5Y20nU3SFjrsFCn4vi0NxxMk6pUUPhs4iAY7NRCbRE0VkFM3q0z7tNCChy1a2EdhNqEBDqUmaeEaMsKL2C5S9a8Ho3d3Kczp5n4g2msf1xCyiElehUqEYQ2bnr4nP23adDOoVYWmvBwV5Lt9PvHL7bRC2Hlc7sOhGgDDPQtpqREPOkffppwZVOFP_7p-MthWU7EIPJ5PpNqKeyIcw3LfJroWQqcYkFc4KOwcAGN2bd_Q9I0Sxrsfu8UU2q9UcSFY0o9GU9pl8v5moetC4HhmDCZnKxRrRQjFvcEsSbloeQRIZMvX6yCS1J6HrPvefdS2D2lJq6WmZANZNmUBjpU0aHUrskHaTgp21KDNfXAWUr8L1MmMWPocMQ2Ts19ABx5r0-JS3ewASS4SZsyN0PiQy-9l-DtJJ2Ki8idD8tjHbtbLmtX5qxVkF2SUTpdyOfsP4F0tTBz2XirKemmeSbuQfcQWQypilmCYjF9d19pAdLttXvKRW39uZwg4PWii_V7Gec3kEbxyubw340oi411FwLR1Cc2dSRuS0xKF5yZQBMN8b41SvWxQadZEZ3rYb7gVsKeNXa7dQ6CeazlDVhjeBhnRUA==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC01LW1pbmktMjAyNS0wOC0wN3xvcGVuYWkifQ",
+                      "format": "openai-responses-v1",
+                      "id": "rs_034a732d700a6857016aafc5a8fd4c87d18694154c10192db8",
+                      "index": 0
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 302,
+              "completion_tokens": 126,
+              "total_tokens": 428,
+              "cost": 0.0003275,
+              "is_byok": false,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0,
+                "audio_tokens": 0,
+                "video_tokens": 0
+              },
+              "cost_details": {
+                "upstream_inference_cost": 0.0003275,
+                "upstream_inference_prompt_cost": 7.55e-05,
+                "upstream_inference_completions_cost": 0.000252
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "image_tokens": 0,
+                "audio_tokens": 0
+              }
+            }
+          }
+        },
+        {
+          "candidate_id": "KN-063",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "The guest checkout order placement (APP-003 Checkout Service) reads promotions to price carts and create orders. This artifact specifies critical cache invalidation semantics (write-through update, versioned keys, consumers must read current version) and warns against TTL-only expiry; omitting it could lead to stale promotions causing mispriced orders. That materially affects correctness of the checkout task, so include it.",
+          "confidence": 0.67,
+          "model": "openai/gpt-5-mini",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 1730.489582999999,
+          "input_tokens": 285,
+          "output_tokens": 115,
+          "cost_usd": 0.00030125,
+          "timestamp": "2026-09-20T11:38:19.507589+00:00",
+          "raw_output": {
+            "id": "gen-1789904298-0xdfXMyCfBYa2cTikVUg",
+            "object": "chat.completion",
+            "created": 1789904298,
+            "model": "openai/gpt-5-mini",
+            "provider": "OpenAI",
+            "system_fingerprint": null,
+            "service_tier": "default",
+            "choices": [
+              {
+                "index": 0,
+                "logprobs": null,
+                "finish_reason": "stop",
+                "native_finish_reason": "completed",
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"The guest checkout order placement (APP-003 Checkout Service) reads promotions to price carts and create orders. This artifact specifies critical cache invalidation semantics (write-through update, versioned keys, consumers must read current version) and warns against TTL-only expiry; omitting it could lead to stale promotions causing mispriced orders. That materially affects correctness of the checkout task, so include it.\",\"confidence\":0.67}",
+                  "refusal": null,
+                  "reasoning": null,
+                  "reasoning_details": [
+                    {
+                      "type": "reasoning.encrypted",
+                      "data": "gAAAAABqr8WqNd-Pla_Y-eVjMHaFgjTGpxp7f77xwO-c3YpSep1fBxeSgNrzZeSw99qhpU4Pn8u-o0OXr8Dc43OC5vc98oxJ-CR7YYht5Idjy_ayvmrCoOESpkowCiJD5n0PinzL4qfgBseKustYmzUYZ9jeCKQrr23cH1DpjL1-cVimP0SNt2ZZh0G5Fvb5GHuliYoLgVdnhyEgv7CTsglFAB8e_QrlQDtxmUmlfmY06HcCEIsDlt5MUhZ53mUoIEwM6cc6YBHdZ5tCoTZQgjZEK6iqPT5uXwVqhvJ_lgz91SeWOXU6zBE7WqTHJIg8ld-uHB8Wa3EkbrTcyRs4phrr5QpUGbOA5wCBN3H6jLB3IRlhQYtmzYxZG_QJZbRydcTU1JkylIkx7qUjU6kvEd0wXrrC-wKRJWdQSZHEVaUfYS8AkyS9VdFyaBcvWjFdZbnXCxAwSwhxoE2UkRw3wFAljfvzTt6KbJVAO36a8RNMTN_XySBR98MimDWzu40w14zOwB5M8e2ixxaT-IBiEDKqUjKJR3SKNE7V50hll_b61OR8GvdtQ3EnDczEbMIUh0urFg8P-H6UmT1zM8UQxUNmo-jPAioe1wOfXUbRXw-6ObkrwC_CyCLIOTfLntmj70fyPs8wY1euvciEXMycaJIpDQ-EOOgIR_I9RIt7o3yOfl3i0mIpRo1ZCVEWIgjx1qkQud2Dvqh5FbS54t89KuPileWLZCPBG0PJjwQQj9FclUI1ah-RMEZ8rHUd8Wf15f1sAG6fdR209qaeApNy3bwS09AvX9JUwbwm7FCe7milG_8pJjYj6Gl2VaoWqx_9ZUvLWfZKLfIDqahnHJ79p1xFFbjGldMfDDukIiGhvdnFcSe_YIYeyhqy_IHXUA-hwmiTPg02na7Yxr1f3cFIXWHQa9txm38cgnXUi88qkHxH4hMAllWx1iDl646cC0HPJ26Dxo70WGClUMlQYROnrggYrGsinkCIktdaEWqJVNp156Ki93fUDrzcm5ljhsUFEBEqbfvQlmsDo_xctVZuR2OHhcw2GM5Z1LVpz3dknQu82thBRVts-BoFvwcjUuZ75YS29SoNDJ-eAMn-1-hMSFca4PAmwukkiRgXfwc91t2BBEIRZ-LrPvQEMsUYJbHOcO4ymwscjZBjVIRyrnuRCdctzTP2tt4pQHUHpQAyrcaVQkFUanYpszZeRzZIWaY_AWfFp5bmG1jMDKvhbxg-JjkPKZrg-hPhUgagQqCjtMWY1ai-n0KIZY-E_HURjdQg_6c59sj9pIDKSV5j1NLD7G2lVvnxf3C3ktUxOJvqKlOAkQExs5TnyswdFsUv31OND92N_bPp-1U8dhSftuaN4WxLUgESMD6KXENP5j19aP3OGT8SUEQ6de-_pGY9-uwkw0FLOYiUQ2vI7bOfktYP1kcjhby3c2lBfA==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC01LW1pbmktMjAyNS0wOC0wN3xvcGVuYWkifQ",
+                      "format": "openai-responses-v1",
+                      "id": "rs_0c74cb63343cd80d016aafc5aad3e087d19e33e9f6c8035be3",
+                      "index": 0
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 285,
+              "completion_tokens": 115,
+              "total_tokens": 400,
+              "cost": 0.00030125,
+              "is_byok": false,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0,
+                "audio_tokens": 0,
+                "video_tokens": 0
+              },
+              "cost_details": {
+                "upstream_inference_cost": 0.00030125,
+                "upstream_inference_prompt_cost": 7.125e-05,
+                "upstream_inference_completions_cost": 0.00023
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "image_tokens": 0,
+                "audio_tokens": 0
+              }
+            }
+          }
+        },
+        {
+          "candidate_id": "KN-047",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "exclude",
+          "rationale": "The candidate has no substantive content (explicitly unavailable) and provides no implementation details. Omitting it will not reduce the Worker's ability to implement guest checkout; including an empty/unknown artifact would add no value and could mislead. The repository metadata already notes it as a legacy monolith stub, so it is safe to exclude.",
+          "confidence": 0.8,
+          "model": "openai/gpt-5-mini",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 1679.210084000001,
+          "input_tokens": 267,
+          "output_tokens": 106,
+          "cost_usd": 0.00027875,
+          "timestamp": "2026-09-20T11:38:21.187014+00:00",
+          "raw_output": {
+            "id": "gen-1789904299-JfZFdMHVttB0io7QxoNY",
+            "object": "chat.completion",
+            "created": 1789904299,
+            "model": "openai/gpt-5-mini",
+            "provider": "OpenAI",
+            "system_fingerprint": null,
+            "service_tier": "default",
+            "choices": [
+              {
+                "index": 0,
+                "logprobs": null,
+                "finish_reason": "stop",
+                "native_finish_reason": "completed",
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"exclude\",\"rationale\":\"The candidate has no substantive content (explicitly unavailable) and provides no implementation details. Omitting it will not reduce the Worker's ability to implement guest checkout; including an empty/unknown artifact would add no value and could mislead. The repository metadata already notes it as a legacy monolith stub, so it is safe to exclude.\", \"confidence\":0.8}",
+                  "refusal": null,
+                  "reasoning": null,
+                  "reasoning_details": [
+                    {
+                      "type": "reasoning.encrypted",
+                      "data": "gAAAAABqr8Wsl6dfvmjyzwZbws12kdaRIWlBpdzdqLg1A67YYOLYi_ED2BtJrHSwlQUStpesMMZnTFk1GWh90PXYzRJXqHl-S0f6Rpm5o5sHMC-MKKrfRjtYG-pU0Wb2SL78YIE6DVlq3zaxB45Jz8WXIGx99Un-ujGTqsDxTvOCwEPdqptW7RRwyp4Etjz7WGa75huCG50l9vd5HK_Yy2GmYqxgDBvFeogL1538tlMAfxyLEsWR-WysMTWU9iH54DgE7RBTef7PmubppEOnC8jXojuOWzTButjDtuMI-UC-jE5AegOwQiE2fTE7weRDutkUyGU2nLzC6v-E7Xe8wfrqfz-3j4dkoSo76LpVybGJWk9iVWuhUWXlqCicYCbN_iB-coBLUGxzcX0fuYbZT3lmUXRdXPuyU9OMetPp1Bo-lmTzxa1OwAwpMrByCT0ll0H9F1toR7eycrpzpa-ELdyyOouloxQUZc1pPu-lsHrzo7sAgRpdoUVi6WLXLxH_J1vE3FKMaAMDeLmlVmSReVG8w3S7oA6ATVuH91x_-z5uQPde-MxfTJX3S6f9_3zK26ofwOIuChq0zUOMENtspURm2-2AzjuJWtu_Zh_YPfmt61tstw4CL84T3QMMMD_tYytzFRpm2aNpB0dBxZRB_drTzKTBUI1g3T9XSCOZWF0ZdiG3-y0JenLOammQIeI7gixzlGLxpRfGvdoE648N7813zLqB67fL0BkbH_34C_zANTBPFU0R14kONvfrIQddOd1YRkhIYNpNx0Tv1AiD9AdqM2YFNBT92MRQ8UgE7nNgXqXTSIfy1ZNxXJfkQC0IMxZ_vGAeAeYnSSW93QxAFXGeeklz049l8gkt8_pcbvYlbl0jFFh2mWPa1dYsQnD66smEh0t_zfOp1yrVkiRwR17-gqkAWqFzkqo7KWcwZXNOy6BHRN2DEwiXYMcxQ6RngEE9xrgrBHa1zZ5f7ptY-izdzxGn_rYTEtIcjy1hTH2WVf3enw4RD3RdVe2ZPiwI0jIkzZiycPhvHBwGdyS5qJ_XDQ4-_K7fYftQ5YCBShzkLVK7AjNB93U8Pzo_7EtpgElxgvWBhNoCzfWU5ycG5I36cKBX3CmAEfOXNyszMbI4AeNLRMdLXulyLr8zdifFnyvGqM1GZEgJoyXHpiY3fiGJFyXz5e41D-bK8V0kJapqiBF1ZPMZnzyVlQq4ErGD3SFaotaFQkxfvzrW6EZ5C7FAI4Wp5pHOtIt6yCsyDHTn88CY1UN52NaxWYbEII63Iw32LJaajoK9SiaXPQVtrxnhYyaIA9RsrCx3pMrdgdCGc31uM1sfW3nK39mZn2CGwTv0_Wj8wQMT71XMZeIpHHU-7c2XpLPy_YYlL0wQ6mozwEE0eL3OKQ687GEZxMlyo_Xv85iguksLzwANEfqGRwljZvh0xBfgvA==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC01LW1pbmktMjAyNS0wOC0wN3xvcGVuYWkifQ",
+                      "format": "openai-responses-v1",
+                      "id": "rs_084eeabab903fc68016aafc5ac671887d1bdc3512473b69ec7",
+                      "index": 0
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 267,
+              "completion_tokens": 106,
+              "total_tokens": 373,
+              "cost": 0.00027875,
+              "is_byok": false,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0,
+                "audio_tokens": 0,
+                "video_tokens": 0
+              },
+              "cost_details": {
+                "upstream_inference_cost": 0.00027875,
+                "upstream_inference_prompt_cost": 6.675e-05,
+                "upstream_inference_completions_cost": 0.000212
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "image_tokens": 0,
+                "audio_tokens": 0
+              }
+            }
+          }
+        },
+        {
+          "candidate_id": "KN-101",
+          "candidate_kind": "knowledge",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "Guest checkout order placement must determine correct item prices for the buyer's market and currency. This artifact specifies how pricing is resolved by region/country and that prices are bound to market currencies (no runtime FX), and the rule that SKUs without a market price are not for sale. Omitting it would risk incorrect price selection or selling unavailable SKUs during guest checkout. This information materially affects correct implementation of order placement for guests.",
+          "confidence": 0.9,
+          "model": "openai/gpt-5-mini",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 1925.9683750000002,
+          "input_tokens": 327,
+          "output_tokens": 123,
+          "cost_usd": 0.00032775,
+          "timestamp": "2026-09-20T11:38:23.113233+00:00",
+          "raw_output": {
+            "id": "gen-1789904301-w4Z6hcKaCOUZrMP4G2tw",
+            "object": "chat.completion",
+            "created": 1789904301,
+            "model": "openai/gpt-5-mini",
+            "provider": "OpenAI",
+            "system_fingerprint": null,
+            "service_tier": "default",
+            "choices": [
+              {
+                "index": 0,
+                "logprobs": null,
+                "finish_reason": "stop",
+                "native_finish_reason": "completed",
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"Guest checkout order placement must determine correct item prices for the buyer's market and currency. This artifact specifies how pricing is resolved by region/country and that prices are bound to market currencies (no runtime FX), and the rule that SKUs without a market price are not for sale. Omitting it would risk incorrect price selection or selling unavailable SKUs during guest checkout. This information materially affects correct implementation of order placement for guests.\",\"confidence\":0.9}",
+                  "refusal": null,
+                  "reasoning": null,
+                  "reasoning_details": [
+                    {
+                      "type": "reasoning.encrypted",
+                      "data": "gAAAAABqr8WuSLJkXnus11q6zeGezJ5OhlwYs1IDIoupc5M8B6zvoZOGm66qPULY3f64ShEEn2GiLD-nIp6OV_BgfYZIZMf6RfieKMOs8Xk9g-SnXiSAQSEWfrL94xElXQCaWCWOrt3p0hr6gA7d4Ba06v58VuCyzdZ6dUYmIsvY3EtlSr7EZGllmZgXYWaqHYCjs0dufgFZQ758P8UVJuavaKIUw-VBIHSzDdAHd47lODeYW_wmaQazG-Da9cbMSXKW-UOj0cIaXDApDWuQo8QIDCKDq5sMgG4qg9F9_ecslZhV5ZC5vv99ktQx9-s1Zyy5l_OyqPwiB_JM3YJQH28bgDCs-EUcRdxHrnKzMUjWDIWMkyvkLdgoJI-3bZardBQgEzhVqNtUiOZ4x94_CGJoms3wSM6zodDkg-KQgGl1rK43x9CROt-KlUMJEjw-L6MrNAuuUKYyc6O6Oyf8Hzcneu4Ns5Y1R9TaOPqn7kDVL3gLhtzDsSEpo2lrMdHubq2WexcuyfgSXcPd_LvyLuVU8DNo7yksQghy0IkrUk7Yr3rmbOvrdYvPLLJfmW3Pds_vXE5z11lrh9IYPOfWXn-AuChP2L6Hh_6YFw78lTXXoTNn5pnxL7cIbtAldyHw2BtF3yF2WGyyMoF9-zJm6b9irexWz4tIKvwZOjBpjC334CYXYVn4S_-oZ_bpXk3bisPmzJLKqBsSTqCdgfPpbpV7cSQkwL1ZIcYo-LdU9s_YrVAQRdTvg7RkI72-yf9cVHJNDHXhBQWCVxvXO3OoL5bSu4VDeDw4OA2ZbiU8dE7bzkaYCI2RDUqo0z9TzbPgcIm22KZf8igAchtQw4J3Wtt8mlCesrd2Tok_AMivJwsLttn4bHU_QQyV5thN4cEbqwvNvx7iN3RkrKwCioia1B_04h6Xdnnz9raWE8IDNgnEfBjowHgA1_gLY6N_fazLYEwomk11hSCJ_tbFhyFwINegK9sbKQ5BZrMS2tE1TmvrLGmcipw7UKM4-K7-IILPwziI3tROZiV1Dsc-wv4u29MgEj0bwgRNK7d3MgeJ-URkT8rh8yD-ZuV-3ZPm-o48uHxAx2g3gyO9u8ZAlDxmar_Qh7TYjuhKffzkC9tkz4PEpHt7vrwskDdKtpvEvIX0neTcWXq-h5QgrGNeiCz9czhhe0I6dcfGcnVPUW2824eXOlRq0MAiBdK5pZw3JJaTSrmN9-lvTyWn8LLAO_XXg-kjdIrIg7xfXGIlATVZw5o3maEDCptHzAild_E5Ec0dVUiXVghFI6Ip8bys1Qi0IaA3Fc3VBisW8n9n1wamk2w3tzskUuEhtE_1vxarRmBBdYdM-5RG7-m7MhwrxS-9E2-QMUfM49r-Mfe3VIG4RCMaaPnr4Bs56-KXlzZ-PeODtRUqNjUDPthQjdoJN-eJ_6CIe85SNqt_Ng==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC01LW1pbmktMjAyNS0wOC0wN3xvcGVuYWkifQ",
+                      "format": "openai-responses-v1",
+                      "id": "rs_0eb9302342778a96016aafc5ae2e5887d184e6b2f82deb35f4",
+                      "index": 0
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 327,
+              "completion_tokens": 123,
+              "total_tokens": 450,
+              "cost": 0.00032775,
+              "is_byok": false,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0,
+                "audio_tokens": 0,
+                "video_tokens": 0
+              },
+              "cost_details": {
+                "upstream_inference_cost": 0.00032775,
+                "upstream_inference_prompt_cost": 8.175e-05,
+                "upstream_inference_completions_cost": 0.000246
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "image_tokens": 0,
+                "audio_tokens": 0
+              }
+            }
+          }
+        },
+        {
+          "candidate_id": "EXP-090",
+          "candidate_kind": "experience",
+          "provider": "gpt",
+          "verdict": "include",
+          "rationale": "This experience directly warns about a specific pitfall in guest checkout: inadvertent provisioning of Loyalty accounts. That is highly relevant to implementing guest checkout order placement and would materially help avoid a known bug and data-cleanup incident. It provides actionable constraint (do not create loyalty accounts) that is not guaranteed elsewhere, so include it.",
+          "confidence": 0.81,
+          "model": "openai/gpt-5-mini",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 1574.85475,
+          "input_tokens": 203,
+          "output_tokens": 103,
+          "cost_usd": 0.00025675,
+          "timestamp": "2026-09-20T11:38:24.688284+00:00",
+          "raw_output": {
+            "id": "gen-1789904303-VlzWqQqp046Uyms2OyXj",
+            "object": "chat.completion",
+            "created": 1789904303,
+            "model": "openai/gpt-5-mini",
+            "provider": "OpenAI",
+            "system_fingerprint": null,
+            "service_tier": "default",
+            "choices": [
+              {
+                "index": 0,
+                "logprobs": null,
+                "finish_reason": "stop",
+                "native_finish_reason": "completed",
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"include\",\"rationale\":\"This experience directly warns about a specific pitfall in guest checkout: inadvertent provisioning of Loyalty accounts. That is highly relevant to implementing guest checkout order placement and would materially help avoid a known bug and data-cleanup incident. It provides actionable constraint (do not create loyalty accounts) that is not guaranteed elsewhere, so include it.\",\"confidence\":0.81}",
+                  "refusal": null,
+                  "reasoning": null,
+                  "reasoning_details": [
+                    {
+                      "type": "reasoning.encrypted",
+                      "data": "gAAAAABqr8Wwag3eohZwnEy4jhVJQ60g7bgj3_vzDjA2iYSxduP-7nyHNuLuXJ6g6oMYHiso8tbJIV_WwVyhABPGt10QPJce3S0CxEX91Prl9xoqAlI7bGSoYRR-KMC-CMzT2oDPIm81n6suL9sQy53EMcNnB4AQEEArNWWlahWOKclr41kDHMIJWhGcHQyvQ2IbwiwEZ6OaoN3DtFDAwVCLfNg4WKK0sGAzYrnF9hBkSG9fEnhaBevosI5oG5A6klsZkjCyu5cTmEuZaaXzN-BXVYyt06u5UihvM_PgXiafR9qJxCg3PJbgMHQP9DtmmFhZjtuuf7I9lMAdWJ1B3HrWFLEi0ucSbf3wlwmLz8wKgK8Hr7XPG16zEWDdRCkpb-8jupU0BwoPx1HYj1oR2h-rJZdNFELD_NK_tO5jDUKqZdcT45n8WzCRdrmla8vkf5PfMC6jQdaOhCvxdDlR9AiuFgy2XryVy3qr3nPIKboQzTqn0DPC0bXGbH96OnAYhiWuXBCIDi8b09ZGKbWCyEIzLDKxCZivLyyFIyKjPMf1Zh13XdmEl6fPIM054hudLGpt7pFWCSSx3g8XaDzqo61Wlfx3ZdgrgzrPXaMU2_PGZBNJJulP_uMRoudF9fouHvoj20nPitk6PD7ee1Uy_8p7C3MJ-UanHcTQPoM7quRj9iaOlzOXYqTui7wCcH1RpTvhQ9chAuLiJ6hWkZAqIxT3lGCW7IsdKCctgoRdIXAn8zzHkpHzcM272eRaZ17YpU37O1x7w52O4720UGsr_1qSKm82nyvrerOWSacp4DPmcGwCCI4CJ0TDR6z3chfbu_x71XGaUQSpc0skgeCan6WYombucJdHvdDYsgsoY3TJUU3332AhyfDEociMpN-y_YD5cHG0fG4Sm3SZoxxr_lXhzhDL7t3WEnIEJoeQ6k1I5qenir-2DP06K-QNxRY6KcrFvoD_4zWhiAwVfar3_zIZPOsVMuQ9XewR-y1hsSvsVvfZh7ZZVh-vuorGpS1eEHRbaKiFyGTCKDguaV6PLZ3OfsYSv1X_EjDrQ0TeGzarBfczYSprzGuNxkSALT7pXfvPGw93pF7BpwysgSAU6oil-Sx8ZUm11Hc3gGF3EkX8cpzlPL7imnZKN0B3YQyKiG0c1WN6UjbTeuxH2NBRvjaBibGmnxchXUlLbbQf7WlX7BUZTDGDJLzBJRWGHKphhzsm8VVnUmDeYEPJPH5AmfsYTniZS9ah0rGsKJORi-ivASUmY6pf2R2bJnQa77lo3QRPfCxcAYw35Ht8okt3RrBpqySLyE3vYCUcWLy-178fE2jTnW5ccPMy8YckrsRs0B1pguhZ5hWiHnaIforkbSAFAQ1Iu6WuFL7m1v-tkvBPcE84SahWpGQKCCaCkQM770hjlCeZPITd1sA1UNGex0XOwbukI5yr_w==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC01LW1pbmktMjAyNS0wOC0wN3xvcGVuYWkifQ",
+                      "format": "openai-responses-v1",
+                      "id": "rs_00fe15eae7726812016aafc5affe7887d1811d24a890f39973",
+                      "index": 0
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 203,
+              "completion_tokens": 103,
+              "total_tokens": 306,
+              "cost": 0.00025675,
+              "is_byok": false,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0,
+                "audio_tokens": 0,
+                "video_tokens": 0
+              },
+              "cost_details": {
+                "upstream_inference_cost": 0.00025675,
+                "upstream_inference_prompt_cost": 5.075e-05,
+                "upstream_inference_completions_cost": 0.000206
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "image_tokens": 0,
+                "audio_tokens": 0
+              }
+            }
+          }
+        },
+        {
+          "candidate_id": "EXP-055",
+          "candidate_kind": "experience",
+          "provider": "gpt",
+          "verdict": "exclude",
+          "rationale": "The candidate note is a brief operational reminder about cache flush requirements during promo windows (APP-008). The task is implementing guest checkout order placement (CHK-1421, APP-003 Checkout Service). This promo cache-flush detail is unrelated to implementing guest checkout logic and omitting it would not materially impair completing the task. It doesn\u2019t provide guidance or requirements specific to guest checkout order placement.",
+          "confidence": 0.6,
+          "model": "openai/gpt-5-mini",
+          "prompt_version": "jev-gpt-openrouter-context-decision-bc0102-v1",
+          "latency_ms": 1694.0073329999982,
+          "input_tokens": 182,
+          "output_tokens": 118,
+          "cost_usd": 0.0002815,
+          "timestamp": "2026-09-20T11:38:26.382393+00:00",
+          "raw_output": {
+            "id": "gen-1789904304-ZL7ZHhwipXrZLJYNAehy",
+            "object": "chat.completion",
+            "created": 1789904304,
+            "model": "openai/gpt-5-mini",
+            "provider": "OpenAI",
+            "system_fingerprint": null,
+            "service_tier": "default",
+            "choices": [
+              {
+                "index": 0,
+                "logprobs": null,
+                "finish_reason": "stop",
+                "native_finish_reason": "completed",
+                "message": {
+                  "role": "assistant",
+                  "content": "{\"verdict\":\"exclude\",\"rationale\":\"The candidate note is a brief operational reminder about cache flush requirements during promo windows (APP-008). The task is implementing guest checkout order placement (CHK-1421, APP-003 Checkout Service). This promo cache-flush detail is unrelated to implementing guest checkout logic and omitting it would not materially impair completing the task. It doesn\u2019t provide guidance or requirements specific to guest checkout order placement.\", \"confidence\":0.6}",
+                  "refusal": null,
+                  "reasoning": null,
+                  "reasoning_details": [
+                    {
+                      "type": "reasoning.encrypted",
+                      "data": "gAAAAABqr8Wxvp-BoJGqpX1LGh9mo14_dwX5GbOzaNfgo0eJq62p5bTQJrPOBccBdiESLToMK418VDJFqMlSvuOzknn5bkKrK2ZUSc8f0giGlUl_Au8aK1VPNyI3huiD3m3FClLQES6BK9dya0QqfrGoBHNKB9gyaJousMfwUmto2UXPo8iZiOtWzl2TujHX1gs0Zc8_-FZI6sW1slWJEgZEZMQCMygBoRFUwY_BZtsuysb6PQJ8Ry6CF0qJZrCSrHGxQSSmOsREQcWACwRLh048Yj46tf6ZsKfMjaB0ZZBd9Jt89K5qgjcvdOquEUg7UsCrMGGDmHUT1uubMz3FatWU6HYpZtktiC7X1iN1Gkou2TQAZ7QNNkjXs5UosffUyq3IOa-NjUgAp_zon83rV1ITvu2jwUtLJh3ka6Ae64IWZACmA1IFJoZpDds8IQz2jBvHmHnTKHC_GGTR0DzONpPTqJWSbJFZrsVm4rw6HOb0z2tivL6Cy4mMsAaG1fYm9hB50qmWevCIg7_xSuBoKJ8vewUXorbSgcHe0vFNjZFJZeREe2ybf3j0XvamFAnBQUClDM4Sl8y3QMNhoAYEudNmbTDyuTkQ2zn-L8Di3e3zo0qcsiz-gULtQ7VirQkJxVxDv7RmMaaoTHtJOs-wis87ays--GfQlxDjy1zDEJ0-cCbFp96h2MFs4fz8Rax8Kw1we2oC07UPHKtg2dOLDjiS6xxvNq243iNLsk6tzpdrI43EGokciftOCnf23HHOIBwnRxQsa1ansCqzmBedG7J7M8pxJYhv2y0J9hAu8-nml9hgFEXSZfIFBdh2-96maCkQHOFRFrrojvxQrTgRk0ukLQxIfXEe5gRyrbM7FhlbnOLJ0ycafbIiDjdxCKenlm_vjRwMytRkP60VuHDCD_xzvyoFdKYviI6yvQndl5bV3G6kKnPqBRN6r2OWodunqKCiNbk9PdcJHaKL0iRSv9W3nw9mBseOjJKdA5FFlwxxEkrhETuFt2VW8gFk4jIz7Tht_wjZsO7g1vvQLnlSMahJXxGn53JpdAB3O6CKVN_swZOvqi1i8-qq2hvAZq-13DgR7R3G7N71xx8qaIzy5Qk-gj5xcfJ-RF6PMapmUAK3_JxYDZuulMpVPDKlHy0a8jQ5yhl7Vvl0kX1jMFM_jk-EMKQVGB3oSZ05nZdbp34_SWPSGOWR4VwHV5YVpD1tsBZ42RUXGKo8d70DMeIL1K3c5uI4DTGRQ2ngAYSe-gSZIziBM5DgFH2Lhca7xKdG6NXQuMEPbI9Q3AcalxAMTdlBe8aZ_oIhh-_q--9iZ3i77vezGHv_nPKbjjkcy35eo8MVPhcdkYeEZ5C5rAQiiPAkw6i_L1-VyrAh1pdqxz-Mpp4ePSd3AQ-CvKxPOwJ3F_ZD8EYo9W6L_okKyMkW5qxkXq9-WPIZyg==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC01LW1pbmktMjAyNS0wOC0wN3xvcGVuYWkifQ",
+                      "format": "openai-responses-v1",
+                      "id": "rs_044233d4cb0d7e41016aafc5b1992487d1a4f0c5a7307ddab2",
+                      "index": 0
+                    }
+                  ]
+                }
+              }
+            ],
+            "usage": {
+              "prompt_tokens": 182,
+              "completion_tokens": 118,
+              "total_tokens": 300,
+              "cost": 0.0002815,
+              "is_byok": false,
+              "prompt_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0,
+                "audio_tokens": 0,
+                "video_tokens": 0
+              },
+              "cost_details": {
+                "upstream_inference_cost": 0.0002815,
+                "upstream_inference_prompt_cost": 4.55e-05,
+                "upstream_inference_completions_cost": 0.000236
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0,
+                "image_tokens": 0,
+                "audio_tokens": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "n_repeats": 2,
+    "score_mean": 0.4,
+    "score_stddev": 0.0,
+    "verdicts": [
+      "fail",
+      "fail"
+    ],
+    "gate_pass_all": false
+  },
+  "complete": false
+}

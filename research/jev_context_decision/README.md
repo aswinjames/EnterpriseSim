@@ -69,15 +69,18 @@ pre-OpenRouter version, only the transport and pinned model changed.
 | File | Purpose |
 |---|---|
 | `candidates.py` | Resolves the seven BC-0101 candidate IDs to real content already on disk (`enterprise/knowledge/*.json`, `schemas/examples/knowledge_object.example.json`, `corpus/experience_store.json`). `KN-047` has no body anywhere in the repo — every reference to it is provenance-only — so it resolves to an explicit `CONTENT_UNAVAILABLE` stub rather than invented text. |
+| `task_scope.py` | `TaskScope` — explicit, structured representation of what a task declares (id, title, description, declared apps, code target); see [Task Scope](#task-scope) below. |
+| `benchmark_quality.py` | Documents the known KN-101 ground-truth/content discrepancy as a testable record, without altering either side; see [Benchmark-quality finding](#benchmark-quality-finding-kn-101) below. |
 | `decision.py` | `ContextDecision` (one provider's per-candidate verdict) and `aggregate()` (seven decisions → one selected context set). |
-| `providers/base.py` | `ContextDecisionProvider` ABC; the shared task statement and prompt-version tag both providers use. |
-| `providers/openrouter.py` | Shared zero-dep `urllib` HTTP client (`post_json`), the two endpoint path constants, and the single `OPENROUTER_API_KEY` env var name. |
+| `providers/base.py` | `ContextDecisionProvider` ABC and `DecisionCase` (criterion wording + prompt version + `task_scope`) shared by BC-0101/BC-0102. |
+| `providers/openrouter.py` | Shared zero-dep `urllib` HTTP client (`post_json`) used by `JevProvider`; the alpha Decisions path and the `OPENROUTER_API_KEY` env var name. |
+| `providers/openai_direct.py` | Shared zero-dep `urllib` HTTP client used by `GPTProvider` to call OpenAI directly (not OpenRouter); the `OPENAI_API_KEY` env var name. |
 | `providers/mock_provider.py` | Deterministic offline decider for wiring tests / dry runs. **Not** a stand-in for Jev's or GPT's judgment. |
-| `providers/gpt_provider.py` | Live GPT provider: pinned `openai/gpt-5-mini` via OpenRouter chat completions, structured JSON-schema output. |
+| `providers/gpt_provider.py` | Live GPT provider: pinned `gpt-5-mini` via the direct OpenAI chat-completions API, structured JSON-schema output. |
 | `providers/jev_provider.py` | Live Jev provider: pinned `typesafe/jev-1.13` via OpenRouter's alpha Decisions API, `noul`-type question. |
 | `scoring.py` | Imports `score()` from `examples/quickstart/run_quickstart.py` unmodified — no invented `composition_quality` term. |
-| `run_experiment.py` | CLI: runs N repeats for one provider, captures full per-repeat records, writes JSON to `results/` incrementally after every repeat (so a failure partway through a long live batch cannot erase already-completed repeats). |
-| `tests/` | `unittest` coverage for all of the above, offline only — includes request-construction/response-parsing tests for both OpenRouter integrations with the network call itself mocked out. |
+| `run_experiment.py` | CLI: runs N repeats for one provider under a chosen `--criterion` (`bc-0101`/`bc-0102`), captures full per-repeat records, writes JSON to `results/` incrementally after every repeat (so a failure partway through a long live batch cannot erase already-completed repeats). |
+| `tests/` | `unittest` coverage for all of the above, offline only — includes request-construction/response-parsing tests for both provider transports with the network call itself mocked out. |
 
 ## Ground truth, exactly as it exists in `benchmark_case.example.json`
 
@@ -133,3 +136,87 @@ batch; they predate the fixes below and are not part of the reported 5×5 data.
 - The Decisions API is documented as **alpha** by OpenRouter; its request/response shape (in particular the `noul` question type) may change without notice. `providers/jev_provider.py::_parse_response` reads `response["answers"][key]["noul"]` directly — if OpenRouter changes this shape, a live Jev call will surface it as a `KeyError`, not a silent misparse. This did not occur during the completed 5×5 batch.
 - Pricing/latency for both pinned models were current as of the OpenRouter pages fetched while implementing this; re-check `openrouter.ai/typesafe/jev-1.13` and `openrouter.ai/openai/gpt-5-mini` before running further live batches at scale if cost matters.
 - `openai/gpt-5-mini` is a reasoning model: hidden reasoning tokens draw from the same `max_tokens` budget as the visible JSON answer, and reasoning-token spend varies per call. Two live truncation failures (`finish_reason=length`, an `Unterminated string` JSON parse error) were observed while first exercising the GPT provider before the reported 5×5 batch. Fixed by setting `reasoning: {"effort": "minimal"}` and raising `gpt_provider.MAX_OUTPUT_TOKENS` to 4000 (a safety margin only — no change to the prompt, schema, or model pin), plus a clear `RuntimeError` on `finish_reason == "length"` instead of an opaque JSON parse error. The reported 5×5 GPT batch completed cleanly under this fixed configuration.
+- `GPTProvider` later moved from OpenRouter to the direct OpenAI API (`providers/openai_direct.py`, `OPENAI_API_KEY`) to complete the BC-0102 GPT batch after repeated OpenRouter credit/truncation failures. `JevProvider` is unaffected and still uses OpenRouter (`OPENROUTER_API_KEY`). This changed only transport and two OpenAI-specific parameter names (`max_tokens`→`max_completion_tokens`, `reasoning.effort`→`reasoning_effort`, same values) — not the prompt, schema, or model.
+
+## Task Scope
+
+**What it is.** `task_scope.py::TaskScope` is an explicit, structured representation of
+what a task declares about itself: `task_id`, `title`, `description`, `declared_apps`,
+`code_target`, and `trigger_type`. It is one of five concepts this codebase keeps
+deliberately separate:
+
+1. **Artifact content** — what a candidate actually says (`candidates.py`)
+2. **Artifact metadata** — app/type/id/title/relationships (`Candidate.raw`)
+3. **Task scope** — what the task explicitly declares (`task_scope.py`, this section)
+4. **Decision criterion** — why to include/exclude an artifact (`providers/base.py::DecisionCase`)
+5. **Ground truth** — the benchmark's expected answer (`benchmark_case["ground_truth"]`)
+
+**Why add it.** BC-0101/BC-0102 showed that a context decision can depend on whether a
+model understands what application is being worked on, what code path is being changed,
+what other applications are explicitly in scope, and what the task is actually trying to
+accomplish. Today, a provider only sees candidate title/body text and the criterion
+question — it has no structured signal about the task's own declared boundaries. Making
+task scope an explicit, reusable object is a prerequisite for testing whether that signal
+would help, without redesigning anything else.
+
+**What it is not, and does not do.** `TaskScope` carries zero candidate-specific
+information and zero decision logic. It does not know `KN-101` or `KN-063` exist, and it
+does not encode a rule like "exclude every artifact from an app not in `declared_apps`" —
+such a rule would be wrong: `KN-063` belongs to `APP-008` (not a declared app) but is
+`acceptable_optional`, precisely because it explicitly references the declared task despite
+its own app being out of scope. `TaskScope` is pure data; `tests/test_task_scope.py`
+verifies structurally that the class has no method capable of producing an include/exclude
+verdict for anything.
+
+**Where it lives today.** `providers/base.py::DecisionCase` now carries a `task_scope`
+field, derived once from the frozen benchmark case and attached identically to both
+`BC_0101` and `BC_0102` (same underlying task, same scope, only the criterion wording
+differs). **It is not threaded into any live prompt** — `gpt_provider.py`/`jev_provider.py`
+build their requests from `task_statement`/`jev_instructions`/`jev_criteria_*` exactly as
+before; adding `task_scope` changes nothing about what was previously sent over the wire
+for either historical case (`tests/test_task_scope.py::TestTaskScopeNeverThreadedIntoLivePrompts`
+verifies this directly). It exists so a *future*, separately-versioned criterion could
+choose to have its provider reference `case.task_scope` when building a prompt, without
+any change to the `decide(candidate, case=...)` interface.
+
+## Benchmark-quality finding: KN-101
+
+`benchmark_quality.py::KN_101_DISCREPANCY` documents a real inconsistency, found while
+reviewing BC-0101/BC-0102 results, between two descriptions of the same candidate:
+
+| | Says |
+|---|---|
+| `benchmarks/examples/benchmark_case.example.json`'s `ground_truth.notes` | "marketplace seller onboarding" |
+| `KN-101`'s actual, resolvable content (`enterprise/knowledge/business-rules.json`, via `candidates.py`) | "Regional price resolution and currency binding" |
+
+These describe different subjects. This is **documented, not corrected** — BC-0101 and
+BC-0102 are frozen historical experiments, and neither the ground-truth note nor KN-101's
+content has been changed to make them agree. `tests/test_benchmark_quality.py` asserts the
+discrepancy still holds today, so any future edit to either side becomes a visible,
+deliberate decision rather than silent drift.
+
+**Why this matters for benchmark validity:** both Jev and GPT, reasoning from KN-101's real
+content, gave plausible rationales for including it (price/currency resolution is
+relevant to computing an order total). Neither model could have reconstructed
+"marketplace seller onboarding" as a reason to exclude it, because nothing they were shown
+says that. Any interpretation of *why* KN-101 is `must_exclude` that leans on the
+ground-truth note's framing is not verifiable against what a Worker actually sees — the
+note and the content it's attached to are, on this evidence, about two different things.
+
+## Future experiment direction (documented, not implemented)
+
+A natural follow-up — proposed here only, not built or run — is to compare:
+
+**A.** artifact content only (the current setup)
+
+against
+
+**B.** artifact content **+** explicit task scope (handing `case.task_scope` to the
+provider when building its prompt)
+
+while holding constant: candidate set, criterion wording, ground truth, scoring, model,
+provider, and every other prompt element. This would test whether explicit structured
+task-scope information changes context-selection behavior, independent of a change in the
+decision criterion (which is what BC-0101→BC-0102 already tested). This is not named
+`BC-0103` — there is no established case-numbering mechanism in this codebase requiring
+that, and no such case has been created, run, or scored.

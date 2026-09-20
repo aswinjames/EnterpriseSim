@@ -1,10 +1,7 @@
-# Bytesurge Confidence Engine — Algorithm Research
+# Confidence Engine — Algorithm Research
 
-> **Proprietary — Bytesurge Runtime research. Not part of EnterpriseSim; not Apache-2.0.**
->
-> © Bytesurge. Commercial runtime research. This document designs proprietary algorithms; it
-> is not part of the open-source, Apache-2.0 EnterpriseSim project and is not governed by its
-> license.
+> This document is part of EnterpriseSim's reference-runtime algorithm research (see
+> [`README.md`](README.md) and [`NOTICE.md`](NOTICE.md)).
 
 **EnterpriseSim interface satisfied:** `sdk.decision.ConfidencePolicy` — the `fuse(...)` and
 `control_for(...)` methods (`ARCH-06` Decision Intelligence; `ARCH-04` Evaluation Layer;
@@ -30,13 +27,13 @@ confidence** (`ARCH-04`, *not* outcome confidence, per `ADR-0017`) — into a si
 closed interval `[0.0, 1.0]`. `control_for` maps that scalar plus a change's risk tier to a
 `Control` (`PROCEED`, `RE_RETRIEVE`, `REPLAN`, `RETRY`, `ESCALATE`, `ABORT`).
 
-The Bytesurge engineering problem is not "produce a number" — it is to produce an **honest,
+The engineering problem is not "produce a number" — it is to produce an **honest,
 calibrated, composable** number under an adversarial reality: the number gates autonomous action
 on Tier 0 production systems, and every incentive in the loop pushes toward inflating it.
 `RFC-0009 §4.3` binds any conforming `fuse` to five properties: **bounded**, **monotone**,
 **weakest-link-sensitive**, **honesty-preserving** (no laundering a starved context into a high
 score), and **degenerate-input-honest** (a missing input lowers confidence, it is not dropped).
-Beyond conformance, Bytesurge must deliver **calibration**: decisions issued at fused 0.90 must
+Beyond conformance, the runtime must deliver **calibration**: decisions issued at fused 0.90 must
 succeed ~90% of the time, measured continuously against realized `EVAL-###` outcomes. A
 `ConfidencePolicy` that satisfies the algebra but is miscalibrated silently re-creates `ARCH-06`'s
 overconfident-autonomy failure mode while nominally "gating."
@@ -80,7 +77,7 @@ Keep a simple combiner (e.g., A) to produce a *raw* score, then learn a monotone
 `σ(a·s+b)`; **isotonic regression** fits a free monotone step function; **temperature scaling**
 fits a single scalar `T` (the minimal, least-overfitting option). This is the standard fix for the
 exact pathology `RFC-0009 §4.6` names — miscalibration — and directly optimizes the metric
-Bytesurge is judged on (ECE). It is a *post-hoc* layer, not a combiner: it needs a combiner beneath.
+the runtime is judged on (ECE). It is a *post-hoc* layer, not a combiner: it needs a combiner beneath.
 
 ### E. Ensemble disagreement / Dempster–Shafer
 Two variance-based families. **Ensemble disagreement**: run K diverse retrieval/plan variants
@@ -121,7 +118,7 @@ verdict authorize a high-stakes action — the laundering `RFC-0009 §4.3` forbi
 
 Key tensions: **A** is the only approach that is honest and conformant on day one with zero data,
 but its calibration is a human's guess. **D** is the only approach whose *objective* is the metric
-Bytesurge is graded on, but it needs a combiner beneath and a steady stream of labeled outcomes. **B**
+the runtime is graded on, but it needs a combiner beneath and a steady stream of labeled outcomes. **B**
 and **C** are the most principled but the most cold-start-hostile and the least aligned with the
 smooth-composable-scalar contract. **E** buys epistemic honesty at real cost and, for DS, real
 opacity.
@@ -220,7 +217,7 @@ must survive audit. Every `DecisionObject` already carries `inputs: Mapping[str,
 - **E / Dempster–Shafer** is the worst: conflict-normalization behavior is counter-intuitive and
   hard to defend to a non-specialist auditor.
 
-Across all combiners, Bytesurge attaches a **confidence rationale** to the trace: the ranked layer
+Across all combiners, the runtime attaches a **confidence rationale** to the trace: the ranked layer
 inputs, which input was decisive (bound the fused value), the calibration transform applied, and the
 `control_for` band and risk tier that produced the `Control`. This makes both the fusion and the
 autonomy decision reconstructable — the `ARCH-06` "trace every decision" best practice.

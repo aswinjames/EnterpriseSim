@@ -1,10 +1,7 @@
-# Bytesurge Reflection Engine — Algorithm Research
+# Reflection Engine — Algorithm Research
 
-> **Proprietary — Bytesurge Runtime research. Not part of EnterpriseSim; not Apache-2.0.**
->
-> © Bytesurge. Commercial runtime research. This document designs proprietary algorithms; it
-> is not part of the open-source, Apache-2.0 EnterpriseSim project and is not governed by its
-> license.
+> This document is part of EnterpriseSim's reference-runtime algorithm research (see
+> [`README.md`](README.md) and [`NOTICE.md`](NOTICE.md)).
 
 **EnterpriseSim interface satisfied:** `sdk.learning.Reflector` — the `reflect(...)` and
 `diagnose(...)` methods returning `ReflectionObject` and `RootCause` (`ARCH-05` Learning Engine;
@@ -84,7 +81,7 @@ merely correlationally. This is the strongest evidence a diagnosis can carry and
 ### D. Retrieval of similar past reflections
 Before diagnosing from scratch, retrieve prior `REF-###` whose `situation` (task_type, apps,
 failure_class) matches the current one, via the same `sdk.experience.ExperienceRetriever` machinery
-(`ARCH-03`, Bytesurge algorithm 02). Prior root causes for near-identical failures are strong priors —
+(`ARCH-03`, algorithm 02). Prior root causes for near-identical failures are strong priors —
 "the last three `APP-003` guest-flow failures were all `dropped_context`." Cheap, warm-starts
 diagnosis, and reinforces systemic-pattern detection, but risks anchoring on a stale prior for a
 genuinely novel failure.

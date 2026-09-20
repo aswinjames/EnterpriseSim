@@ -13,6 +13,12 @@ Both providers go through OpenRouter as the one gateway (pinned
 ``openai/gpt-5-mini`` via chat completions for GPT) -- see
 ``providers/jev_provider.py`` and ``providers/gpt_provider.py``.
 
+``--criterion`` selects which context-admission question is asked (default:
+``bc-0101``, the original broad relevance/inclusion question; ``bc-0102`` asks a
+task-specific-necessity question instead -- see ``providers/base.py::BC_0102``).
+Everything else (benchmark case, candidates, candidate content, ground truth,
+scorer, models, provider configuration) is identical between the two.
+
 Safety: this phase makes NO live API calls. A live provider (jev, gpt) requires
 BOTH the ``--live`` flag AND ``OPENROUTER_API_KEY`` being set (the same key for
 both); omitting ``--live`` always refuses, even if the key happens to be set, so
@@ -21,6 +27,9 @@ this script cannot accidentally spend money.
 Usage:
     # Offline wiring check (default; no network, no key needed):
     python3 -m research.jev_context_decision.run_experiment --provider mock --repeats 1
+
+    # Offline wiring check for the BC-0102 criterion:
+    python3 -m research.jev_context_decision.run_experiment --provider mock --repeats 1 --criterion bc-0102
 
     # First live Jev sanity test (single repeat), once OPENROUTER_API_KEY is exported:
     OPENROUTER_API_KEY=... python3 -m research.jev_context_decision.run_experiment \\
@@ -47,14 +56,22 @@ from pathlib import Path
 from .candidates import load_bc_0101_candidates, load_bc_0101_case
 from .decision import aggregate
 from .providers import PROVIDERS, ProviderNotConfigured
+from .providers.base import BC_0101, BC_0102
 from .scoring import score as score_context
 
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
 LIVE_PROVIDERS = {"jev", "gpt"}
 
+#: Selectable context-admission criteria. BC-0101 (default) is the original
+#: broad relevance/inclusion question; BC-0102 is the task-specific-necessity
+#: follow-up. Both run against the SAME benchmark case, candidates, ground
+#: truth, and scorer -- only the wording asked of each provider differs (see
+#: providers/base.py::DecisionCase).
+CRITERIA = {"bc-0101": BC_0101, "bc-0102": BC_0102}
 
-def run_once(provider, case: dict, candidates: list) -> dict:
-    decisions = provider.decide_all(candidates)
+
+def run_once(provider, case: dict, candidates: list, criterion) -> dict:
+    decisions = provider.decide_all(candidates, case=criterion)
     aggregated = aggregate(decisions)
     context = aggregated.to_context_object(task_ref=case["task_ref"])
     result = score_context(case, context)
@@ -74,6 +91,7 @@ def run_once(provider, case: dict, candidates: list) -> dict:
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "provider": provider.name,
         "case_id": case["id"],
+        "criterion_id": criterion.id,
         "model": models[0] if len(models) == 1 else models,
         "prompt_version": prompt_versions[0] if len(prompt_versions) == 1 else prompt_versions,
         "selected": {"included": sorted(aggregated.included), "excluded": sorted(aggregated.excluded)},
@@ -118,8 +136,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--provider", choices=sorted(PROVIDERS), required=True)
     parser.add_argument("--repeats", type=int, default=1)
     parser.add_argument("--live", action="store_true", help="Required to actually call jev/gpt; mock ignores this.")
+    parser.add_argument(
+        "--criterion", choices=sorted(CRITERIA), default="bc-0101",
+        help="Context-admission criterion to ask each provider (default: bc-0101, the original "
+             "broad relevance/inclusion question). bc-0102 asks the task-specific-necessity "
+             "follow-up instead. Same benchmark case, candidates, ground truth, and scorer either way.",
+    )
     parser.add_argument("--out", type=Path, default=None, help="Output JSON path; default: results/<provider>_<ts>.json")
     args = parser.parse_args(argv)
+    criterion = CRITERIA[args.criterion]
 
     if args.provider in LIVE_PROVIDERS and not args.live:
         print(
@@ -139,7 +164,11 @@ def main(argv: list[str] | None = None) -> int:
     if out_path is None:
         RESULTS_DIR.mkdir(exist_ok=True)
         ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-        out_path = RESULTS_DIR / f"{args.provider}_{ts}.json"
+        # Default filename is unchanged for the default criterion (bc-0101), so
+        # existing tooling/paths keep working; a non-default criterion gets an
+        # explicit suffix so its results can never be mistaken for BC-0101's.
+        suffix = "" if args.criterion == "bc-0101" else f"_{args.criterion.replace('-', '')}"
+        out_path = RESULTS_DIR / f"{args.provider}{suffix}_{ts}.json"
 
     def write_partial(repeats_result: list[dict], complete: bool) -> None:
         # Written after every repeat (not just at the end) so a later failure in
@@ -150,6 +179,7 @@ def main(argv: list[str] | None = None) -> int:
         output = {
             "provider": args.provider,
             "case_id": case["id"],
+            "criterion_id": criterion.id,
             "repeats": repeats_result,
             "summary": summarize(repeats_result) if repeats_result else None,
             "complete": complete,
@@ -159,7 +189,7 @@ def main(argv: list[str] | None = None) -> int:
     repeats_result: list[dict] = []
     for i in range(args.repeats):
         try:
-            repeats_result.append(run_once(provider, case, candidates))
+            repeats_result.append(run_once(provider, case, candidates, criterion))
         except ProviderNotConfigured as exc:
             print(f"Provider {args.provider!r} not configured: {exc}", file=sys.stderr)
             if repeats_result:

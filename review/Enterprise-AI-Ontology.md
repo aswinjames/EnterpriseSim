@@ -416,7 +416,7 @@ SDK-first product (the SDK is a means). It is, in priority order:
 > an interface specification.**
 
 The right mental model is **Gym/MuJoCo/ALE + SWE-bench + MLPerf, for enterprise cognition**: the
-*world and the ruler*, not the *player*. Runtimes (Bytesurge and others) are the players; they
+*world and the ruler*, not the *player*. Runtimes (proprietary commercial engines and others) are the players; they
 plug into the SDK and are scored on the benchmark. Selling it as a "runtime" or "cognitive
 architecture" mis-positions the strongest asset and invites the weakest critique.
 
@@ -434,7 +434,7 @@ problems*.**
 | **Benchmark tasks + evaluation protocol + leaderboards** | **EnterpriseSim (OSS)** + **neutral governance** | A ruler must be neutral and open, or scores are meaningless (the MLPerf/SWE-bench lesson). |
 | **Reference enterprise + illustrative traces** | **EnterpriseSim (OSS)** | Teaching/seed material; explicitly not "results." |
 | **Object + cognition-event schemas; SDK interfaces** | **Industry standard** (donate to a foundation; align with **OpenTelemetry** semantic conventions for agent cognition) | Interfaces + wire formats are where a decade-scale "reference architecture" actually lives; must be vendor-neutral. |
-| **Algorithms** (context ranking, memory graph internals, decision optimization, calibration, learning/credit-assignment, distillation) | **Commercial runtime** (Bytesurge et al.) | These are where quality, latency and cost differentiate; competition here drives the field. Compete *on the open benchmark*. |
+| **Algorithms** (context ranking, memory graph internals, decision optimization, calibration, learning/credit-assignment, distillation) | **Commercial runtime** (proprietary implementations) | These are where quality, latency and cost differentiate; competition here drives the field. Compete *on the open benchmark*. |
 | **Production memory graph, multi-tenancy, SLAs, ops, governance tooling** | **Commercial** | Operational excellence is a product, not a spec. |
 | **Open problems** (credit assignment, calibrated cross-layer confidence, memory-poisoning defense, bitemporal trust models, outcome-verified synthetic environments, cross-domain transfer) | **Academic research** | Unsolved; belong in the literature, benchmarked *on* EnterpriseSim. |
 

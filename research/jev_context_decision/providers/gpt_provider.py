@@ -1,14 +1,24 @@
-"""GPT provider: structured INCLUDE/EXCLUDE decision via OpenRouter (pinned GPT model).
+"""GPT provider: structured INCLUDE/EXCLUDE decision via the direct OpenAI API.
 
-Routed through OpenRouter's standard, OpenAI-compatible chat-completions endpoint
-using structured-output mode (JSON schema response format), so the decision comes
-back as validated ``{"verdict", "rationale", "confidence"}`` rather than free text
-that needs parsing. The API key is read from ``OPENROUTER_API_KEY`` -- the same
-gateway key used by ``JevProvider`` -- never hardcoded, never logged.
+Routed directly to OpenAI's own chat-completions endpoint (``api.openai.com``,
+NOT OpenRouter) using structured-output mode (JSON schema response format), so
+the decision comes back as validated ``{"verdict", "rationale", "confidence"}``
+rather than free text that needs parsing. The API key is read from
+``OPENAI_API_KEY`` -- a different key/account than ``JevProvider``'s
+``OPENROUTER_API_KEY``; never hardcoded, never logged.
+
+This replaces the OpenRouter transport this provider used previously (see
+``providers/openrouter.py``, still used unchanged by ``JevProvider``).
+OpenRouter's BC-0102 batches repeatedly failed on GPT-side response truncation
+and, separately, on account/key credit-limit errors (402); this file changes
+ONLY the transport and the two request parameters that direct OpenAI naming
+requires (``max_tokens``->``max_completion_tokens``, ``reasoning.effort``->
+``reasoning_effort``, same values) -- prompt wording, schema, model, and
+reasoning effort are unchanged.
 
 Request-building and response-parsing are pure functions (``_build_request``,
 ``_parse_response``) so they are unit-testable without any network access; only
-``decide()`` itself calls out to ``openrouter.post_json``.
+``decide()`` itself calls out to ``openai_direct.post_json``.
 """
 
 from __future__ import annotations
@@ -20,15 +30,15 @@ from datetime import datetime, timezone
 
 from ..candidates import Candidate
 from ..decision import ContextDecision
-from . import openrouter
-from .base import PROMPT_VERSION, TASK_STATEMENT, ContextDecisionProvider, ProviderNotConfigured
+from . import openai_direct
+from .base import DecisionCase, DEFAULT_CASE, ContextDecisionProvider, ProviderNotConfigured
 
-#: Pinned OpenRouter model slug for the GPT side of this experiment. Confirmed
-#: current on OpenRouter's openai model listing (openrouter.ai/openai) alongside
-#: openai/gpt-4.1 / gpt-4o family; gpt-5-mini supports response_format
-#: json_schema and function calling for structured output. Override only via the
-#: env var below -- never hardcode a different model in code.
-DEFAULT_MODEL = os.environ.get("GPT_CONTEXT_DECISION_MODEL", "openai/gpt-5-mini")
+#: Direct-OpenAI-API model id for the GPT side of this experiment. Same model as
+#: before (OpenRouter's "openai/gpt-5-mini" slug) -- "gpt-5-mini" is the
+#: un-prefixed id OpenRouter routes to, and is independently documented as a
+#: current OpenAI API model (developers.openai.com/api/docs/models/gpt-5-mini).
+#: Override only via the env var below -- never hardcode a different model.
+DEFAULT_MODEL = os.environ.get("GPT_CONTEXT_DECISION_MODEL", "gpt-5-mini")
 
 _DECISION_SCHEMA = {
     "name": "context_decision",
@@ -57,33 +67,33 @@ def _build_prompt(candidate: Candidate, task_statement: str) -> str:
     )
 
 
-#: Capped explicitly because OpenRouter reserves credit against a request's
-#: max_tokens *before* the call executes; leaving it unset defaults to the
-#: pinned model's full output ceiling (65536 for openai/gpt-5-mini) and gets a
-#: 402 Payment Required against any balance that can't cover reserving the
-#: whole thing, independent of what the call actually ends up costing.
-#:
 #: gpt-5-mini is a reasoning model: hidden reasoning tokens are drawn from the
-#: SAME max_tokens budget as the visible answer, and reasoning-token usage
-#: varies per input and per call -- confirmed live twice: a 400-token cap
-#: truncated the JSON mid-string for one candidate, and later, even with
-#: reasoning.effort="minimal" and a 1500-token cap, a different call in a
-#: 5-repeat batch still hit finish_reason=length (OpenRouter's own docs note
-#: some providers vary reasoning-token spend independent of the requested
-#: effort level). Raised well past both observed failures so this is a safety
-#: margin against truncation, not a change to what's being asked or decided.
-MAX_OUTPUT_TOKENS = 4000
+#: SAME token budget as the visible answer, and reasoning-token usage varies
+#: per input and per call -- confirmed live at several cap levels during the
+#: OpenRouter-transport attempts (400, 1500, 4000, and 8000 all truncated a
+#: call at some point across BC-0101/BC-0102 batches; 12000 was the value
+#: OpenRouter's account/key credit limit allowed at the time). Value carried
+#: over unchanged for the direct OpenAI transport -- this switch changes only
+#: the transport and parameter names below, not this number, the model, or the
+#: reasoning effort. It is now sent as ``max_completion_tokens`` (direct
+#: OpenAI's Chat Completions API rejects ``max_tokens`` outright for reasoning
+#: models such as gpt-5-mini).
+MAX_OUTPUT_TOKENS = 12000
+
+#: Unchanged value ("minimal"), sent under direct OpenAI's own flat
+#: ``reasoning_effort`` parameter instead of OpenRouter's nested
+#: ``reasoning: {"effort": ...}`` wrapper.
 REASONING_EFFORT = "minimal"
 
 
-def _build_request(candidate: Candidate, task_statement: str, model: str) -> dict:
-    """Pure: build the OpenRouter chat-completions request body. No network."""
+def _build_request(candidate: Candidate, case: DecisionCase, model: str) -> dict:
+    """Pure: build the direct OpenAI chat-completions request body. No network."""
     return {
         "model": model,
-        "messages": [{"role": "user", "content": _build_prompt(candidate, task_statement)}],
+        "messages": [{"role": "user", "content": _build_prompt(candidate, case.task_statement)}],
         "response_format": {"type": "json_schema", "json_schema": _DECISION_SCHEMA},
-        "max_tokens": MAX_OUTPUT_TOKENS,
-        "reasoning": {"effort": REASONING_EFFORT},
+        "max_completion_tokens": MAX_OUTPUT_TOKENS,
+        "reasoning_effort": REASONING_EFFORT,
     }
 
 
@@ -115,29 +125,30 @@ def _parse_response(response: dict) -> dict:
 
 
 class GPTProvider(ContextDecisionProvider):
-    """Structured-output GPT decision-maker, via OpenRouter. Live call happens in ``decide()``."""
+    """Structured-output GPT decision-maker, via the direct OpenAI API. Live call happens in ``decide()``."""
 
     name = "gpt"
 
     def __init__(self, model: str = DEFAULT_MODEL, api_key: str | None = None) -> None:
         self.model = model
-        self._api_key = api_key or os.environ.get(openrouter.API_KEY_ENV_VAR)
+        self._api_key = api_key or os.environ.get(openai_direct.API_KEY_ENV_VAR)
 
     def _require_key(self) -> str:
         if not self._api_key:
             raise ProviderNotConfigured(
-                f"{openrouter.API_KEY_ENV_VAR} is not set. Export it in your shell "
+                f"{openai_direct.API_KEY_ENV_VAR} is not set. Export it in your shell "
                 "environment before running a live GPT decision -- never hardcode "
-                "it in a file. This is the same key used by JevProvider."
+                "it in a file. This is a direct OpenAI API key, separate from "
+                "OPENROUTER_API_KEY (which JevProvider still uses)."
             )
         return self._api_key
 
-    def decide(self, candidate: Candidate, *, task_statement: str = TASK_STATEMENT) -> ContextDecision:
+    def decide(self, candidate: Candidate, *, case: DecisionCase = DEFAULT_CASE) -> ContextDecision:
         api_key = self._require_key()
-        request_body = _build_request(candidate, task_statement, self.model)
+        request_body = _build_request(candidate, case, self.model)
 
         start = time.monotonic()
-        response = openrouter.post_json(openrouter.CHAT_COMPLETIONS_PATH, request_body, api_key)
+        response = openai_direct.post_json(openai_direct.CHAT_COMPLETIONS_PATH, request_body, api_key)
         latency_ms = (time.monotonic() - start) * 1000
 
         parsed = _parse_response(response)
@@ -150,7 +161,7 @@ class GPTProvider(ContextDecisionProvider):
             rationale=parsed["rationale"],
             confidence=parsed["confidence"],
             model=parsed["model"] or self.model,
-            prompt_version=PROMPT_VERSION,
+            prompt_version=case.prompt_version,
             latency_ms=latency_ms,
             input_tokens=parsed["input_tokens"],
             output_tokens=parsed["output_tokens"],

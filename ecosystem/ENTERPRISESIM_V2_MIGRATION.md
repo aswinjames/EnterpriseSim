@@ -52,7 +52,7 @@ governance/process/rationale · `PRIV` = private (out of the open ecosystem).
 | `corpus/` (100 `RUN-*` bundles + `experience_store` + bundle schema) | **Move + Reframe + Extend** | `SIM` | Kept in full, **re-labeled as illustrative reference traces** (not empirical results — the review fix). The V2 benchmark harness generates *new* outcome-verified traces. `experience_store.json` seeds the Memory service. `worker_execution_bundle` schema → OEAS. |
 | `evolution/` (13 sprints + 10 release notes + `timeline.json`) | **Keep + Move** | `SIM` | The environment's temporal history; feeds *temporal memory*. Retained. |
 | `connectors/github/` (design + interfaces) | **Keep + Extend** | `SIM` | Reference connectors; V2 *implements* the design (was design-only), MCP-aligned. Design docs retained. |
-| `research/bytesurge/` (proprietary) | **Move-out** | `PRIV` | Already `NOTICE`d as proprietary and non-Apache. Relocated to a private repo before public V2 (the repo already declares this). Not an ecosystem artifact. |
+| `research/bytesurge/` (reference-runtime algorithm research) | **Keep + Move** | `SIM` | Design-only algorithm research for a reference runtime implementing the SDK interfaces; part of EnterpriseSim, retained. |
 | `review/` (architecture review + ontology study) | **Keep + Move** | `FOUND` | Design rationale; becomes foundation design-history / informs the V2 ADRs. |
 | `tools/refgen/` (`validate.py`, generators) | **Keep + Split** | `OEAS` (validator→conformance) / `SIM` (generators) | `validate.py` becomes the seed of the OEAS **conformance CLI**; the dataset generators stay with EnterpriseSim. |
 | `ecosystem/` (these blueprints) | **Keep** | `FOUND` | The strategic plan itself. |

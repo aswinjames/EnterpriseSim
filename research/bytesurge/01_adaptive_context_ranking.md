@@ -1,9 +1,7 @@
 # Adaptive Context Ranking
 
-> **Proprietary — Bytesurge Runtime research. Not part of EnterpriseSim; not Apache-2.0.**
->
-> This document designs a core Bytesurge algorithm. It is proprietary and is **not** governed
-> by EnterpriseSim's Apache-2.0 license. See [`NOTICE.md`](NOTICE.md).
+> This document is part of EnterpriseSim's reference-runtime algorithm research (see
+> [`README.md`](README.md) and [`NOTICE.md`](NOTICE.md)).
 
 | Field | Value |
 |---|---|
@@ -23,11 +21,11 @@ work — retrieve via composable `Retriever`s, rank heterogeneous `Candidate`s o
 scale, select a subset that fits the model window through a `BudgetPolicy`, and compose a
 `ContextObject` with mandatory included **and** excluded provenance — but it deliberately leaves
 the **ranking function itself open** (`RFC-0002` §5: "Ranking is the hard part … the protocol
-fixes the shape of rank/select but not the ranking function"). Bytesurge must supply that
+fixes the shape of rank/select but not the ranking function"). The runtime must supply that
 function inside its `ContextAssembler.assemble` / `enrich` implementations.
 
 Concretely, given a `TaskIntent` and a pool of `n` candidates each carrying `(ref, kind, score,
-tokens, payload)`, Bytesurge must produce an **ordered selection** `S ⊆ candidates` such that
+tokens, payload)`, the runtime must produce an **ordered selection** `S ⊆ candidates` such that
 `Σ tokens(S) ≤ window_tokens − reserved_output` and `S` maximizes expected task success. This
 is not plain top-k: it is a **budget-constrained, diversity-aware, staleness/authority-weighted
 selection** whose omissions matter as much as its inclusions.
@@ -52,7 +50,7 @@ confidence calibration, and downstream `EVAL-###` lift), not by ranking metrics 
 ## 2. Approaches
 
 Five concrete, named approaches, roughly in increasing sophistication. Each is a real IR/ML
-technique; Bytesurge's design question is which to compose.
+technique; the design question is which to compose.
 
 ### 2.1 BM25 / lexical scoring (baseline)
 
@@ -92,7 +90,7 @@ code, rules, experience, dependency context) and the anti-flooding failure mode.
 
 ### 2.5 Learning-to-rank + budget-aware knapsack + learned policy
 
-The full Bytesurge target, three composed pieces:
+The full target, three composed pieces:
 
 - **Learning-to-rank (LambdaMART / listwise λ-loss).** Train a gradient-boosted or listwise
   ranker on features `[bm25, cosine, cross_enc, authority, staleness, kind, applicability
@@ -103,7 +101,7 @@ The full Bytesurge target, three composed pieces:
   charter requires.
 - **Budget-aware knapsack selection.** Given per-candidate value `v(c)` (the LTR score, after
   staleness/authority weighting) and cost `tokens(c)`, select `S` maximizing `Σ v(c)` s.t.
-  `Σ tokens(c) ≤ B`. This is 0/1 knapsack; Bytesurge uses the **greedy density heuristic**
+  `Σ tokens(c) ≤ B`. This is 0/1 knapsack; the runtime uses the **greedy density heuristic**
   (sort by `v(c)/tokens(c)`, fill) with an MMR diversity penalty folded into `v`, giving a
   well-known `(1 − 1/e)`-style guarantee for the submodular coverage objective and near-optimal
   behavior in practice. `BudgetPolicy.evict` records every drop.
@@ -131,7 +129,7 @@ Cross-cutting tensions:
   precision at cost; knapsack converts precision into the best *affordable* set. None alone
   solves all three — hence a pipeline.
 - **Accuracy vs. explainability.** Every step toward learned scoring erodes the term-level
-  transparency of BM25. Bytesurge must reconstruct explanations at the feature level (§8).
+  transparency of BM25. The runtime must reconstruct explanations at the feature level (§8).
 - **Static vs. learned budget.** A fixed relevance floor is simple and predictable; a learned
   per-facet budget policy is better but introduces a feedback loop that can drift and must be
   guarded by calibration (mirrors `RFC-0009` §4.6 calibration concern).
@@ -167,7 +165,7 @@ Cross-cutting tensions:
   *observed* mistakes — never the counterfactual value of items that were included but useless.
 - **Token-count estimation error.** Knapsack optimality is only as good as `tokens(c)`, which is
   model-family-specific (`RFC-0002` §5, §8). A mis-estimate risks wasted headroom or a late
-  Gateway rejection. Bytesurge must budget against a conservative tokenizer hint from the Gateway.
+  Gateway rejection. The runtime must budget against a conservative tokenizer hint from the Gateway.
 - **Greedy sub-optimality.** The density heuristic is near-optimal but not exact; adversarial
   token/value distributions (one huge high-value doc vs. many small ones) can mislead it.
 - **Diversity vs. decisiveness conflict.** MMR can *penalize* the second copy of the truly
@@ -261,7 +259,7 @@ surface; the ranker must populate it with *reasons an engineer or auditor can ac
 
 ## 9. Recommendation
 
-Bytesurge should adopt a **hybrid cascade with a learned selection layer**:
+The recommended approach is a **hybrid cascade with a learned selection layer**:
 
 1. **Recall** — BM25 ∪ dense bi-encoder (ANN), unioned for high recall and robust to
    embedding/lexical blind spots. BM25 alone is the graceful-degradation fallback.

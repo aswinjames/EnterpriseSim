@@ -44,20 +44,26 @@ class TestLiveProvidersRefuseWithoutConfig(unittest.TestCase):
             with self.assertRaises(ProviderNotConfigured):
                 provider.decide(candidate)
 
-    def test_gpt_provider_reads_key_from_openrouter_env_var(self):
-        with mock.patch.dict(os.environ, {"OPENROUTER_API_KEY": "sk-or-test-not-real"}, clear=True):
+    def test_gpt_provider_reads_key_from_openai_env_var(self):
+        # GPTProvider calls the direct OpenAI API -- a different key/account
+        # than JevProvider's OpenRouter gateway key.
+        with mock.patch.dict(os.environ, {"OPENAI_API_KEY": "sk-oa-test-not-real"}, clear=True):
             provider = GPTProvider()
-            self.assertEqual(provider._api_key, "sk-or-test-not-real")
+            self.assertEqual(provider._api_key, "sk-oa-test-not-real")
 
     def test_jev_provider_reads_key_from_openrouter_env_var(self):
         with mock.patch.dict(os.environ, {"OPENROUTER_API_KEY": "sk-or-test-not-real"}, clear=True):
             provider = JevProvider()
             self.assertEqual(provider._api_key, "sk-or-test-not-real")
 
-    def test_gpt_and_jev_share_the_same_gateway_key_env_var(self):
-        from research.jev_context_decision.providers import openrouter
+    def test_gpt_and_jev_use_different_gateway_key_env_vars(self):
+        # GPT moved to the direct OpenAI API; Jev still uses OpenRouter. These
+        # are two different accounts/keys, not a shared gateway.
+        from research.jev_context_decision.providers import openai_direct, openrouter
 
+        self.assertEqual(openai_direct.API_KEY_ENV_VAR, "OPENAI_API_KEY")
         self.assertEqual(openrouter.API_KEY_ENV_VAR, "OPENROUTER_API_KEY")
+        self.assertNotEqual(openai_direct.API_KEY_ENV_VAR, openrouter.API_KEY_ENV_VAR)
 
 
 if __name__ == "__main__":
