@@ -1,0 +1,1429 @@
+{
+  "provider": "jev",
+  "case_id": "BC-0101",
+  "repeats": [
+    {
+      "timestamp": "2026-09-20T08:27:37.961119+00:00",
+      "provider": "jev",
+      "case_id": "BC-0101",
+      "model": "typesafe/jev-1.13-20260917",
+      "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+      "selected": {
+        "included": [
+          "EXP-090",
+          "KN-045",
+          "KN-052",
+          "KN-063",
+          "KN-101"
+        ],
+        "excluded": [
+          "EXP-055",
+          "KN-047"
+        ]
+      },
+      "required_present": [
+        "EXP-090",
+        "KN-045",
+        "KN-052"
+      ],
+      "required_missing": [],
+      "forbidden_selected": [
+        "KN-101"
+      ],
+      "recall": 0.8,
+      "precision": 0.8,
+      "score": 0.4,
+      "verdict": "fail",
+      "gate_pass": false,
+      "latency_ms": {
+        "total": 425368.56554,
+        "per_candidate": {
+          "KN-045": 60807.404083,
+          "KN-052": 60817.61720800001,
+          "KN-063": 60773.819416000006,
+          "KN-047": 60806.677667,
+          "KN-101": 60705.338667,
+          "EXP-090": 60738.92854099995,
+          "EXP-055": 60718.77995799997
+        }
+      },
+      "tokens": {
+        "input_total": 4425,
+        "output_total": 154
+      },
+      "cost_usd_total": 0.00018585,
+      "confidence": {
+        "per_candidate": {
+          "KN-045": 0.96,
+          "KN-052": 0.93,
+          "KN-063": 0.71,
+          "KN-047": 0.95,
+          "KN-101": 0.76,
+          "EXP-090": 0.92,
+          "EXP-055": 0.76
+        },
+        "mean": 0.8557142857142858
+      },
+      "raw_decisions": [
+        {
+          "candidate_id": "KN-045",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.960 -> include (confidence in verdict: 0.960)",
+          "confidence": 0.96,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60807.404083,
+          "input_tokens": 603,
+          "output_tokens": 22,
+          "cost_usd": 2.5326e-05,
+          "timestamp": "2026-09-20T08:21:33.400282+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.96
+              }
+            },
+            "usage": {
+              "input_tokens": 603,
+              "output_tokens": 22,
+              "cost": 2.5326e-05
+            },
+            "id": "gen-dec-1789892493-DbPp50AASKGwBYXj33pt",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-052",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.930 -> include (confidence in verdict: 0.930)",
+          "confidence": 0.93,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60817.61720800001,
+          "input_tokens": 684,
+          "output_tokens": 22,
+          "cost_usd": 2.8728e-05,
+          "timestamp": "2026-09-20T08:22:34.217786+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.93
+              }
+            },
+            "usage": {
+              "input_tokens": 684,
+              "output_tokens": 22,
+              "cost": 2.8728e-05
+            },
+            "id": "gen-dec-1789892553-dZyT7S9HDfE6xO3Vxmr7",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-063",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.710 -> include (confidence in verdict: 0.710)",
+          "confidence": 0.71,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60773.819416000006,
+          "input_tokens": 667,
+          "output_tokens": 22,
+          "cost_usd": 2.8014e-05,
+          "timestamp": "2026-09-20T08:23:34.991553+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.71
+              }
+            },
+            "usage": {
+              "input_tokens": 667,
+              "output_tokens": 22,
+              "cost": 2.8014e-05
+            },
+            "id": "gen-dec-1789892614-Tn0OWEl6Bc20fpqvZqMO",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-047",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "exclude",
+          "rationale": "Jev noul decision: P(include)=0.050 -> exclude (confidence in verdict: 0.950)",
+          "confidence": 0.95,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60806.677667,
+          "input_tokens": 646,
+          "output_tokens": 22,
+          "cost_usd": 2.7132e-05,
+          "timestamp": "2026-09-20T08:24:35.798172+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.05
+              }
+            },
+            "usage": {
+              "input_tokens": 646,
+              "output_tokens": 22,
+              "cost": 2.7132e-05
+            },
+            "id": "gen-dec-1789892675-Q9Sd8omx4rKxIPTH5mgM",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-101",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.760 -> include (confidence in verdict: 0.760)",
+          "confidence": 0.76,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60705.338667,
+          "input_tokens": 696,
+          "output_tokens": 22,
+          "cost_usd": 2.9232e-05,
+          "timestamp": "2026-09-20T08:25:36.503360+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.76
+              }
+            },
+            "usage": {
+              "input_tokens": 696,
+              "output_tokens": 22,
+              "cost": 2.9232e-05
+            },
+            "id": "gen-dec-1789892736-tshQbrf1mSg9Sf7VBuMa",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "EXP-090",
+          "candidate_kind": "experience",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.920 -> include (confidence in verdict: 0.920)",
+          "confidence": 0.92,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60738.92854099995,
+          "input_tokens": 576,
+          "output_tokens": 22,
+          "cost_usd": 2.4192e-05,
+          "timestamp": "2026-09-20T08:26:37.242132+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.92
+              }
+            },
+            "usage": {
+              "input_tokens": 576,
+              "output_tokens": 22,
+              "cost": 2.4192e-05
+            },
+            "id": "gen-dec-1789892797-K0WbSItNXbXdraGzFpcY",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "EXP-055",
+          "candidate_kind": "experience",
+          "provider": "jev",
+          "verdict": "exclude",
+          "rationale": "Jev noul decision: P(include)=0.240 -> exclude (confidence in verdict: 0.760)",
+          "confidence": 0.76,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60718.77995799997,
+          "input_tokens": 553,
+          "output_tokens": 22,
+          "cost_usd": 2.3226e-05,
+          "timestamp": "2026-09-20T08:27:37.960800+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.24
+              }
+            },
+            "usage": {
+              "input_tokens": 553,
+              "output_tokens": 22,
+              "cost": 2.3226e-05
+            },
+            "id": "gen-dec-1789892857-Y6fr2gFUuJ6PzqLOsKZA",
+            "provider": "TypeSafe"
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-09-20T08:49:41.485010+00:00",
+      "provider": "jev",
+      "case_id": "BC-0101",
+      "model": "typesafe/jev-1.13-20260917",
+      "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+      "selected": {
+        "included": [
+          "EXP-090",
+          "KN-045",
+          "KN-052",
+          "KN-063",
+          "KN-101"
+        ],
+        "excluded": [
+          "EXP-055",
+          "KN-047"
+        ]
+      },
+      "required_present": [
+        "EXP-090",
+        "KN-045",
+        "KN-052"
+      ],
+      "required_missing": [],
+      "forbidden_selected": [
+        "KN-101"
+      ],
+      "recall": 0.8,
+      "precision": 0.8,
+      "score": 0.4,
+      "verdict": "fail",
+      "gate_pass": false,
+      "latency_ms": {
+        "total": 425500.180707,
+        "per_candidate": {
+          "KN-045": 60795.54454099997,
+          "KN-052": 60757.894874999976,
+          "KN-063": 60671.494250000025,
+          "KN-047": 60915.11116699997,
+          "KN-101": 60818.727083,
+          "EXP-090": 60742.92150000008,
+          "EXP-055": 60798.48729100001
+        }
+      },
+      "tokens": {
+        "input_total": 4425,
+        "output_total": 154
+      },
+      "cost_usd_total": 0.00018585,
+      "confidence": {
+        "per_candidate": {
+          "KN-045": 0.96,
+          "KN-052": 0.93,
+          "KN-063": 0.72,
+          "KN-047": 0.95,
+          "KN-101": 0.75,
+          "EXP-090": 0.92,
+          "EXP-055": 0.74
+        },
+        "mean": 0.8528571428571429
+      },
+      "raw_decisions": [
+        {
+          "candidate_id": "KN-045",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.960 -> include (confidence in verdict: 0.960)",
+          "confidence": 0.96,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60795.54454099997,
+          "input_tokens": 603,
+          "output_tokens": 22,
+          "cost_usd": 2.5326e-05,
+          "timestamp": "2026-09-20T08:28:38.757635+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.96
+              }
+            },
+            "usage": {
+              "input_tokens": 603,
+              "output_tokens": 22,
+              "cost": 2.5326e-05
+            },
+            "id": "gen-dec-1789892918-ksvjmt03LQ5BCgMaMZmb",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-052",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.930 -> include (confidence in verdict: 0.930)",
+          "confidence": 0.93,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60757.894874999976,
+          "input_tokens": 684,
+          "output_tokens": 22,
+          "cost_usd": 2.8728e-05,
+          "timestamp": "2026-09-20T08:29:39.515457+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.93
+              }
+            },
+            "usage": {
+              "input_tokens": 684,
+              "output_tokens": 22,
+              "cost": 2.8728e-05
+            },
+            "id": "gen-dec-1789892979-IKiGEoZCVdh9iIU9qFt4",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-063",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.720 -> include (confidence in verdict: 0.720)",
+          "confidence": 0.72,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60671.494250000025,
+          "input_tokens": 667,
+          "output_tokens": 22,
+          "cost_usd": 2.8014e-05,
+          "timestamp": "2026-09-20T08:30:40.186824+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.72
+              }
+            },
+            "usage": {
+              "input_tokens": 667,
+              "output_tokens": 22,
+              "cost": 2.8014e-05
+            },
+            "id": "gen-dec-1789893040-8ehuVD0i29Y46WkHzI2C",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-047",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "exclude",
+          "rationale": "Jev noul decision: P(include)=0.050 -> exclude (confidence in verdict: 0.950)",
+          "confidence": 0.95,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60915.11116699997,
+          "input_tokens": 646,
+          "output_tokens": 22,
+          "cost_usd": 2.7132e-05,
+          "timestamp": "2026-09-20T08:31:41.386008+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.05
+              }
+            },
+            "usage": {
+              "input_tokens": 646,
+              "output_tokens": 22,
+              "cost": 2.7132e-05
+            },
+            "id": "gen-dec-1789893101-cLuYYgJzsssSmV5zWYzp",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-101",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.750 -> include (confidence in verdict: 0.750)",
+          "confidence": 0.75,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60818.727083,
+          "input_tokens": 696,
+          "output_tokens": 22,
+          "cost_usd": 2.9232e-05,
+          "timestamp": "2026-09-20T08:47:39.943422+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.75
+              }
+            },
+            "usage": {
+              "input_tokens": 696,
+              "output_tokens": 22,
+              "cost": 2.9232e-05
+            },
+            "id": "gen-dec-1789894059-72z6KSI5Ps6R5CkJc0hN",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "EXP-090",
+          "candidate_kind": "experience",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.920 -> include (confidence in verdict: 0.920)",
+          "confidence": 0.92,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60742.92150000008,
+          "input_tokens": 576,
+          "output_tokens": 22,
+          "cost_usd": 2.4192e-05,
+          "timestamp": "2026-09-20T08:48:40.686290+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.92
+              }
+            },
+            "usage": {
+              "input_tokens": 576,
+              "output_tokens": 22,
+              "cost": 2.4192e-05
+            },
+            "id": "gen-dec-1789894120-tNs2r9vmssYzJb6lLXFD",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "EXP-055",
+          "candidate_kind": "experience",
+          "provider": "jev",
+          "verdict": "exclude",
+          "rationale": "Jev noul decision: P(include)=0.260 -> exclude (confidence in verdict: 0.740)",
+          "confidence": 0.74,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60798.48729100001,
+          "input_tokens": 553,
+          "output_tokens": 22,
+          "cost_usd": 2.3226e-05,
+          "timestamp": "2026-09-20T08:49:41.484717+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.26
+              }
+            },
+            "usage": {
+              "input_tokens": 553,
+              "output_tokens": 22,
+              "cost": 2.3226e-05
+            },
+            "id": "gen-dec-1789894181-Of2u43rYVTduiD3EL8Wf",
+            "provider": "TypeSafe"
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-09-20T09:11:44.455949+00:00",
+      "provider": "jev",
+      "case_id": "BC-0101",
+      "model": "typesafe/jev-1.13-20260917",
+      "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+      "selected": {
+        "included": [
+          "EXP-090",
+          "KN-045",
+          "KN-052",
+          "KN-063",
+          "KN-101"
+        ],
+        "excluded": [
+          "EXP-055",
+          "KN-047"
+        ]
+      },
+      "required_present": [
+        "EXP-090",
+        "KN-045",
+        "KN-052"
+      ],
+      "required_missing": [],
+      "forbidden_selected": [
+        "KN-101"
+      ],
+      "recall": 0.8,
+      "precision": 0.8,
+      "score": 0.4,
+      "verdict": "fail",
+      "gate_pass": false,
+      "latency_ms": {
+        "total": 425297.85737499985,
+        "per_candidate": {
+          "KN-045": 60680.604916,
+          "KN-052": 60757.043875000025,
+          "KN-063": 60733.2268749999,
+          "KN-047": 60887.63124999991,
+          "KN-101": 60788.84562500002,
+          "EXP-090": 60760.99666699997,
+          "EXP-055": 60689.508166999985
+        }
+      },
+      "tokens": {
+        "input_total": 4425,
+        "output_total": 154
+      },
+      "cost_usd_total": 0.00018585,
+      "confidence": {
+        "per_candidate": {
+          "KN-045": 0.96,
+          "KN-052": 0.93,
+          "KN-063": 0.73,
+          "KN-047": 0.95,
+          "KN-101": 0.75,
+          "EXP-090": 0.92,
+          "EXP-055": 0.76
+        },
+        "mean": 0.8571428571428571
+      },
+      "raw_decisions": [
+        {
+          "candidate_id": "KN-045",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.960 -> include (confidence in verdict: 0.960)",
+          "confidence": 0.96,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60680.604916,
+          "input_tokens": 603,
+          "output_tokens": 22,
+          "cost_usd": 2.5326e-05,
+          "timestamp": "2026-09-20T08:50:42.166443+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.96
+              }
+            },
+            "usage": {
+              "input_tokens": 603,
+              "output_tokens": 22,
+              "cost": 2.5326e-05
+            },
+            "id": "gen-dec-1789894242-3qT3XDvpqJZ5t9fZnlmr",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-052",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.930 -> include (confidence in verdict: 0.930)",
+          "confidence": 0.93,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60757.043875000025,
+          "input_tokens": 684,
+          "output_tokens": 22,
+          "cost_usd": 2.8728e-05,
+          "timestamp": "2026-09-20T08:51:42.923369+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.93
+              }
+            },
+            "usage": {
+              "input_tokens": 684,
+              "output_tokens": 22,
+              "cost": 2.8728e-05
+            },
+            "id": "gen-dec-1789894302-uVSwXyE5cJtcIS1G6o0I",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-063",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.730 -> include (confidence in verdict: 0.730)",
+          "confidence": 0.73,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60733.2268749999,
+          "input_tokens": 667,
+          "output_tokens": 22,
+          "cost_usd": 2.8014e-05,
+          "timestamp": "2026-09-20T09:07:41.329120+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.73
+              }
+            },
+            "usage": {
+              "input_tokens": 667,
+              "output_tokens": 22,
+              "cost": 2.8014e-05
+            },
+            "id": "gen-dec-1789895261-MNUFzeTEwtZ7E9q9nXCP",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-047",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "exclude",
+          "rationale": "Jev noul decision: P(include)=0.050 -> exclude (confidence in verdict: 0.950)",
+          "confidence": 0.95,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60887.63124999991,
+          "input_tokens": 646,
+          "output_tokens": 22,
+          "cost_usd": 2.7132e-05,
+          "timestamp": "2026-09-20T09:08:42.216689+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.05
+              }
+            },
+            "usage": {
+              "input_tokens": 646,
+              "output_tokens": 22,
+              "cost": 2.7132e-05
+            },
+            "id": "gen-dec-1789895321-ESFgyO2dFip1dYRb83q2",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-101",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.750 -> include (confidence in verdict: 0.750)",
+          "confidence": 0.75,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60788.84562500002,
+          "input_tokens": 696,
+          "output_tokens": 22,
+          "cost_usd": 2.9232e-05,
+          "timestamp": "2026-09-20T09:09:43.005444+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.75
+              }
+            },
+            "usage": {
+              "input_tokens": 696,
+              "output_tokens": 22,
+              "cost": 2.9232e-05
+            },
+            "id": "gen-dec-1789895382-MCGRvkHBJxGrw1OgBMkt",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "EXP-090",
+          "candidate_kind": "experience",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.920 -> include (confidence in verdict: 0.920)",
+          "confidence": 0.92,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60760.99666699997,
+          "input_tokens": 576,
+          "output_tokens": 22,
+          "cost_usd": 2.4192e-05,
+          "timestamp": "2026-09-20T09:10:43.766324+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.92
+              }
+            },
+            "usage": {
+              "input_tokens": 576,
+              "output_tokens": 22,
+              "cost": 2.4192e-05
+            },
+            "id": "gen-dec-1789895443-ntA5iThUBTR3YTo0lNBN",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "EXP-055",
+          "candidate_kind": "experience",
+          "provider": "jev",
+          "verdict": "exclude",
+          "rationale": "Jev noul decision: P(include)=0.240 -> exclude (confidence in verdict: 0.760)",
+          "confidence": 0.76,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60689.508166999985,
+          "input_tokens": 553,
+          "output_tokens": 22,
+          "cost_usd": 2.3226e-05,
+          "timestamp": "2026-09-20T09:11:44.455813+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.24
+              }
+            },
+            "usage": {
+              "input_tokens": 553,
+              "output_tokens": 22,
+              "cost": 2.3226e-05
+            },
+            "id": "gen-dec-1789895504-gNyhcSxjBrdwUy8ie75U",
+            "provider": "TypeSafe"
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-09-20T09:18:49.858795+00:00",
+      "provider": "jev",
+      "case_id": "BC-0101",
+      "model": "typesafe/jev-1.13-20260917",
+      "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+      "selected": {
+        "included": [
+          "EXP-090",
+          "KN-045",
+          "KN-052",
+          "KN-063",
+          "KN-101"
+        ],
+        "excluded": [
+          "EXP-055",
+          "KN-047"
+        ]
+      },
+      "required_present": [
+        "EXP-090",
+        "KN-045",
+        "KN-052"
+      ],
+      "required_missing": [],
+      "forbidden_selected": [
+        "KN-101"
+      ],
+      "recall": 0.8,
+      "precision": 0.8,
+      "score": 0.4,
+      "verdict": "fail",
+      "gate_pass": false,
+      "latency_ms": {
+        "total": 425402.15833400015,
+        "per_candidate": {
+          "KN-045": 60703.83145899996,
+          "KN-052": 60773.18316600008,
+          "KN-063": 60714.462750000166,
+          "KN-047": 60697.16170900006,
+          "KN-101": 60765.07704200003,
+          "EXP-090": 60922.15062499986,
+          "EXP-055": 60826.29158300006
+        }
+      },
+      "tokens": {
+        "input_total": 4425,
+        "output_total": 154
+      },
+      "cost_usd_total": 0.00018585,
+      "confidence": {
+        "per_candidate": {
+          "KN-045": 0.96,
+          "KN-052": 0.93,
+          "KN-063": 0.71,
+          "KN-047": 0.95,
+          "KN-101": 0.76,
+          "EXP-090": 0.92,
+          "EXP-055": 0.75
+        },
+        "mean": 0.8542857142857143
+      },
+      "raw_decisions": [
+        {
+          "candidate_id": "KN-045",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.960 -> include (confidence in verdict: 0.960)",
+          "confidence": 0.96,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60703.83145899996,
+          "input_tokens": 603,
+          "output_tokens": 22,
+          "cost_usd": 2.5326e-05,
+          "timestamp": "2026-09-20T09:12:45.160315+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.96
+              }
+            },
+            "usage": {
+              "input_tokens": 603,
+              "output_tokens": 22,
+              "cost": 2.5326e-05
+            },
+            "id": "gen-dec-1789895565-QBny3eudej1i8btIjhsW",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-052",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.930 -> include (confidence in verdict: 0.930)",
+          "confidence": 0.93,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60773.18316600008,
+          "input_tokens": 684,
+          "output_tokens": 22,
+          "cost_usd": 2.8728e-05,
+          "timestamp": "2026-09-20T09:13:45.933833+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.93
+              }
+            },
+            "usage": {
+              "input_tokens": 684,
+              "output_tokens": 22,
+              "cost": 2.8728e-05
+            },
+            "id": "gen-dec-1789895625-RLSNNBxvbMVaxnVDW5gY",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-063",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.710 -> include (confidence in verdict: 0.710)",
+          "confidence": 0.71,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60714.462750000166,
+          "input_tokens": 667,
+          "output_tokens": 22,
+          "cost_usd": 2.8014e-05,
+          "timestamp": "2026-09-20T09:14:46.648245+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.71
+              }
+            },
+            "usage": {
+              "input_tokens": 667,
+              "output_tokens": 22,
+              "cost": 2.8014e-05
+            },
+            "id": "gen-dec-1789895686-c4w7lgsbnGznjFjPwp5q",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-047",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "exclude",
+          "rationale": "Jev noul decision: P(include)=0.050 -> exclude (confidence in verdict: 0.950)",
+          "confidence": 0.95,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60697.16170900006,
+          "input_tokens": 646,
+          "output_tokens": 22,
+          "cost_usd": 2.7132e-05,
+          "timestamp": "2026-09-20T09:15:47.345366+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.05
+              }
+            },
+            "usage": {
+              "input_tokens": 646,
+              "output_tokens": 22,
+              "cost": 2.7132e-05
+            },
+            "id": "gen-dec-1789895747-LBkTaXsX9UhQmlgKVGWS",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-101",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.760 -> include (confidence in verdict: 0.760)",
+          "confidence": 0.76,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60765.07704200003,
+          "input_tokens": 696,
+          "output_tokens": 22,
+          "cost_usd": 2.9232e-05,
+          "timestamp": "2026-09-20T09:16:48.110344+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.76
+              }
+            },
+            "usage": {
+              "input_tokens": 696,
+              "output_tokens": 22,
+              "cost": 2.9232e-05
+            },
+            "id": "gen-dec-1789895807-Ip6Mbwkk7EgLul3G4H1Y",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "EXP-090",
+          "candidate_kind": "experience",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.920 -> include (confidence in verdict: 0.920)",
+          "confidence": 0.92,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60922.15062499986,
+          "input_tokens": 576,
+          "output_tokens": 22,
+          "cost_usd": 2.4192e-05,
+          "timestamp": "2026-09-20T09:17:49.032320+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.92
+              }
+            },
+            "usage": {
+              "input_tokens": 576,
+              "output_tokens": 22,
+              "cost": 2.4192e-05
+            },
+            "id": "gen-dec-1789895868-OlK6TAIhnbQ9sawMBZrr",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "EXP-055",
+          "candidate_kind": "experience",
+          "provider": "jev",
+          "verdict": "exclude",
+          "rationale": "Jev noul decision: P(include)=0.250 -> exclude (confidence in verdict: 0.750)",
+          "confidence": 0.75,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60826.29158300006,
+          "input_tokens": 553,
+          "output_tokens": 22,
+          "cost_usd": 2.3226e-05,
+          "timestamp": "2026-09-20T09:18:49.858487+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.25
+              }
+            },
+            "usage": {
+              "input_tokens": 553,
+              "output_tokens": 22,
+              "cost": 2.3226e-05
+            },
+            "id": "gen-dec-1789895929-kawM6Smcf4vDjnQBlSZk",
+            "provider": "TypeSafe"
+          }
+        }
+      ]
+    },
+    {
+      "timestamp": "2026-09-20T09:25:55.532276+00:00",
+      "provider": "jev",
+      "case_id": "BC-0101",
+      "model": "typesafe/jev-1.13-20260917",
+      "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+      "selected": {
+        "included": [
+          "EXP-090",
+          "KN-045",
+          "KN-052",
+          "KN-063",
+          "KN-101"
+        ],
+        "excluded": [
+          "EXP-055",
+          "KN-047"
+        ]
+      },
+      "required_present": [
+        "EXP-090",
+        "KN-045",
+        "KN-052"
+      ],
+      "required_missing": [],
+      "forbidden_selected": [
+        "KN-101"
+      ],
+      "recall": 0.8,
+      "precision": 0.8,
+      "score": 0.4,
+      "verdict": "fail",
+      "gate_pass": false,
+      "latency_ms": {
+        "total": 425673.11662399996,
+        "per_candidate": {
+          "KN-045": 60824.85804099997,
+          "KN-052": 60823.740166000105,
+          "KN-063": 60824.543708999954,
+          "KN-047": 60825.635333000035,
+          "KN-101": 60826.41708300002,
+          "EXP-090": 60806.27995800023,
+          "EXP-055": 60741.64233399961
+        }
+      },
+      "tokens": {
+        "input_total": 4425,
+        "output_total": 154
+      },
+      "cost_usd_total": 0.00018585,
+      "confidence": {
+        "per_candidate": {
+          "KN-045": 0.96,
+          "KN-052": 0.93,
+          "KN-063": 0.72,
+          "KN-047": 0.95,
+          "KN-101": 0.77,
+          "EXP-090": 0.91,
+          "EXP-055": 0.78
+        },
+        "mean": 0.86
+      },
+      "raw_decisions": [
+        {
+          "candidate_id": "KN-045",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.960 -> include (confidence in verdict: 0.960)",
+          "confidence": 0.96,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60824.85804099997,
+          "input_tokens": 603,
+          "output_tokens": 22,
+          "cost_usd": 2.5326e-05,
+          "timestamp": "2026-09-20T09:19:50.684438+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.96
+              }
+            },
+            "usage": {
+              "input_tokens": 603,
+              "output_tokens": 22,
+              "cost": 2.5326e-05
+            },
+            "id": "gen-dec-1789895990-8qHpTY025k7qXmU114ai",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-052",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.930 -> include (confidence in verdict: 0.930)",
+          "confidence": 0.93,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60823.740166000105,
+          "input_tokens": 684,
+          "output_tokens": 22,
+          "cost_usd": 2.8728e-05,
+          "timestamp": "2026-09-20T09:20:51.508107+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.93
+              }
+            },
+            "usage": {
+              "input_tokens": 684,
+              "output_tokens": 22,
+              "cost": 2.8728e-05
+            },
+            "id": "gen-dec-1789896051-E8XQtKOjCP8VIS9qgEDk",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-063",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.720 -> include (confidence in verdict: 0.720)",
+          "confidence": 0.72,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60824.543708999954,
+          "input_tokens": 667,
+          "output_tokens": 22,
+          "cost_usd": 2.8014e-05,
+          "timestamp": "2026-09-20T09:21:52.332604+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.72
+              }
+            },
+            "usage": {
+              "input_tokens": 667,
+              "output_tokens": 22,
+              "cost": 2.8014e-05
+            },
+            "id": "gen-dec-1789896112-PpmQ9OdIdqUlBUlbzySF",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-047",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "exclude",
+          "rationale": "Jev noul decision: P(include)=0.050 -> exclude (confidence in verdict: 0.950)",
+          "confidence": 0.95,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60825.635333000035,
+          "input_tokens": 646,
+          "output_tokens": 22,
+          "cost_usd": 2.7132e-05,
+          "timestamp": "2026-09-20T09:22:53.158188+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.05
+              }
+            },
+            "usage": {
+              "input_tokens": 646,
+              "output_tokens": 22,
+              "cost": 2.7132e-05
+            },
+            "id": "gen-dec-1789896172-4kAaklqxsgx8T29r8oTZ",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "KN-101",
+          "candidate_kind": "knowledge",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.770 -> include (confidence in verdict: 0.770)",
+          "confidence": 0.77,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60826.41708300002,
+          "input_tokens": 696,
+          "output_tokens": 22,
+          "cost_usd": 2.9232e-05,
+          "timestamp": "2026-09-20T09:23:53.984514+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.77
+              }
+            },
+            "usage": {
+              "input_tokens": 696,
+              "output_tokens": 22,
+              "cost": 2.9232e-05
+            },
+            "id": "gen-dec-1789896233-g4nokNNVtPanSConujJc",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "EXP-090",
+          "candidate_kind": "experience",
+          "provider": "jev",
+          "verdict": "include",
+          "rationale": "Jev noul decision: P(include)=0.910 -> include (confidence in verdict: 0.910)",
+          "confidence": 0.91,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60806.27995800023,
+          "input_tokens": 576,
+          "output_tokens": 22,
+          "cost_usd": 2.4192e-05,
+          "timestamp": "2026-09-20T09:24:54.790638+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.91
+              }
+            },
+            "usage": {
+              "input_tokens": 576,
+              "output_tokens": 22,
+              "cost": 2.4192e-05
+            },
+            "id": "gen-dec-1789896294-AoxJ5ocXaauSr2tWw93v",
+            "provider": "TypeSafe"
+          }
+        },
+        {
+          "candidate_id": "EXP-055",
+          "candidate_kind": "experience",
+          "provider": "jev",
+          "verdict": "exclude",
+          "rationale": "Jev noul decision: P(include)=0.220 -> exclude (confidence in verdict: 0.780)",
+          "confidence": 0.78,
+          "model": "typesafe/jev-1.13-20260917",
+          "prompt_version": "jev-gpt-openrouter-context-decision-v2",
+          "latency_ms": 60741.64233399961,
+          "input_tokens": 553,
+          "output_tokens": 22,
+          "cost_usd": 2.3226e-05,
+          "timestamp": "2026-09-20T09:25:55.532125+00:00",
+          "raw_output": {
+            "model": "typesafe/jev-1.13-20260917",
+            "answers": {
+              "include_in_context": {
+                "type": "noul",
+                "noul": 0.22
+              }
+            },
+            "usage": {
+              "input_tokens": 553,
+              "output_tokens": 22,
+              "cost": 2.3226e-05
+            },
+            "id": "gen-dec-1789896355-O2JPTulfgDSn10NHGyaJ",
+            "provider": "TypeSafe"
+          }
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "n_repeats": 5,
+    "score_mean": 0.4,
+    "score_stddev": 0.0,
+    "verdicts": [
+      "fail",
+      "fail",
+      "fail",
+      "fail",
+      "fail"
+    ],
+    "gate_pass_all": false
+  }
+}
