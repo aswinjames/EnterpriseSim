@@ -1,9 +1,52 @@
-# Jev vs. GPT context-decision experiment (BC-0101)
+# Jev vs. GPT context-decision experiment (BC-0101 and onward)
 
-**Status: completed.** Both providers have completed a 5-run live batch on this
-case. For the results, comparison table, and findings, see
-[`RESULTS.md`](RESULTS.md). This README covers the experiment's design and how to
-reproduce or extend it; it does not duplicate the results themselves.
+**Status: this directory now spans five completed live experiments** —
+BC-0101, BC-0102, X-RICH-1, X-RICH-2, and X-RICH-3 — run in that order as the
+research question sharpened. **For the full narrative (why each experiment
+exists, what changed between them, and what the evidence actually shows),
+start with [`RESEARCH_STATE.md`](RESEARCH_STATE.md).** This README covers only
+BC-0101's design and how to reproduce it; it predates BC-0102 and the X-RICH
+series and was not rewritten to describe them (see below for where each one is
+actually documented).
+
+For BC-0101 itself: both providers completed a 5-run live batch. For the
+results, comparison table, and findings, see [`RESULTS.md`](RESULTS.md).
+
+**BC-0102** reframes BC-0101's criterion from general relevance to
+task-specific necessity, on the same 7 candidates. Criterion: `providers/base.py::BC_0102`.
+Results: `results/gpt_bc0102_directopenai_20260920T154844Z.json` (GPT, 5/5),
+`results/jev_bc0102_20260920T111242Z.json` (Jev, 5/5). No standalone results
+doc exists for BC-0102 beyond `RESEARCH_STATE.md`'s summary — read the JSON
+files directly for full per-run detail.
+
+**X-RICH-1** — a richer, 15-candidate follow-up (same BC-0101 criterion,
+KN-101 now CONTESTED rather than a fixed `must_exclude`) — **has been run
+live, 5×5, for both providers.** See
+[`../EXPERIMENT_3_PROPOSAL.md`](../EXPERIMENT_3_PROPOSAL.md) for the design
+rationale (written before execution; see its status note for where results
+now live), `experiment_3_candidates.py` / `run_experiment_3.py` for the code,
+and `tests/test_experiment_3_candidates.py` for its offline test coverage.
+Results: `results/experiment3_jev_20260920T192733Z.json`,
+`results/experiment3_gpt_20260920T194326Z.json`.
+
+**X-RICH-2** adds the complete, unfiltered `enterprise/registry/applications.json`
+to every X-RICH-1 candidate decision, testing whether explicit
+application-dependency context changes selection (H1). Code:
+`enterprise_context.py`, `providers/enterprise_context_providers.py`,
+`run_experiment_x_rich_2.py`. Results: `results/xrich2_jev_20260921T015516Z.json`,
+`results/xrich2_gpt_20260921T015607Z.json`. GPT cost impact of the added
+registry: [`results/GPT_COST_RECONCILIATION.md`](results/GPT_COST_RECONCILIATION.md).
+
+**X-RICH-3** adds a hard cap of 5 selected candidates on top of X-RICH-1
+(pure post-hoc confidence-ranking over unchanged per-candidate decisions —
+no new prompt). Code: `run_experiment_x_rich_3.py`. Results:
+`results/xrich3_jev_20260921T031504Z.json` (5/5),
+`results/xrich3_gpt_20260921T031529Z.json` (5/5).
+
+BC-0101 and BC-0102 are unaffected by any of the X-RICH experiments — each is
+implemented in separate, additive files that never modify the frozen
+candidates, criteria, or historical result files described in the rest of
+this README.
 
 Compares two ways of making the BENCH-01 context-assembly decision for
 [`BC-0101`](../../benchmarks/examples/benchmark_case.example.json) (guest checkout,
@@ -27,6 +70,14 @@ pinned to a specific model:
 
 Both env-var names are literally the same one (`OPENROUTER_API_KEY`) — there is a
 single gateway key for both providers, not one key per model.
+
+**This table describes BC-0101 only.** Starting with BC-0102, `GPTProvider`
+moved to the direct OpenAI API (`OPENAI_API_KEY`, `providers/openai_direct.py`)
+after repeated OpenRouter credit/truncation failures — see "Known open items /
+history" below. `JevProvider` has used OpenRouter for every experiment in this
+directory, including X-RICH-1/2/3. So as of BC-0102 onward: Jev via
+OpenRouter, GPT via direct OpenAI — two different gateways, two different env
+vars, not one shared gateway.
 
 Both pinned slugs above are what's requested; the API echoes back a more specific,
 dated model identifier actually served, recorded per-decision in the result files.
@@ -116,6 +167,14 @@ OPENROUTER_API_KEY=... python3 -m research.jev_context_decision.run_experiment -
 OPENROUTER_API_KEY=... python3 -m research.jev_context_decision.run_experiment --provider jev --repeats 5 --live
 OPENROUTER_API_KEY=... python3 -m research.jev_context_decision.run_experiment --provider gpt --repeats 5 --live
 ```
+
+The commands above are exactly what produced BC-0101's `RESULTS.md` data and
+still work unchanged for BC-0101. For **BC-0102** (`--criterion bc-0102`) and
+every X-RICH experiment, `gpt` requires `OPENAI_API_KEY` instead (direct
+OpenAI API, not OpenRouter) — see the gateway note above and each
+experiment's own runner (`run_experiment.py --help`, `run_experiment_3.py`,
+`run_experiment_x_rich_2.py`, `run_experiment_x_rich_3.py`) for its exact
+invocation.
 
 Each 7-candidate repeat takes roughly 60s per candidate (sequential, ~7 minutes per
 repeat), so a 5-repeat batch takes on the order of 35 minutes per provider.
