@@ -287,7 +287,17 @@ context? Out of everything in this write-up, this is the experiment I'd
 point someone to first, because it's the one that actually changed how I
 think about the whole problem.
 
-I want to be precise about what I actually did here, because it's easy to
+```mermaid
+flowchart TD
+    C[15 candidates] --> D["Independent model decisions<br/>(include / exclude + confidence)"]
+    D --> R[Confidence ranking]
+    R --> T["Top 5 only<br/>(the context budget)"]
+    T --> S["What gets sacrificed?"]
+```
+
+Before this experiment, the question every candidate faced was "should this
+be included?" Under the budget, it became "which five deserve to survive?"
+— and I want to be precise about what I actually did here, because it's easy to
 misread. I didn't change the prompt or the criterion, and I never told
 either model a budget existed. Each model made the exact same kind of
 independent include/exclude decision, with a confidence score, for all 15
@@ -545,6 +555,28 @@ GPT's cost, tracked on its own across three experiments.
 - Is Jev's decision-generation speed/cost profile enough on its own to
   justify using it for large-scale synthetic-label generation, or does that
   need independent validation of decision quality first?
+
+## How this keeps going
+
+Guest checkout won't be the only use case. The loop I actually followed
+across these five experiments is the same one I'd use for the next one:
+
+```mermaid
+flowchart TD
+    S[Scenario] --> H[Hypothesis]
+    H --> RW[Run AI Worker]
+    RW --> CD[Capture decisions]
+    CD --> EV[Evaluate]
+    EV --> IR[Inspect results]
+    IR --> L[Learn something]
+    L --> DN[Design next experiment]
+    DN --> S
+```
+
+Each experiment here started because the last one left a specific,
+answerable question open — not because I had a fixed five-experiment plan
+from the start. I expect the next EnterpriseSim use case to work the same
+way.
 
 ## Reproducibility
 

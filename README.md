@@ -64,6 +64,96 @@ just under the pass bar: your baseline to beat. See [`examples/quickstart/`](exa
 
 ---
 
+## Can a Worker make the right decisions, not just a good answer?
+
+Most LLM evaluation asks whether the final output was good. I wanted to ask an earlier
+question: does the Worker make the right decisions *along the way* — what information it
+uses, what it ignores, what it does next, what it keeps when it can't keep everything? That's
+what the research under [`research/jev_context_decision/`](research/jev_context_decision/) is
+for — the first of what I intend to be a growing set of concrete, simulated enterprise use
+cases built on EnterpriseSim, not the only thing this repo is for.
+
+```mermaid
+flowchart TD
+    A[Enterprise scenario] --> B[Task + context + constraints]
+    B --> C[AI Worker]
+    C --> D[Decisions]
+    D --> E[Evaluation]
+    E --> F[Evidence / results]
+```
+
+You define a scenario, a task, the enterprise context around it, the constraints, and the
+decisions you want to evaluate. You run a Worker through it. You measure what it actually
+did. Inside one task, the Worker isn't reading a single document — it's sitting in the
+middle of an interconnected enterprise:
+
+```mermaid
+flowchart TD
+    ES[EnterpriseSim] --> APP["Applications<br/>Checkout / Payments / Loyalty"]
+    ES --> KN["Knowledge<br/>Policies / Standards / Rules"]
+    ES --> EXP["Experience<br/>Incidents / Lessons / Operations"]
+    APP --> W[AI Worker]
+    KN --> W
+    EXP --> W
+    W --> D[Decision]
+```
+
+One of the models I'm experimenting with here is **JEV** (`typesafe/jev-1.13`), a
+decision-oriented model built around structured decisions and a confidence score instead of
+free-form generated text. Give it an enterprise state and a structured decision question, and
+it hands back a decision and a confidence — something repeatable, comparable, scoreable. I'm
+not claiming JEV is a better model or a better judge than GPT; the research is explicit that
+neither is established. It just gave me a second, differently-built way to ask "did the
+Worker make the right call," next to GPT.
+
+```mermaid
+flowchart TD
+    ES[EnterpriseSim testbed] --> JEV["JEV<br/>structured decision + confidence"]
+    ES --> GPT["GPT<br/>free-form response, parsed"]
+    JEV --> EV[Evaluation]
+    GPT --> EV
+    EV --> R[Experiment results]
+```
+
+### The first use case: guest checkout
+
+Picture a Worker responsible for placing a guest checkout order. It potentially has access
+to checkout rules, an order-idempotency standard, loyalty policy, pricing rules, payment
+behavior, application dependencies, past incidents, and general operational experience. It
+can't carry all of that into every decision.
+
+```mermaid
+flowchart TD
+    T[Guest checkout task] --> INFO["Enterprise information:<br/>checkout rules, idempotency, loyalty,<br/>pricing, payments, incidents, app dependencies"]
+    INFO --> TOO[Too much to keep all of it]
+    TOO --> Q["What should the Worker keep?"]
+    Q --> WC[Working context]
+```
+
+The problem isn't access. It's selection. That turned into five controlled experiments,
+each changing one thing at a time:
+
+```mermaid
+flowchart TD
+    E1["Relevance<br/>Is relevant information enough?"] --> E2["Necessity<br/>Is it actually needed?"]
+    E2 --> E3["Richer enterprise context<br/>What changes as relationships get richer?"]
+    E3 --> E4["Explicit enterprise structure<br/>Does the application graph change decisions?"]
+    E4 --> E5["Context scarcity<br/>What happens when the Worker can't keep everything?"]
+```
+
+Internally these are tracked as `BC-0101`, `BC-0102`, `X-RICH-1`, `X-RICH-2`, and `X-RICH-3`
+— reproducible IDs, not the story. The full write-up, with real numbers and real caveats, is
+in [`research/jev_context_decision/RESEARCH_STATE.md`](research/jev_context_decision/RESEARCH_STATE.md).
+
+**What's actually in there:** simulated enterprise scenarios and candidate context, explicit
+decision criteria for each experiment, model/provider integrations for Jev and GPT, runnable
+experiment code, evaluation and scoring, raw results for every run, an offline test suite
+(129 tests, no network calls), and the full research narrative with its findings and open
+questions. It's a testbed that's growing through concrete use cases, not a finished
+enterprise simulator — guest checkout and context assembly are the first one.
+
+---
+
 ## The problem it solves
 
 A stateless LLM knows *generic* software engineering. An **Enterprise AI Worker** is that
