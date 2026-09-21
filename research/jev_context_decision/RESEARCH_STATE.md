@@ -7,6 +7,48 @@ directly from a result file, a reconciled cost document, or test output
 already in this repository; nothing here is estimated or invented. For full
 per-run detail, the underlying JSON files are in `results/`.
 
+## The business use case and problem, in two sentences
+
+**Use case:** an AI Worker is implementing guest checkout order placement
+(task `CHK-1421`) for the Checkout Service (`APP-003`) — a customer who
+isn't logged in completing an order. **Problem:** the Worker has access to a
+large pile of enterprise knowledge that's potentially relevant, and it needs
+to decide which pieces actually belong in its working context for this one
+task, not just which pieces are on-topic. Everything below is five different
+ways of testing that decision.
+
+## Quick reference — the IDs you'll see below
+
+Before I get into what actually happened, a short cast-of-characters. I
+named things as I built them, the way you name things when you're the only
+one who has to remember what they mean — so a few of these IDs will come up
+again and again below, and I'd rather explain them once here than make you
+stop and guess every time one shows up in the story.
+
+- **`BC-0101` / `BC-0102`** — "Benchmark Case" 101 and 102, my names for the
+  first two experiments. Same 7 candidate artifacts in both; the number just
+  tracks which decision criterion I used (101 = relevance, 102 = necessity).
+- **`X-RICH-1` / `X-RICH-2` / `X-RICH-3`** — my names for the three
+  follow-up experiments (a richer 15-candidate environment, then explicit
+  enterprise structure, then a hard context budget). Each builds on
+  `X-RICH-1`, not on each other.
+- **`KN-xxx`** — an ID for one article in the enterprise knowledge base
+  (e.g. `KN-101` is knowledge-base entry 101). It's a candidate artifact a
+  Worker could pull into its context.
+- **`EXP-xxx`** — an ID for one entry in the experience/incident corpus (a
+  past postmortem, lesson, or operational record), same idea as `KN-xxx`
+  but drawn from a different corpus.
+- **`APP-xxx`** — an ID in the enterprise application registry. `APP-003` is
+  the Checkout Service, the app this whole task belongs to. `APP-007` is the
+  Pricing Service, which matters later.
+- **`MUST_INCLUDE` / `ACCEPTABLE_OPTIONAL` / `RELATED_BUT_UNNECESSARY` /
+  `MUST_EXCLUDE` / `UNRESOLVABLE` / `CONTESTED`** — the six labels I used to
+  classify each candidate artifact for scoring: the task needs it / it helps
+  but isn't required / it's genuinely about the same domain but not needed
+  for this task / it's clearly wrong / there's no real content to judge / or
+  it's genuinely ambiguous (this last one only ever applied to one artifact,
+  `KN-101` — see below).
+
 ## Why I built EnterpriseSim
 
 EnterpriseSim exists to simulate enterprise situations and see how an AI
@@ -217,61 +259,93 @@ doesn't tell me whether the same thing happens on a different task.
 
 ## Experiment 5 — Take context away (`X-RICH-3`)
 
-This is the one that actually changed how I think about the whole problem,
-and it came from a simple provocation: what if, instead of adding richness,
-I take context away? `X-RICH-1` has 15 candidates. What if the Worker only
-gets 5 slots?
+Every experiment up to this point had been about giving the Worker *more* —
+more candidates, then more context about those candidates. At some point I
+started wondering the opposite thing: what if, instead of giving it more to
+work with, I gave it less room to work in? `X-RICH-1` has 15 candidates
+worth judging. What happens if the Worker only gets 5 slots in its final
+context? Out of everything in this write-up, this is the experiment I'd
+point someone to first, because it's the one that actually changed how I
+think about the whole problem.
 
-That's a different kind of problem. Up to this point, every decision was
-"should this one thing be in or out," judged independently. Once there's a
-hard budget smaller than the number of things worth including, the question
-changes shape — it's not "should this be included" anymore, it's "which five
-deserve to survive."
+I want to be precise about what I actually did here, because it's easy to
+misread. I didn't change the prompt or the criterion, and I never told
+either model a budget existed. Each model made the exact same kind of
+independent include/exclude decision, with a confidence score, for all 15
+candidates, exactly as it had in `X-RICH-1`. Only after that did my own
+aggregation code step in — it took every "include" verdict, ranked them by
+the model's own stated confidence, and mechanically kept the top 5,
+dropping the rest regardless of what the model originally said. So the
+models didn't "handle" a five-item budget in any real sense. There was no
+budget in anything they saw. I imposed the cut afterward, in code, on top
+of decisions they'd already made on their own.
 
-To be precise about the mechanics, because this matters: I didn't change the
-prompt or the criterion, and the models were never told a budget existed.
-Each model still produced its normal, independent include/exclude decision
-with a confidence value for all 15 candidates, exactly as in `X-RICH-1`. My
-own aggregation code then ranked every "include" verdict by the model's own
-stated confidence and mechanically kept the top 5. The models didn't choose
-to respect a five-item budget — there was no budget in their prompt to
-respect. The budget was imposed after the fact, by my code, on top of
-decisions they'd already made independently.
+What came out of that was interesting. Jev put the exact same 5 candidates
+on top in all 5 runs — all 3 required items, `KN-101`, and exactly one
+related-but-unnecessary candidate, every single time. Recall dropped from
+0.8 to 0.6, precision rose from 0.571 to 0.75, the score moved from 0.683 to
+0.667. Zero variance across the five repeats — it made the same call every
+time, down to the artifact. GPT's picture was messier. Its selected top five
+varied from run to run, and while it kept all three required items in 3 of
+the 5 runs, in the other 2 a required artifact fell below the cut line — the
+loyalty-account rule in one run, the domain-rules artifact in the other —
+which failed the required-item gate outright both times. Averaged across
+all 5 runs: recall 0.6, precision 0.66, required-item retention 0.8667, mean
+score 0.5248.
 
-Jev's ranking put the same 5 candidates on top in all 5 runs: all 3 required
-items, `KN-101`, and exactly one related-but-unnecessary candidate. Recall
-dropped from 0.8 to 0.6, precision rose from 0.571 to 0.75, score moved from
-0.683 to 0.667. Zero variance across repeats.
+I want to be careful about what that means and doesn't mean. I'm not saying
+Jev is better than GPT — a five-run, one-task, one-budget-size experiment
+can't tell you that. What I can say is narrower and, I think, actually more
+useful: under this specific task, candidate set, and five-artifact budget,
+Jev's confidence ranking held steady across repeats, and GPT's displaced a
+required artifact in 2 of 5 runs. That's an observation about how one
+ranking mechanism behaved on one task, not a verdict on either model, and I
+wouldn't generalize it to a different budget or a bigger sample without
+actually running that experiment.
 
-GPT's selected top five varied across runs. It retained all three required
-items in 3 of the 5 runs; in the other 2, a required artifact fell below the
-cut line — the loyalty-account rule in one run, the domain-rules artifact in
-the other — which tripped the required-item gate and produced a fail verdict
-both times. Averaged across all 5 runs: recall 0.6, precision 0.66,
-required-item retention 0.8667, mean score 0.5248.
+Here's the part I keep coming back to, though. Every experiment before this
+one was answering "should this one thing be included," one candidate at a
+time, with enough room that everyone who deserved a "yes" could get one.
+The moment you cap the number of slots below the number of things worth
+including, that question stops making sense on its own — the real question
+becomes which of these deserve to survive, given that not all of them can.
+That's a harder question, and it's the one that finally exposed a real
+difference between the two models: not whether they could tell a good
+artifact from a bad one — both already could, in every earlier experiment —
+but whether they protected the *right* things when something had to be
+sacrificed. Jev did, the same way, five times in a row. GPT didn't, twice.
 
-I'm not going to say Jev is better than GPT here — that's not what this
-measures. What I can say, narrower and more useful: under this specific
-task, this specific candidate set, and this specific five-artifact budget,
-Jev's confidence ranking was stable across repeats, while GPT's displaced a
-required artifact in 2 of 5 runs.
+I don't want to oversell a five-run experiment on one task, but this is
+where the idea that had been forming across the whole project actually
+became visible in the numbers instead of staying a hunch: context assembly
+is starting to look less like classification — in or out? — and more like
+resource allocation under uncertainty — given a limited budget and
+incomplete certainty about what's necessary, what actually survives?
 
-Here's the idea that actually came out of running this: when context is
-plentiful, selection can look like classification — is this thing in the
-"yes" bucket or the "no" bucket. When context becomes scarce, selection
-turns into prioritization — the system has to decide what to sacrifice, and
-that decision exposes the ranking policy that was sitting underneath the
-classifier the whole time, just never visible before, because there was
-always room for everything. The question stops being "did the Worker
-include the right things" and becomes "did the Worker protect the things it
-couldn't afford to lose." Jev answered that the same way every time. GPT
-answered it differently each time, and twice, what it gave up was something
-it shouldn't have.
+## All five experiments, side by side
 
-Context assembly is starting to look like resource allocation under
-uncertainty, not just classification. I don't want to overstate that — five
-runs on one task with one budget size is a pattern, not a law — but it's the
-direction every one of these five experiments pushed me toward.
+Before I get into what I took away from all of this, here's the whole
+progression in one place — the numbers and what they actually cost to
+produce, since I don't think you can look at one without the other.
+
+| Experiment | Candidates | Jev score | Jev recall / precision | GPT score (mean) | GPT recall / precision (mean) | Cost per repeat |
+|---|---|---|---|---|---|---|
+| `BC-0101` | 7 | 0.400 | 0.800 / 0.800 | 0.400 | 0.800 / 0.800 | Jev ≈$0.000186 · GPT ≈$0.001877 (both API-reported, OpenRouter) |
+| `BC-0102` | 7 (same) | 0.5848 | 0.600 / 0.900 | 0.3868 | 0.720 / 0.780 | GPT ≈$0.00234 (reconciled); Jev not captured |
+| `X-RICH-1` | 15 | 0.683 | 0.800 / 0.571 | 0.6794 | 0.800 / 0.5568 | GPT ≈$0.00399 (reconciled); Jev not captured |
+| `X-RICH-2` | 15 (same) | 0.683 | 0.800 / 0.571 | 0.6594 | 0.800 / 0.4776 | GPT ≈$0.00650 (reconciled); Jev not captured |
+| `X-RICH-3` | 15, capped at 5 | 0.667 | 0.600 / 0.750 | 0.5248 | 0.600 / 0.660 | not reconciled for either provider yet |
+
+A couple of things worth reading directly off this table rather than out of
+my summary of it: Jev's score never moves except in the two experiments that
+actually changed something about what it was being asked (`BC-0102`'s
+necessity criterion, and `X-RICH-3`'s budget) — `X-RICH-1` and `X-RICH-2`
+give it the identical 0.683, because nothing relevant to Jev's decision
+changed between them. GPT's numbers move more, and move differently, in
+almost every experiment. And the cost column is there specifically so
+nobody reads "165,790 input tokens" in the `X-RICH-2` cost breakdown further
+down and assumes that means an 8×+ cost jump — it didn't, and I explain why
+in the cost section below.
 
 ## `KN-101` — the full picture
 
