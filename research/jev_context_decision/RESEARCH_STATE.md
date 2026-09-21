@@ -1,11 +1,5 @@
 # EnterpriseSim Research: What Should an AI Worker Remember?
 
-**What this document is.** This is the canonical write-up of the context-assembly
-research in `research/jev_context_decision/` — why I built it, what I tested,
-what happened, and what I still don't know. Every number below is read
-directly from a result file, a reconciled cost document, or test output
-already in this repository; nothing here is estimated or invented. For full
-per-run detail, the underlying JSON files are in `results/`.
 
 ## The business use case and problem, in two sentences
 
