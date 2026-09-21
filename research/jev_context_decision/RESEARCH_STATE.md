@@ -183,6 +183,16 @@ benchmark.
 
 ## Experiment 2 — What does "necessary" mean? (`BC-0102`)
 
+Experiment 1 left me with a specific, nagging question, not just a general
+one. Both models included `KN-101` under a plain relevance test — is this
+on-topic? — and its content genuinely is on-topic, it's about pricing during
+checkout. But on-topic isn't the same thing as required. I'd only ever asked
+the relevance version of the question. If `KN-101` is the kind of thing a
+model finds relevant without it actually being necessary to place the order
+correctly, then asking about necessity instead should catch that, and
+asking about relevance never could. That was the whole point of this
+experiment.
+
 Same 7 candidates. I changed only the question, from relevance to
 task-specific necessity: *"Is this artifact necessary to correctly perform
 this specific task? Include it only if omitting it would materially reduce
@@ -201,6 +211,16 @@ distinction is real enough to matter and isn't something either model was
 already applying by default.
 
 ## Experiment 3 — A richer enterprise (`X-RICH-1`)
+
+Two experiments in, and both had run on the exact same 7 candidates.
+Changing one word in the question was already enough to move the outcome
+for one model and not the other — which told me the criterion mattered, but
+it also made me suspicious of the setup itself. Seven candidates is small
+enough that a model could plausibly get the right answer by something close
+to memorization, and it's nothing like a real enterprise knowledge base,
+where the thing you're looking for is surrounded by dozens of other things
+that are also genuinely about the same area. I wanted to know if the
+pattern from the first two experiments held up once that stopped being true.
 
 The 7-candidate pool started to feel too clean. Real knowledge bases aren't
 7 tidy documents, they're hundreds of interconnected ones, most genuinely
@@ -234,8 +254,13 @@ one.
 
 ## Experiment 4 — Give the Worker the enterprise graph (`X-RICH-2`)
 
-Narrower question: if you hand the model the actual structural information —
-which apps depend on which — does that change anything? Everything about
+`X-RICH-1` still hadn't touched something that had been sitting there since
+Experiment 1: `KN-101`'s owning app has a real, declared dependency on
+Checkout, and the model was never told that directly — it could only have
+inferred anything dependency-shaped from the artifact's own text, if it
+noticed at all. That felt like an obvious gap to close. So: narrower
+question, does handing the model the actual structural information — which
+apps depend on which — change anything? Everything about
 `X-RICH-1` stayed fixed: same 15 candidates, same order, same candidate
 bodies, same criterion, same TaskScope, same scorer, same providers. The only
 addition was the complete, unfiltered application-dependency registry,
@@ -328,13 +353,19 @@ Before I get into what I took away from all of this, here's the whole
 progression in one place — the numbers and what they actually cost to
 produce, since I don't think you can look at one without the other.
 
-| Experiment | Candidates | Jev score | Jev recall / precision | GPT score (mean) | GPT recall / precision (mean) | Cost per repeat |
-|---|---|---|---|---|---|---|
-| `BC-0101` | 7 | 0.400 | 0.800 / 0.800 | 0.400 | 0.800 / 0.800 | Jev ≈$0.000186 · GPT ≈$0.001877 (both API-reported, OpenRouter) |
-| `BC-0102` | 7 (same) | 0.5848 | 0.600 / 0.900 | 0.3868 | 0.720 / 0.780 | GPT ≈$0.00234 (reconciled); Jev not captured |
-| `X-RICH-1` | 15 | 0.683 | 0.800 / 0.571 | 0.6794 | 0.800 / 0.5568 | GPT ≈$0.00399 (reconciled); Jev not captured |
-| `X-RICH-2` | 15 (same) | 0.683 | 0.800 / 0.571 | 0.6594 | 0.800 / 0.4776 | GPT ≈$0.00650 (reconciled); Jev not captured |
-| `X-RICH-3` | 15, capped at 5 | 0.667 | 0.600 / 0.750 | 0.5248 | 0.600 / 0.660 | not reconciled for either provider yet |
+| Experiment | Candidates | Jev score | Jev recall / precision | Jev cost / repeat | GPT score (mean) | GPT recall / precision (mean) | GPT cost / repeat |
+|---|---|---|---|---|---|---|---|
+| `BC-0101` | 7 | 0.400 | 0.800 / 0.800 | $0.000186 (API-reported) | 0.400 | 0.800 / 0.800 | $0.001877 (API-reported) |
+| `BC-0102` | 7 (same) | 0.5848 | 0.600 / 0.900 | not captured | 0.3868 | 0.720 / 0.780 | $0.00234 (reconciled) |
+| `X-RICH-1` | 15 | 0.683 | 0.800 / 0.571 | not captured | 0.6794 | 0.800 / 0.5568 | $0.00399 (reconciled) |
+| `X-RICH-2` | 15 (same) | 0.683 | 0.800 / 0.571 | not captured | 0.6594 | 0.800 / 0.4776 | $0.00650 (reconciled) |
+| `X-RICH-3` | 15, capped at 5 | 0.667 | 0.600 / 0.750 | not reconciled yet | 0.5248 | 0.600 / 0.660 | not reconciled yet |
+
+Only the `BC-0101` row is a fair Jev-vs-GPT cost comparison — same
+transport, same provider-reported numbers on both sides. Every row below it
+has a GPT figure and no matching Jev figure, for the reason explained in the
+cost section further down: the transport split after `BC-0101`, and I never
+went back and captured Jev's cost again on comparable terms.
 
 A couple of things worth reading directly off this table rather than out of
 my summary of it: Jev's score never moves except in the two experiments that
@@ -346,6 +377,29 @@ almost every experiment. And the cost column is there specifically so
 nobody reads "165,790 input tokens" in the `X-RICH-2` cost breakdown further
 down and assumes that means an 8×+ cost jump — it didn't, and I explain why
 in the cost section below.
+
+It's also worth saying out loud how the context itself grew and shrank
+across these five experiments, because the table above shows the effect of
+that but not the shape of it. `BC-0101` and `BC-0102` both worked from the
+same 7 candidates. `X-RICH-1` more than doubled that to 15, pulled from the
+same underlying corpus. `X-RICH-2` kept those same 15 candidates and added
+one more thing on top: the complete application-dependency registry, handed
+to the model as extra structural context on every single decision. Then
+`X-RICH-3` reversed direction entirely — same 15 candidates, but a hard cap
+of 5 slots in the final context.
+
+I went in expecting that adding more context would generally help, or at
+worst do nothing. That's not quite what happened. Growing the candidate
+pool from 7 to 15 didn't change how either model handled the original
+7 — both still caught the required items and the truly forbidden ones.
+Adding the registry on top of that left Jev completely unchanged and made
+GPT's precision measurably worse, not better. The only experiment where
+precision clearly *improved* for both models was `X-RICH-3` — the one where
+I took context away. So if there's a lesson in the shape of this progression,
+it's not "more context, better results." It's closer to: more context gave
+the models more to potentially get wrong, and it was the constraint, not the
+addition, that produced the cleanest improvement in precision — at the cost
+of recall, which is its own trade-off, not a free win.
 
 ## `KN-101` — the full picture
 
@@ -401,8 +455,7 @@ actually gave me:
 - A structured decision interface — a typed question with an attached
   probability — instead of free-form text I then have to parse.
 - Fast, cheap repeated decisions at the volume this kind of research needs.
-  In `BC-0101`, its measured cost per run was roughly a hundred times lower
-  than GPT's.
+  In `BC-0101`, its measured cost per run was about 10× lower than GPT's.
 - A second, independently-built reasoning path on the same question, which
   is how I noticed the `BC-0102` divergence and the `X-RICH-3` stability
   difference in the first place. Two systems agreeing tells you something.
@@ -418,10 +471,25 @@ anything — no experiment here tests label quality or trains a policy.
 
 ## What context actually costs
 
-All GPT figures below are reconciled real costs from OpenAI's own usage
-exports, matched by exact request count against each experiment's result
-files — not the API's reported cost, which doesn't exist for the direct-API
-transport used from `BC-0102` on. Full provenance:
+The one place I can put Jev and GPT's cost directly next to each other and
+call it a fair comparison is `BC-0101` — the only experiment where both
+providers ran through the same gateway (OpenRouter) and the API itself
+handed back a cost figure for both, with nothing reconstructed:
+
+| Provider | Cost per 7-candidate run (`BC-0101`, API-reported) |
+|---|---|
+| Jev | $0.0001859 |
+| GPT | $0.0018767 |
+
+GPT cost about 10× what Jev did, on the same task, same transport, same
+number of calls. I want to flag that this is the *only* apples-to-apples
+cost comparison in the whole project — every experiment from `BC-0102`
+onward moved GPT to the direct OpenAI API (OpenRouter kept truncating GPT's
+responses and burning credit before a batch finished), and I never captured
+Jev's cost again after `BC-0101`. So everything below this point is GPT-only
+cost data, reconciled from OpenAI's own usage exports rather than read off
+the API response, because the direct API doesn't return a cost field the
+way OpenRouter did. Full provenance:
 [`GPT_COST_RECONCILIATION.md`](results/GPT_COST_RECONCILIATION.md).
 
 | | BC-0102 (5×5 + validation) | X-RICH-1 (5×5) | X-RICH-2 (5×5) |
@@ -438,13 +506,15 @@ because roughly 71% of that added volume was identical repeated content,
 billed at OpenAI's cached rate. Token growth isn't the same as cost growth
 when the added content doesn't change between calls.
 
-I don't have a reconciled cost figure for `X-RICH-3` yet, and I'm not
-reporting a complete cross-experiment Jev cost comparison — `BC-0101` is the
-only experiment where Jev's cost was captured directly rather than
-reconstructed. Jev/GPT cost and latency aren't a fair capability comparison
-anywhere in this project, because the transport and accounting path
-differed between them (OpenRouter for both in `BC-0101`; Jev on OpenRouter
-and GPT on direct OpenAI from `BC-0102` on).
+I don't have a reconciled cost figure for `X-RICH-3` yet for either
+provider. And I want to say plainly what the two tables above actually let
+you conclude and what they don't: the `BC-0101` comparison is real and fair,
+and it says GPT cost about 10× more than Jev for that one task. It does not
+tell you anything about `BC-0102` onward, because the transport changed —
+Jev stayed on OpenRouter, GPT moved to direct OpenAI, and I never
+reconstructed Jev's cost on the same terms as GPT's reconciled figures. So
+past `BC-0101`, there's no fair Jev-vs-GPT cost number in this project — only
+GPT's cost, tracked on its own across three experiments.
 
 ## What I still don't know
 
