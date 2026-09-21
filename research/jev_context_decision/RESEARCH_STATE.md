@@ -1,281 +1,356 @@
-# Research State: Context Assembly as a Selection Problem
+# EnterpriseSim Research: What Should an AI Worker Remember?
 
-**What this document is.** The single, canonical summary of what this research
-has actually done and actually found, as of X-RICH-3. It is not the blog post
-— it is the source of truth a blog post would be written from. Every number
-here is read from a result file or reconciled cost document already in this
-repository; nothing here is estimated or invented. Where evidence is thin,
-that is stated explicitly rather than smoothed over.
+**What this document is.** This is the canonical write-up of the context-assembly
+research in `research/jev_context_decision/` — why I built it, what I tested,
+what happened, and what I still don't know. Every number below is read
+directly from a result file, a reconciled cost document, or test output
+already in this repository; nothing here is estimated or invented. For full
+per-run detail, the underlying JSON files are in `results/`.
 
-This document does not replace the per-experiment documents (`RESULTS.md` for
-BC-0101, `../EXPERIMENT_3_PROPOSAL.md` for X-RICH-1's design,
-`GPT_COST_RECONCILIATION.md` for cost detail) — it summarizes and links to
-them. For full per-run detail, read the underlying JSON files in `results/`.
+## Why I built EnterpriseSim
 
-## 1. Business problem
+EnterpriseSim exists to simulate enterprise situations and see how an AI
+Worker actually behaves inside them. This is the first of a set of use cases
+I intend to build out and publish — the checkout scenario below is one
+concrete exercise, not a claim that I've modeled an entire real enterprise.
 
-An enterprise AI Worker can potentially access a very large amount of
-organizational knowledge — knowledge base articles, past incident write-ups,
-prior experience records, application metadata, dependency graphs. As that
-pool grows, the problem is not "does the Worker have access to enough
-information" but **deciding what information actually deserves a place in the
-Worker's working context for one specific task.** Every additional artifact in
-context costs tokens, costs latency, and risks distracting the model with
-content that is topically related but not actually necessary to do the task
-correctly.
+What I wanted was a controlled environment where I could define a scenario,
+define the candidate information or actions available to an agent, ask it to
+make a decision, repeat that decision, inspect exactly what happened, and
+score it. That loop — define, decide, repeat, inspect, evaluate — is the
+whole point of the project. It's open-source, it's a testbed, and it doesn't
+solve context assembly by existing. It just gives me somewhere to ask the
+question and get an actual answer back instead of an opinion.
 
-## 2. Technical problem
+## The problem I was actually trying to test
 
-Restated precisely: **context assembly is a selection/prioritization problem,
-not a retrieval-completeness problem.** Given a task and a pool of candidate
-artifacts, a context-assembly system must decide, per candidate, whether it
-belongs in the Worker's working context — and, when the pool or the budget
-changes, whether that decision is driven by genuine task-specific necessity or
-by something weaker (topical relevance, structural/dependency proximity,
-"this seems related").
+An AI Worker doing real enterprise work can potentially reach a huge amount
+of internal knowledge — checkout rules, payment rules, loyalty behavior,
+pricing policy, past incidents, application dependencies, operational
+runbooks. The question I kept running into, phrased a dozen different ways by
+different people, was: how does the Worker decide what actually deserves a
+place in its working context for one specific task?
 
-## 3. EnterpriseSim
+My first instinct was to treat this as a retrieval problem — find the
+relevant stuff, rank it, done. But once a system can technically retrieve
+almost anything connected to a task, retrieval isn't the bottleneck anymore.
+Deciding what to keep is. Context assembly isn't retrieval. It's a selection
+and prioritization problem.
 
-EnterpriseSim (this repository) provides a synthetic-but-realistic enterprise
-substrate for testing that problem: real interconnected knowledge base
-entries, experience records, and an application-dependency registry
-(`enterprise/registry/applications.json`, 12 applications with declared
-dependency edges), plus a benchmark harness (`score()` in
-`examples/quickstart/run_quickstart.py`) that grades a selected context set
-against a fixed ground truth (`must_include` / `acceptable_optional` /
-`must_exclude`) for a specific benchmark case. `research/jev_context_decision/`
-uses this substrate to compare how two different models — Jev and GPT — make
-per-candidate include/exclude decisions for one fixed task, across a
-progression of experiments that each change exactly one variable.
+Take a concrete case: a Worker is responsible for placing a guest checkout
+order. It has access to checkout domain rules, an idempotency standard, a
+rule about loyalty accounts, pricing/promo policy, past incident writeups,
+application dependency data, and a pile of other enterprise documentation.
+It can't carry all of it into every decision. Some of that material is
+essential, some is useful but optional, some is genuinely related to
+checkout but not necessary for this task, some is irrelevant, some doesn't
+even resolve to real content, and — as I found out — at least one artifact
+is just genuinely ambiguous. So the question becomes: how do I measure
+whether the Worker is making the right call, artifact by artifact?
 
-The task under study throughout is `CHK-1421` (guest checkout order
-placement, `APP-003`), from benchmark case `BC-0101`. Every experiment below
-reuses this same task.
+## Why I started experimenting with Jev
 
-## 4. Experiment progression
+A lot of agent evaluation eventually comes down to judging a decision, not
+generating a final answer: should this artifact be included, is this
+information necessary, which tool should the agent use, should it take this
+action, what should it keep when it can't keep everything. That's a
+different kind of question than "write me the answer," and I wanted to know
+whether a structured, decision-oriented model would be useful for evaluating
+that kind of agent behavior — as opposed to using a general-purpose model and
+parsing free text out of it.
+
+That's the actual reason Jev (`typesafe/jev-1.13`) shows up throughout this
+research, next to GPT (`openai/gpt-5-mini`). I'm not claiming Jev is a better
+model, a better judge, or that its decisions are ready to use as training
+labels — none of that is established here. What I can say, and what the
+experiments below actually support, is narrower: Jev gave me a structured
+decision interface that was fast and cheap enough to make repeated
+experimentation practical, and a second, independently-built reasoning path
+to compare against GPT's.
+
+## Turning it into an experiment
+
+EnterpriseSim gives me the substrate for this: real interconnected knowledge
+base entries, incident writeups, experience records, and an
+application-dependency registry (`enterprise/registry/applications.json`),
+plus a benchmark harness (`score()`) that grades a selected context set
+against a fixed ground truth. The loop is:
+
+```
+Task
+  ↓
+Candidate enterprise artifacts
+  ↓
+Context-selection decisions (include / exclude, per candidate)
+  ↓
+Working context (the selected set)
+  ↓
+Evaluation (recall, precision, required-item gate, objective score)
+```
+
+The task under study throughout is `CHK-1421`: guest checkout order
+placement, on the Checkout Service (`APP-003`). Everything below is the same
+task, run through five experiments that each changed exactly one thing.
 
 | Experiment | Candidates | Criterion | What changed | Status |
 |---|---|---|---|---|
 | BC-0101 | 7 | Relevance ("should this be included?") | Baseline | Complete, 5×5 |
 | BC-0102 | Same 7 | Necessity ("is this necessary to correctly perform this task?") | Criterion wording only | Complete, 5×5 |
-| X-RICH-1 | 15 (7 + 8 new) | BC-0101's criterion, reused by identity | Candidate pool enriched; KN-101 reclassified CONTESTED | Complete, 5×5 |
+| X-RICH-1 | 15 (7 + 8 new) | BC-0101's criterion, reused unchanged | Candidate pool enriched; `KN-101` reclassified CONTESTED | Complete, 5×5 |
 | X-RICH-2 | Same 15 | Same as X-RICH-1 | Complete, unfiltered application-dependency registry added to every prompt | Complete, 5×5 |
-| X-RICH-3 | Same 15 | Same as X-RICH-1 | Hard cap of 5 selected candidates, enforced post-hoc by confidence ranking | Complete, 5×5 |
+| X-RICH-3 | Same 15 | Same as X-RICH-1 | Hard cap of 5 selected candidates, enforced mechanically after the fact | Complete, 5×5 |
 
-Both providers, throughout: **Jev** (`typesafe/jev-1.13`, via OpenRouter's
-alpha Decisions API, `noul` question type) and **GPT** (`openai/gpt-5-mini`,
-via the direct OpenAI Chat Completions API starting with BC-0102; BC-0101 used
-OpenRouter for both — see `README.md`'s gateway note).
+Both models, throughout: Jev via OpenRouter's alpha Decisions API; GPT via
+OpenRouter for `BC-0101`, then via the direct OpenAI API from `BC-0102`
+onward (OpenRouter kept truncating GPT's responses and burning credit before
+a batch finished — that's the whole reason for the switch, and it means
+`BC-0101`'s GPT cost/latency numbers aren't directly comparable to anything
+after it).
 
-## 5. Key observations, by experiment
+## Experiment 1 — Is relevance enough? (`BC-0101`)
 
-### 5.1 BC-0101 (relevance criterion, 7 candidates)
+Seven candidates, one question per candidate, asked independently: "should
+this be included in the Worker's working context for this task?" Five runs
+each.
 
-Both providers selected the identical 5-item set in all 5 runs each
-(`EXP-090, KN-045, KN-052, KN-063, KN-101`), scored 0.400 (fail) every run.
-Both included `KN-101` — the sole `must_exclude` item — in every run. Full
-detail: [`RESULTS.md`](RESULTS.md).
+Both models picked the exact same 5-item set every run and scored 0.400 —
+a fail. Both included one artifact, every single run, that the ground truth
+said should be excluded: `KN-101`, described in the benchmark's own notes as
+"marketplace seller onboarding," an out-of-scope distractor.
 
-### 5.2 BC-0102 (necessity criterion, same 7 candidates)
+I went and read what `KN-101` actually says. It isn't about marketplace
+seller onboarding at all — it's about regional price resolution and currency
+binding, how a pricing service resolves a price per SKU/region/currency/
+channel. The application registry confirms Checkout has a real, declared
+dependency on the Pricing service, the app that owns `KN-101`.
 
-Reframing the criterion from relevance to necessity changed `KN-101`'s
-selection rate, but did not eliminate it, and did so differently per provider:
+That changes the story. Both models weren't missing an obvious distractor —
+they were reading real content about a real dependency and reasoning it
+might matter for computing an order total. Neither could have reconstructed
+"marketplace seller onboarding" as a reason to exclude it, because nothing
+they were shown said that.
 
-| Provider | Score mean | Verdicts | KN-101 selected (forbidden) |
-|---|---|---|---|
-| GPT | 0.3868 | fail, fail, fail, fail, fail (5/5) | 5/5 runs |
-| Jev | 0.5848 | partial, partial, fail, partial, fail | 2/5 runs |
+This is a benchmark-quality finding, not a resolved one. I'm not concluding
+`KN-101` should be included, and I'm not concluding it should be excluded
+either. I left the original ground-truth label untouched — it's a frozen,
+historical result. But I stopped trusting that artifact as an unambiguous
+distractor, and every experiment after this one treats it differently. The
+lesson that stuck with me: the benchmark itself needed auditing against the
+artifacts it claims to evaluate, not just the model behavior against the
+benchmark.
 
-GPT selected `KN-101` in every BC-0102 run despite the necessity framing —
-identical to its BC-0101 behavior. Jev's inclusion rate dropped from BC-0101's
-implicit 5/5 to 2/5 under the necessity criterion. This is a single
-before/after comparison on one task with 5 repeats per provider; it shows
-that criterion wording alone did not resolve `KN-101`'s inclusion for GPT, and
-partially — not fully — reduced it for Jev. It does not establish which
-provider "understood necessity better," only that their responses to the same
-wording change differed.
+## Experiment 2 — What does "necessary" mean? (`BC-0102`)
 
-### 5.3 The KN-101 discovery (why X-RICH-1 changed how KN-101 is treated)
+Same 7 candidates. I changed only the question, from relevance to
+task-specific necessity: *"Is this artifact necessary to correctly perform
+this specific task? Include it only if omitting it would materially reduce
+the Worker's ability to complete the task correctly."* Something can be
+related to checkout without being necessary to place an order correctly —
+`KN-101` being the obvious thing to test that distinction against.
 
-While reviewing BC-0101/BC-0102, a real inconsistency was found
-(`benchmark_quality.py::KN_101_DISCREPANCY`, `tests/test_benchmark_quality.py`):
+With the necessity framing: GPT still selected `KN-101` in 5 of 5 runs —
+identical to `BC-0101` — and every run failed the gate because of it (mean
+score 0.3868). Jev's rate dropped from an effective 5/5 to 2 of 5 runs (mean
+score 0.5848, a mix of partial and fail). Reframing the question changed the
+outcome for one model and, in any meaningful way, not for the other. I can't
+say why from this data alone — I changed one variable and got two different
+responses from two different models, which at minimum tells me the wording
+distinction is real enough to matter and isn't something either model was
+already applying by default.
 
-| | Says |
-|---|---|
-| `benchmark_case.example.json`'s `ground_truth.notes` | "marketplace seller onboarding" |
-| `KN-101`'s actual, resolvable content (`enterprise/knowledge/business-rules.json`) | "Regional price resolution and currency binding" |
+## Experiment 3 — A richer enterprise (`X-RICH-1`)
 
-These describe different subjects. Both models, reasoning from KN-101's real
-content (not the ground-truth note, which they never see), gave rationales
-about price/currency resolution being relevant to computing an order total —
-a plausible read of what KN-101 actually says. Separately,
-`enterprise/registry/applications.json` confirms a real, declared dependency:
-`APP-003.dependencies` includes `APP-007`, the application that owns KN-101.
-So KN-101 sits at a genuine structural dependency boundary, with content that
-is plausibly semantically relevant, and unresolved task-specific necessity —
-three axes that BC-0101/BC-0102 do not distinguish (`../EXPERIMENT_3_PROPOSAL.md`
-§4).
+The 7-candidate pool started to feel too clean. Real knowledge bases aren't
+7 tidy documents, they're hundreds of interconnected ones, most genuinely
+about the area you're working in without being what you need right now. I
+built `X-RICH-1` on 15 candidates — the original 7 plus 8 new ones from the
+same corpus — and needed more than "include/exclude" to classify them
+honestly: artifacts the task absolutely needs (**MUST_INCLUDE**), artifacts
+that help but aren't required (**ACCEPTABLE_OPTIONAL**), artifacts genuinely
+connected to the domain but addressing a different concern
+(**RELATED_BUT_UNNECESSARY** — latency SLOs, a change-freeze policy,
+postmortems about a different incident, a saga-testing rule), artifacts
+clearly out of scope (**MUST_EXCLUDE**), one artifact with no retrievable
+content (**UNRESOLVABLE**), and `KN-101`, now **CONTESTED** — its decision is
+captured and reported every run, but removed from the scored set before
+scoring, so it can never move the score either way.
 
-**This is a benchmark-quality finding, not a resolved question.** Nothing in
-this research concludes that KN-101 is objectively necessary or objectively
-unnecessary for `CHK-1421`. Neither BC-0101's `must_exclude` label nor its
-`ground_truth.notes` rationale has been altered — they remain frozen, exactly
-as originally written. Starting with X-RICH-1, KN-101 is instead classified
-**CONTESTED**: its decision is fully captured and reported every run, but it
-is removed from the scored included/excluded sets before `score()` runs, so
-it can never affect recall, precision, or the required-items gate in either
-direction (`run_experiment_3.py::_build_scored_context`,
-`experiment_3_candidates.CONTESTED_CANDIDATE_IDS`). Its selection rate is
-reported as an observation, never as a pass/fail judgment.
+Both models retained all 3 required artifacts and excluded the genuinely
+forbidden ones, every run. Jev's decisions were identical across all 5 of
+its own runs — a fully deterministic fingerprint, mean score 0.683, zero
+variance. GPT's mean score was 0.6794, ranging 0.665–0.683 across its 5 runs
+(stddev ≈0.0072) — not identical run to run. GPT also wasn't internally
+consistent with itself on which candidates it picked: across its 5 runs it
+disagreed with Jev's fixed selection on one candidate (a postmortem) in all
+5, and on a second (a saga-testing rule) in 4 of 5. So agreement between the
+two models was 14 of 15 candidates on one GPT run, and 13 of 15 on the other
+four — not a flat number, and not something I want to round off to "14/15
+agreement" as if it held every time. `KN-101` was selected 5 of 5 times by
+both, still fully excluded from the score. Both disagreements landed on
+RELATED_BUT_UNNECESSARY candidates, never on a required or truly forbidden
+one.
 
-### 5.4 X-RICH-1 (15 candidates, richer environment, KN-101 CONTESTED)
+## Experiment 4 — Give the Worker the enterprise graph (`X-RICH-2`)
 
-| Provider | Score mean | Recall mean | Precision mean | KN-101 selection rate | Related-but-unnecessary inclusion rate mean |
-|---|---|---|---|---|---|
-| Jev | 0.683 (flat, 0 stddev) | 0.800 | 0.571 | 5/5 | 0.500 |
-| GPT | 0.6794 | 0.800 | 0.5568 | 5/5 | 0.5333 |
+Narrower question: if you hand the model the actual structural information —
+which apps depend on which — does that change anything? Everything about
+`X-RICH-1` stayed fixed: same 15 candidates, same order, same candidate
+bodies, same criterion, same TaskScope, same scorer, same providers. The only
+addition was the complete, unfiltered application-dependency registry,
+appended to every request.
 
-Both providers retained all 3 `must_include` items every run and produced
-close, broadly similar aggregate scores. Both selected KN-101 in every run
-under this criterion — richer candidate pool and CONTESTED treatment did not,
-by itself, change KN-101's selection rate relative to BC-0101/BC-0102's GPT
-behavior. Roughly half of the genuinely-connected-but-unnecessary candidates
-(the `RELATED_BUT_UNNECESSARY` tier — six candidates sharing `APP-003` or a
-real dependency edge, but addressing a different concern than order
-placement) were admitted by both providers. This experiment does not
-establish that "richer context improved or worsened results" as a general
-claim — it establishes these specific numbers, on this one task, for this one
-candidate pool. Design detail: [`../EXPERIMENT_3_PROPOSAL.md`](../EXPERIMENT_3_PROPOSAL.md).
+Jev's scored metrics didn't move at all — same score, recall, precision, and
+related-but-unnecessary rate, to the same decimal, with or without the
+registry. GPT's did move: precision dropped from 0.557 to 0.478, and its
+rate of admitting related-but-unnecessary candidates rose from 0.533 to
+0.733. Recall stayed at 0.8 for both either way, and required/forbidden
+behavior — the part that actually gates pass/fail — was unchanged. `KN-101`
+remained selected 5/5 by both.
 
-### 5.5 X-RICH-2 (X-RICH-1 + complete application-dependency registry)
+I want to be careful about the verb here. Adding the registry was
+**associated with** a shift in GPT's selection behavior. The result is
+**consistent with** the idea that explicit structural context can change how
+liberally a model interprets "connected enough to include." It does not
+establish that the registry **caused** the shift — one before/after
+comparison, 5 repeats, one task, can't rule out other explanations, and it
+doesn't tell me whether the same thing happens on a different task.
 
-Testing H1: *"Explicit enterprise application-dependency context will change
-candidate selection when structural relationships are relevant to determining
-task-specific necessity."* Treatment: the complete, unfiltered
-`enterprise/registry/applications.json` (all 12 applications, every field,
-schema excluded) appended to every one of the 75 per-provider requests — the
-only change from X-RICH-1.
+## Experiment 5 — Take context away (`X-RICH-3`)
 
-| Provider | Score mean (X-RICH-1 → X-RICH-2) | Precision mean (X-RICH-1 → X-RICH-2) | Related-but-unnecessary inclusion rate mean (X-RICH-1 → X-RICH-2) | KN-101 selection rate |
-|---|---|---|---|---|
-| Jev | 0.683 → 0.683 (unchanged) | 0.571 → 0.571 (unchanged) | 0.500 → 0.500 (unchanged) | 5/5 → 5/5 |
-| GPT | 0.6794 → 0.6594 | 0.5568 → 0.4776 | 0.5333 → 0.7333 | 5/5 → 5/5 |
+This is the one that actually changed how I think about the whole problem,
+and it came from a simple provocation: what if, instead of adding richness,
+I take context away? `X-RICH-1` has 15 candidates. What if the Worker only
+gets 5 slots?
 
-Jev's scored metrics were completely unchanged by the added registry — same
-score, same recall/precision, same RBU rate, to the same decimal. GPT's
-precision decreased and its related-but-unnecessary inclusion rate increased
-with the registry present; recall was unchanged at 0.8 for both providers in
-both experiments. KN-101 remained selected in every run for both providers
-either way.
+That's a different kind of problem. Up to this point, every decision was
+"should this one thing be in or out," judged independently. Once there's a
+hard budget smaller than the number of things worth including, the question
+changes shape — it's not "should this be included" anymore, it's "which five
+deserve to survive."
 
-**This experiment is consistent with the hypothesis that explicit
-dependency context affects GPT's selection behavior — it does not establish
-that the registry caused the change, and it does not generalize beyond this
-one task, this one registry, and these two models.** A single before/after
-comparison with 5 repeats per provider cannot rule out other explanations
-(e.g., run-to-run variance in a non-deterministic model), though the
-direction and size of GPT's shift (precision down ~14%, RBU inclusion up ~38%
-relative) is larger than the run-to-run stddev observed within either
-experiment alone.
+To be precise about the mechanics, because this matters: I didn't change the
+prompt or the criterion, and the models were never told a budget existed.
+Each model still produced its normal, independent include/exclude decision
+with a confidence value for all 15 candidates, exactly as in `X-RICH-1`. My
+own aggregation code then ranked every "include" verdict by the model's own
+stated confidence and mechanically kept the top 5. The models didn't choose
+to respect a five-item budget — there was no budget in their prompt to
+respect. The budget was imposed after the fact, by my code, on top of
+decisions they'd already made independently.
 
-Cost of the added registry: see §8 below and
-[`GPT_COST_RECONCILIATION.md`](results/GPT_COST_RECONCILIATION.md).
+Jev's ranking put the same 5 candidates on top in all 5 runs: all 3 required
+items, `KN-101`, and exactly one related-but-unnecessary candidate. Recall
+dropped from 0.8 to 0.6, precision rose from 0.571 to 0.75, score moved from
+0.683 to 0.667. Zero variance across repeats.
 
-### 5.6 X-RICH-3 (X-RICH-1 + a hard 5-candidate budget)
+GPT's selected top five varied across runs. It retained all three required
+items in 3 of the 5 runs; in the other 2, a required artifact fell below the
+cut line — the loyalty-account rule in one run, the domain-rules artifact in
+the other — which tripped the required-item gate and produced a fail verdict
+both times. Averaged across all 5 runs: recall 0.6, precision 0.66,
+required-item retention 0.8667, mean score 0.5248.
 
-Research question: when the Worker has a hard limit on how many artifacts it
-can place into working context, does its confidence ranking prioritize
-task-necessary information over merely related information? Treatment: a
-hard cap of 5 selected candidates, enforced as a pure post-hoc aggregation
-over each provider's own, unchanged, independent per-candidate decisions —
-rank every "include" verdict by the model's own confidence, keep the top 5.
-**The model is never told about the budget or asked a different question; the
-budget is mechanically enforced by `apply_budget()`, not "obeyed" by either
-model.** The research question is what each provider's own confidence
-ranking prioritized once fewer than all "included" items could survive — not
-whether either model can reason about a budget.
+I'm not going to say Jev is better than GPT here — that's not what this
+measures. What I can say, narrower and more useful: under this specific
+task, this specific candidate set, and this specific five-artifact budget,
+Jev's confidence ranking was stable across repeats, while GPT's displaced a
+required artifact in 2 of 5 runs.
 
-| Provider | Score mean (X-RICH-1 → X-RICH-3) | Recall mean | Precision mean | Must-include retention mean | KN-101 selection rate | Run-to-run selection variance |
-|---|---|---|---|---|---|---|
-| Jev | 0.683 → 0.667 | 0.8 → 0.6 | 0.571 → 0.75 | 1.0 (3/3 every run) | 5/5 | None — identical selection every run |
-| GPT | 0.6794 → 0.5248 | 0.8 → 0.6 | 0.5568 → 0.66 | 0.8667 (10/12; 2 of 5 runs dropped one) | 2/5 | High — every run's selection differed |
+Here's the idea that actually came out of running this: when context is
+plentiful, selection can look like classification — is this thing in the
+"yes" bucket or the "no" bucket. When context becomes scarce, selection
+turns into prioritization — the system has to decide what to sacrifice, and
+that decision exposes the ranking policy that was sitting underneath the
+classifier the whole time, just never visible before, because there was
+always room for everything. The question stops being "did the Worker
+include the right things" and becomes "did the Worker protect the things it
+couldn't afford to lose." Jev answered that the same way every time. GPT
+answered it differently each time, and twice, what it gave up was something
+it shouldn't have.
 
-Both providers respected the 5-item cap in all 10 runs (by construction).
-Both showed the same qualitative pattern: recall dropped (fewer slots means
-fewer "relevant" items retained overall) while precision rose (the smaller
-set is more concentrated in scorer-relevant items). Jev's confidence ranking
-was fully deterministic across all 5 repeats — identical selected set,
-identical dropped set, identical score every time. GPT's ranking varied on
-every run: which related-but-unnecessary item survived differed run to run,
-and in 2 of 5 runs GPT's own confidence ranking placed a required item
-(`EXP-090` in one run, `KN-045` in another) below the cut line, triggering the
-scorer's required-items gate and a `fail` verdict (score 0.367 and 0.33
-respectively — well below the 0.63–0.667 scores of the "clean" runs).
+Context assembly is starting to look like resource allocation under
+uncertainty, not just classification. I don't want to overstate that — five
+runs on one task with one budget size is a pattern, not a law — but it's the
+direction every one of these five experiments pushed me toward.
 
-**The defensible observation: under this specific task and budget mechanism,
-Jev's selection was stable across repeats, while GPT displaced a required
-artifact in 2 of 5 runs.** This is not a claim that Jev is "better" at context
-selection — it is a claim about run-to-run consistency of one specific
-confidence-ranking mechanism, on one task, with a five-run sample per
-provider. It does not generalize to other tasks, budgets, or model versions.
+## `KN-101` — the full picture
 
-## 6. KN-101 — cross-experiment summary
-
-| Experiment | KN-101 treatment | Selection rate |
+| Experiment | `KN-101` treatment | Selection rate |
 |---|---|---|
-| BC-0101 | `must_exclude` (frozen ground truth) | Jev 5/5, GPT 5/5 |
-| BC-0102 | `must_exclude` (frozen ground truth, necessity criterion) | Jev 2/5, GPT 5/5 |
-| X-RICH-1 | CONTESTED (excluded from scoring either way) | Jev 5/5, GPT 5/5 |
-| X-RICH-2 | CONTESTED | Jev 5/5, GPT 5/5 |
-| X-RICH-3 | CONTESTED, additionally subject to the 5-item budget | Jev 5/5, GPT 2/5 |
+| `BC-0101` | `must_exclude` (frozen ground truth) | Jev 5/5, GPT 5/5 |
+| `BC-0102` | `must_exclude` (frozen ground truth, necessity criterion) | Jev 2/5, GPT 5/5 |
+| `X-RICH-1` | CONTESTED (excluded from scoring either way) | Jev 5/5, GPT 5/5 |
+| `X-RICH-2` | CONTESTED | Jev 5/5, GPT 5/5 |
+| `X-RICH-3` | CONTESTED, subject to the 5-item budget | Jev 5/5, GPT 2/5 |
 
-KN-101 has never been given a resolved ground-truth answer in this research.
-The historical `must_exclude` label from BC-0101/BC-0102 has not been changed
-to agree with KN-101's real content, and no experiment has concluded KN-101
-is objectively necessary or unnecessary for `CHK-1421`. What has changed
-across experiments is (a) the criterion wording, (b) whether KN-101 affects
-the formal score at all, and (c) whether it survives a hard selection budget
-— and both providers' responses to those changes differ from each other in
-ways this document reports without adjudicating.
+`KN-101` has never gotten a resolved answer in this research, on purpose. Its
+original ground-truth label conflicted with its actual content and with the
+real enterprise dependency between Checkout and Pricing. It's structurally
+connected (`APP-007` → `APP-003`), semantically plausible for the task, and
+its task-specific necessity is still unresolved. I haven't changed the
+historical benchmark ground truth, and I'm not using `KN-101` as evidence
+that either model "failed" in some straightforward way — it's evidence that
+the benchmark needed a second look.
 
-## 7. Jev's role in this research
+## What I learned
 
-Jev is not framed here as a competitor being "better" or "worse" than GPT at
-context selection in general — the sample sizes (5 runs per condition, one
-task) do not support that claim for either model. Its practical role in this
-research has been:
+1. **Relevance and necessity are different questions, and models answer them
+   differently.** The same 7 candidates, the same models, produced a
+   different `KN-101` outcome depending only on which question was asked.
+2. **A benchmark can be wrong about its own distractor.** `KN-101`'s
+   ground-truth label didn't match its actual content, and that mismatch
+   survived undetected inside a passing-looking "fail" result until I
+   actually read the artifact.
+3. **Explicit structural context can shift selection behavior without
+   changing the headline pass/fail outcome.** `X-RICH-2` didn't break
+   anything and didn't fix anything — it moved GPT's precision and
+   over-inclusion in a specific direction and did nothing measurable to Jev.
+4. **Scarcity is what actually reveals a selection policy.** Everything
+   before `X-RICH-3` could pass while quietly disagreeing on which
+   related-but-unnecessary items to admit, because there was room for all of
+   it. A hard budget forces a real trade-off.
+5. **Context assembly is starting to look like resource allocation under
+   uncertainty, not classification.** Every experiment pushed me further
+   from "is this relevant" and closer to "given a limited budget and
+   incomplete certainty about what's necessary, what gets kept."
 
-- **Fast, low-marginal-cost repeated decision generation** — BC-0101's
-  measured mean cost was $0.0001859/run for Jev vs. $0.0018767/run for GPT
-  (`RESULTS.md` §4), enabling the repeated 5×5 batches this research relies
-  on without prohibitive cost.
-- **A structured context-decision workflow** via the `noul` typed-decision
-  question, distinct from GPT's free-form-JSON-then-parse approach.
-- **A second, independent reasoning path** for the same per-candidate
-  question, useful for observing where two differently-built models agree or
-  diverge (e.g., §5.2's BC-0102 KN-101 divergence, §5.6's X-RICH-3 stability
-  difference).
+I started by asking whether a Worker could retrieve the right information. I
+ended up asking a harder question: when the Worker can't remember
+everything, does it know what it can't afford to forget?
 
-**Observed:** Jev is fast and cheap enough to be useful for generating large
-numbers of independent context-selection decisions in this research context.
+## Why Jev was useful
 
-**Not yet established:** whether Jev-generated decisions are suitable as
-training labels for RLCD (reinforcement learning from contextual decisions)
-or any other downstream training use. No experiment in this repository has
-tested label quality, inter-model agreement rates as a proxy for
-correctness, or any training pipeline. This is a future research direction,
-not a current result — it should not be read as one.
+Not because it "won" anything — I'm not claiming Jev is a better model, a
+better judge, or that its decisions are validated training data. What it
+actually gave me:
 
-## 8. Economics
+- A structured decision interface — a typed question with an attached
+  probability — instead of free-form text I then have to parse.
+- Fast, cheap repeated decisions at the volume this kind of research needs.
+  In `BC-0101`, its measured cost per run was roughly a hundred times lower
+  than GPT's.
+- A second, independently-built reasoning path on the same question, which
+  is how I noticed the `BC-0102` divergence and the `X-RICH-3` stability
+  difference in the first place. Two systems agreeing tells you something.
+  Two systems disagreeing in a way that repeats tells you more.
 
-All GPT cost figures below are **reconciled real costs** from OpenAI's own
-usage/cost exports (matched by exact request count against each experiment's
-result files), not API-reported figures — the direct OpenAI API does not
-return a per-call cost field, so the result JSONs for BC-0102 onward correctly
-record `cost_usd_total: null`. Full provenance:
+That combination is why a future reinforcement-learning-from-contextual-
+decisions (RLCD) pipeline seems worth exploring: task → candidates → Jev
+decisions → feedback → decision dataset → improved selection policy. But
+that's a future direction, not a result. What's observed here is that Jev is
+cheap enough to make repeated decision generation practical. What's **not**
+established is that Jev-generated decisions are good training signal for
+anything — no experiment here tests label quality or trains a policy.
+
+## What context actually costs
+
+All GPT figures below are reconciled real costs from OpenAI's own usage
+exports, matched by exact request count against each experiment's result
+files — not the API's reported cost, which doesn't exist for the direct-API
+transport used from `BC-0102` on. Full provenance:
 [`GPT_COST_RECONCILIATION.md`](results/GPT_COST_RECONCILIATION.md).
 
-| | BC-0102 GPT (5×5 + validation) | X-RICH-1 GPT (5×5) | X-RICH-2 GPT (5×5) |
+| | BC-0102 (5×5 + validation) | X-RICH-1 (5×5) | X-RICH-2 (5×5) |
 |---|---|---|---|
 | Requests | 42 | 75 | 75 |
 | Input tokens | 10,908 | 19,315 | 165,790 |
@@ -283,62 +358,67 @@ record `cost_usd_total: null`. Full provenance:
 | Real cost | $0.011721 | $0.019951 | $0.032514 |
 | Per repeat | ≈$0.00234 | ≈$0.00399 | ≈$0.00650 |
 
-X-RICH-2's raw input token volume grew ≈8.6× over X-RICH-1 (adding the full
-application registry to every call), but real cost grew only ≈1.63× because
-≈71% of that added volume was cache-discounted repeated content. **Raw token
-growth should not be read as proportional cost growth** when the added
-content is identical across calls.
+Raw input tokens jumped about 8.6× from `X-RICH-1` to `X-RICH-2` (the full
+application registry, added to every call). Real cost rose only about 1.63×,
+because roughly 71% of that added volume was identical repeated content,
+billed at OpenAI's cached rate. Token growth isn't the same as cost growth
+when the added content doesn't change between calls.
 
-No reconciled GPT cost figure exists yet for X-RICH-3 (would require the same
-CSV-matching exercise against a later billing export). No Jev cost figures
-beyond BC-0101's are reported here — BC-0101 is the only experiment where
-Jev's cost was directly captured from the API response; extending this to
-later experiments has not been done and is not estimated here.
+I don't have a reconciled cost figure for `X-RICH-3` yet, and I'm not
+reporting a complete cross-experiment Jev cost comparison — `BC-0101` is the
+only experiment where Jev's cost was captured directly rather than
+reconstructed. Jev/GPT cost and latency aren't a fair capability comparison
+anywhere in this project, because the transport and accounting path
+differed between them (OpenRouter for both in `BC-0101`; Jev on OpenRouter
+and GPT on direct OpenAI from `BC-0102` on).
 
-## 9. Limitations
+## What I still don't know
 
-- **One task, one domain, throughout.** Every experiment in this document
-  uses `CHK-1421` (guest checkout order placement). No claim here
-  generalizes to other tasks, other domains, or the EnterpriseSim Worker
-  architecture as a whole.
-- **Small samples.** 5 repeats per provider per experiment. Observed
-  differences (e.g., GPT's run-to-run variance under budget pressure) are
-  reported descriptively; no statistical significance testing has been
-  performed, and none is claimed.
-- **Two models, two specific pinned versions** (`typesafe/jev-1.13`,
-  `openai/gpt-5-mini`). Nothing here claims to characterize either model
-  family in general, or any other model.
-- **KN-101 is unresolved by design**, not by oversight — see §6.
-- **No causal claims.** X-RICH-2 is consistent with H1; it does not prove
-  the registry caused GPT's behavior change (§5.5). X-RICH-3 shows Jev was
-  more stable under this budget mechanism; it does not show Jev is a better
-  context-selection model (§5.6).
-- **X-RICH-3 has no dedicated offline test file** — only an ad hoc mock
-  smoke test was run before the live batch, per an explicit
-  time-boxing decision during that session. `run_experiment_x_rich_3.py` is
-  otherwise built on the same, already-tested `apply_budget`/`_build_scored_context`
-  patterns as `run_experiment_3.py`/`run_experiment_x_rich_2.py`, both of
-  which do have offline test coverage.
-- **No consolidated results document exists for BC-0102 or any X-RICH
-  experiment** in the style of `RESULTS.md` — this document's §5 summarizes
-  them, but full per-run detail lives only in the raw JSON files under
-  `results/`.
+- Everything here is one task, one domain. None of it generalizes to other
+  tasks or domains without more work.
+- Five repeats per condition is enough to notice a pattern, not enough for
+  statistical significance — I haven't tested for it.
+- `KN-101` is still contested. Not concluded necessary, not concluded
+  unnecessary.
+- `X-RICH-2` is consistent with the structural-context hypothesis. It
+  doesn't establish causality or that it would replicate on another task.
+- Transport/accounting changed between experiments (OpenRouter → direct
+  OpenAI for GPT), so cost and latency aren't comparable across that
+  boundary.
+- `X-RICH-3` is one five-slot budget on one fifteen-candidate pool. I don't
+  know if the stability difference holds at a different budget size or a
+  larger sample.
+- No evidence that Jev-generated decisions are good training labels for
+  anything.
+- No general claim that either model is "better" at context selection.
+- No claim that more context is inherently harmful.
 
-## 10. Open research questions
+## Open questions
 
-- Does the KN-101 pattern (structural dependency + plausible semantic
-  relevance + unresolved necessity) generalize to other candidates, other
-  tasks, or is it specific to this one artifact?
+- Does the `KN-101` pattern — structural dependency, plausible semantic
+  relevance, unresolved necessity — show up in other candidates, or is it
+  specific to this one artifact?
 - Would explicit `TaskScope` information (declared apps, code target —
-  designed but never threaded into a live prompt; see `README.md`'s "Task
-  Scope" section) change either provider's KN-101 inclusion or its
-  related-but-unnecessary/budget-induced behavior, independent of the
-  criterion-wording change BC-0101→BC-0102 or the enterprise-context change
-  X-RICH-1→X-RICH-2?
-- Would GPT's run-to-run selection variance under a budget constraint
-  (§5.6) persist at a larger sample size, or shrink toward Jev's observed
-  stability?
-- Is Jev's decision-generation speed/cost profile (§7) sufficient on its own
-  to justify using it for large-scale synthetic-label generation, or does
-  that require first validating decision quality against some independent
-  standard?
+  designed but never threaded into a live prompt, see `README.md`) change
+  either model's `KN-101` or budget-induced behavior, independent of the
+  changes already tested?
+- Would GPT's run-to-run variance under a budget constraint persist at a
+  larger sample size, or shrink toward Jev's observed stability?
+- Is Jev's decision-generation speed/cost profile enough on its own to
+  justify using it for large-scale synthetic-label generation, or does that
+  need independent validation of decision quality first?
+
+## Reproducibility
+
+Everything above lives under `research/jev_context_decision/`: the benchmark
+case (`benchmarks/examples/benchmark_case.example.json`), candidate
+definitions (`candidates.py`, `experiment_3_candidates.py`), provider
+integrations (`providers/`), the five experiment runners (`run_experiment.py`,
+`run_experiment_3.py`, `run_experiment_x_rich_2.py`,
+`run_experiment_x_rich_3.py`), the raw result files for every run reported
+here (`results/*.json`), the offline test suite (`tests/`, 129 tests, no
+network calls), the GPT cost reconciliation
+(`results/GPT_COST_RECONCILIATION.md`), and this document. Every number in
+this write-up was read from one of those files, not estimated. `RESULTS.md`
+and `../EXPERIMENT_3_PROPOSAL.md` carry additional per-experiment detail for
+`BC-0101` and `X-RICH-1` respectively.
