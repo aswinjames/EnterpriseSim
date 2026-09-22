@@ -1,0 +1,7 @@
+{
+    "candidate_id": "KN-052",
+    "verdict": "include",
+    "confidence": 0.93,
+    "p_include": 0.93,
+    "rationale": "Jev noul decision: P(include)=0.930 -> include (confidence in verdict: 0.930)"
+}

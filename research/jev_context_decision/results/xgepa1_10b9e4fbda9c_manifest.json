@@ -1,0 +1,42 @@
+{
+  "candidate_pool_ids": [
+    "EXP-055",
+    "EXP-090",
+    "EXP-206",
+    "EXP-209",
+    "KN-045",
+    "KN-047",
+    "KN-052",
+    "KN-063",
+    "KN-101",
+    "KN-122",
+    "KN-128",
+    "KN-146",
+    "KN-311",
+    "KN-313",
+    "KN-411"
+  ],
+  "component_keys": [
+    "jev_criteria_false",
+    "jev_criteria_true",
+    "jev_instructions"
+  ],
+  "criterion_id": "BC-0101",
+  "experiment_id": "X-GEPA-1",
+  "gepa_version": "0.1.4",
+  "jev_model": "typesafe/jev-1.13",
+  "max_metric_calls": 60,
+  "reflection_lm": "openai/gpt-5-mini",
+  "train_ids": [
+    "KN-045",
+    "KN-063",
+    "KN-122",
+    "KN-128",
+    "KN-146"
+  ],
+  "val_ids": [
+    "KN-052",
+    "KN-313",
+    "KN-411"
+  ]
+}

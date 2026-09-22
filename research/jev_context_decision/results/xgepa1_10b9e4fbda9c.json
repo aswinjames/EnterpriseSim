@@ -1,0 +1,1225 @@
+{
+  "experiment_id": "X-GEPA-1",
+  "completed_steps": [
+    "phase1_gepa_optimization",
+    "baseline_budget_run",
+    "baseline_test_split",
+    "optimized_budget_run",
+    "optimized_test_split"
+  ],
+  "complete": true,
+  "phase1_gepa_optimization": {
+    "optimized_candidate": {
+      "jev_instructions": "You are a classifier that decides whether a single candidate artifact should be included in the Worker's working context for a downstream task. You must judge each candidate strictly on its own content (candidate_title and candidate_body). Do NOT assume anything about other candidates, candidate sets, or external context beyond what is contained in the fields you are given.\n\nInput format (always present):\n- candidate_id: string (identifier; for reference only \u2014 do not use its semantics to decide).\n- candidate_title: short title of the artifact.\n- candidate_body: the full artifact text to be judged.\n\nOutput format (must follow exactly):\n- verdict: one of the two strings: \"include\" or \"exclude\"\n- confidence: a decimal number between 0.00 and 1.00 representing your estimated probability that the verdict is correct.\n\nPrimary decision rule (strict):\n- Include the candidate (\"include\") only if, judged strictly from its content, it would be useful to include in the Worker's working context to complete the target task. Use \"useful\" as meaning: the content either directly contains required rules/requirements/policies or acceptable optional information that the Worker might legitimately rely on when performing the task.\n- Exclude the candidate (\"exclude\") if, judged strictly from its content, it is not needed in the Worker's working context. This includes:\n  - content that is unrelated or off-topic,\n  - content that is merely related/background but not necessary (related_but_unnecessary),\n  - content that must be excluded (explicitly disallowed, irrelevant, or otherwise categorized as must_exclude).\n\nCategory mapping rules (derived from examples and domain policy):\n- must_exclude -> exclude\n- related_but_unnecessary -> exclude (being related is NOT sufficient; it must be necessary or acceptable to include)\n- acceptable_optional -> include\n\nAdditional judgment guidance:\n- Judge solely on candidate_title and candidate_body. Do not assume missing clarifying details from other artifacts.\n- Consider whether the Worker would actively need or legitimately use this artifact when solving the task. If it contains concrete constraints, required behaviors, or acceptable optional procedures that would affect how the Worker performs the task, include it.\n- If the artifact is purely contextual, historical, tangential, or redundant and not necessary for the Worker to perform the task, exclude it.\n- If the content is ambiguous about its utility, be conservative: prefer exclude unless there is a clear reason the Worker should have it.\n- Do not invent or infer external facts; you may use internal domain knowledge to interpret technical statements in the candidate_body, but do not assume external connections to other candidates.\n\nConfidence scoring guidelines:\n- Provide a numeric probability reflecting how confident you are that the verdict is correct.\n- High-confidence (\u2265 0.8): candidate clearly belongs (or clearly does not belong) according to the rules above.\n- Medium-confidence (0.6\u20130.79): reasonably clear evidence but some ambiguity.\n- Low-confidence (0.4\u20130.59): borderline or ambiguous; make your best judgment.\n- Very low (< 0.4): strong uncertainty (avoid unless truly ambiguous).\n- If you output \"include\", the confidence may be interpreted as P(include); if \"exclude\", the confidence is your P(correct excluding) estimate.\n\nFormatting and behavior constraints:\n- Output only the two fields: verdict and confidence. Do not add explanations, notes, or other metadata in the final output.\n- Do not reference other candidates, external documents, or the classification labels (e.g., do not print \"must_exclude\" or \"related_but_unnecessary\"). Use only \"include\"/\"exclude\".\n- Be consistent and reproducible: apply the same rules to all candidates.\n\nExamples (mapping from training instances):\n- A candidate labeled must_exclude should be judged \"exclude\" with high confidence.\n- A candidate that is related but unnecessary should be judged \"exclude\" (do not be swayed by topical relevance alone).\n- A candidate that is acceptable optional or contains directly useful rules should be judged \"include\".\n\nUse these rules for every candidate you receive.",
+      "jev_criteria_true": "This candidate artifact should be included in the Worker's working context for this task: its content is relevant to guest checkout order placement (CHK-1421, APP-003) and materially helps complete it correctly.",
+      "jev_criteria_false": "This candidate artifact should be excluded from the Worker's working context for this task: it is out of scope, a distractor, or its content is not resolvable/available to judge."
+    },
+    "val_aggregate_scores": [
+      0.9411333333333333,
+      0.9735333333333335,
+      0.9688,
+      0.9724333333333334
+    ],
+    "best_idx": 1,
+    "total_metric_calls": 60
+  },
+  "baseline_budget_run": {
+    "criterion_id": "X-GEPA-1-seed",
+    "prompt_version": "x-gepa-1-pilot-v1-seed",
+    "jev_instructions": "Should this ONE candidate artifact be included in the Worker's working context for this task? Judge it strictly on its own content -- do not assume information about any other candidate.",
+    "jev_criteria_true": "This candidate artifact should be included in the Worker's working context for this task: its content is relevant to guest checkout order placement (CHK-1421, APP-003) and materially helps complete it correctly.",
+    "jev_criteria_false": "This candidate artifact should be excluded from the Worker's working context for this task: it is out of scope, a distractor, or its content is not resolvable/available to judge.",
+    "raw_included_pre_budget": [
+      "EXP-090",
+      "EXP-206",
+      "EXP-209",
+      "KN-045",
+      "KN-052",
+      "KN-063",
+      "KN-101",
+      "KN-128"
+    ],
+    "budgeted_selected": [
+      "EXP-090",
+      "KN-045",
+      "KN-052",
+      "KN-101",
+      "KN-128"
+    ],
+    "budgeted_excluded": [
+      "EXP-055",
+      "EXP-206",
+      "EXP-209",
+      "KN-047",
+      "KN-063",
+      "KN-122",
+      "KN-146",
+      "KN-311",
+      "KN-313",
+      "KN-411"
+    ],
+    "dropped_for_budget": [
+      "EXP-206",
+      "EXP-209",
+      "KN-063"
+    ],
+    "selected_count": 5,
+    "budget_respected": true,
+    "must_include_retained": [
+      "KN-045",
+      "KN-052",
+      "EXP-090"
+    ],
+    "must_include_retention_rate": 1.0,
+    "acceptable_optional_retained": [],
+    "acceptable_optional_retention_rate": 0.0,
+    "related_but_unnecessary_retained": [
+      "KN-128"
+    ],
+    "related_but_unnecessary_retention_rate": 0.16666666666666666,
+    "kn101_selected_post_budget": true,
+    "recall": 0.6,
+    "precision": 0.75,
+    "score": 0.667,
+    "verdict": "partial",
+    "gate_pass": true,
+    "required_missing": [],
+    "forbidden_selected": [],
+    "raw_decisions": [
+      {
+        "candidate_id": "KN-045",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "include",
+        "rationale": "Jev noul decision: P(include)=0.960 -> include (confidence in verdict: 0.960)",
+        "confidence": 0.96,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-seed",
+        "latency_ms": 354.1256249882281,
+        "input_tokens": 603,
+        "output_tokens": 22,
+        "cost_usd": 2.5326e-05,
+        "timestamp": "2026-09-22T12:42:13.560601+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.96
+            }
+          },
+          "usage": {
+            "input_tokens": 603,
+            "output_tokens": 22,
+            "cost": 2.5326e-05
+          },
+          "id": "gen-dec-1790080933-6r92bgnf44YozdRtA9tY",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-052",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "include",
+        "rationale": "Jev noul decision: P(include)=0.930 -> include (confidence in verdict: 0.930)",
+        "confidence": 0.93,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-seed",
+        "latency_ms": 395.8365418948233,
+        "input_tokens": 684,
+        "output_tokens": 22,
+        "cost_usd": 2.8728e-05,
+        "timestamp": "2026-09-22T12:42:13.956501+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.93
+            }
+          },
+          "usage": {
+            "input_tokens": 684,
+            "output_tokens": 22,
+            "cost": 2.8728e-05
+          },
+          "id": "gen-dec-1790080933-qXrxTXqqo3ZT4CSyfjPv",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "EXP-090",
+        "candidate_kind": "experience",
+        "provider": "jev",
+        "verdict": "include",
+        "rationale": "Jev noul decision: P(include)=0.910 -> include (confidence in verdict: 0.910)",
+        "confidence": 0.91,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-seed",
+        "latency_ms": 419.8455410078168,
+        "input_tokens": 576,
+        "output_tokens": 22,
+        "cost_usd": 2.4192e-05,
+        "timestamp": "2026-09-22T12:42:14.376447+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.91
+            }
+          },
+          "usage": {
+            "input_tokens": 576,
+            "output_tokens": 22,
+            "cost": 2.4192e-05
+          },
+          "id": "gen-dec-1790080934-JiqZpNK9gv2mqVyoRoAL",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-063",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "include",
+        "rationale": "Jev noul decision: P(include)=0.710 -> include (confidence in verdict: 0.710)",
+        "confidence": 0.71,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-seed",
+        "latency_ms": 416.3993331603706,
+        "input_tokens": 667,
+        "output_tokens": 22,
+        "cost_usd": 2.8014e-05,
+        "timestamp": "2026-09-22T12:42:14.792989+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.71
+            }
+          },
+          "usage": {
+            "input_tokens": 667,
+            "output_tokens": 22,
+            "cost": 2.8014e-05
+          },
+          "id": "gen-dec-1790080934-rdzYNN4JDWLSf2EH29kl",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "EXP-055",
+        "candidate_kind": "experience",
+        "provider": "jev",
+        "verdict": "exclude",
+        "rationale": "Jev noul decision: P(include)=0.250 -> exclude (confidence in verdict: 0.750)",
+        "confidence": 0.75,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-seed",
+        "latency_ms": 438.3847499266267,
+        "input_tokens": 553,
+        "output_tokens": 22,
+        "cost_usd": 2.3226e-05,
+        "timestamp": "2026-09-22T12:42:15.231437+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.25
+            }
+          },
+          "usage": {
+            "input_tokens": 553,
+            "output_tokens": 22,
+            "cost": 2.3226e-05
+          },
+          "id": "gen-dec-1790080934-DsU1E7HznJvbG5mFZaWT",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-047",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "exclude",
+        "rationale": "Jev noul decision: P(include)=0.050 -> exclude (confidence in verdict: 0.950)",
+        "confidence": 0.95,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-seed",
+        "latency_ms": 386.12849987111986,
+        "input_tokens": 646,
+        "output_tokens": 22,
+        "cost_usd": 2.7132e-05,
+        "timestamp": "2026-09-22T12:42:15.617601+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.05
+            }
+          },
+          "usage": {
+            "input_tokens": 646,
+            "output_tokens": 22,
+            "cost": 2.7132e-05
+          },
+          "id": "gen-dec-1790080935-D8GfrZBzMKxXOR6jTqwG",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-101",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "include",
+        "rationale": "Jev noul decision: P(include)=0.720 -> include (confidence in verdict: 0.720)",
+        "confidence": 0.72,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-seed",
+        "latency_ms": 392.3150838818401,
+        "input_tokens": 696,
+        "output_tokens": 22,
+        "cost_usd": 2.9232e-05,
+        "timestamp": "2026-09-22T12:42:16.009961+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.72
+            }
+          },
+          "usage": {
+            "input_tokens": 696,
+            "output_tokens": 22,
+            "cost": 2.9232e-05
+          },
+          "id": "gen-dec-1790080935-eAmhwbBFQZPCFI7X1lGp",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-128",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "include",
+        "rationale": "Jev noul decision: P(include)=0.790 -> include (confidence in verdict: 0.790)",
+        "confidence": 0.79,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-seed",
+        "latency_ms": 375.8089169859886,
+        "input_tokens": 702,
+        "output_tokens": 22,
+        "cost_usd": 2.9484e-05,
+        "timestamp": "2026-09-22T12:42:16.385830+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.79
+            }
+          },
+          "usage": {
+            "input_tokens": 702,
+            "output_tokens": 22,
+            "cost": 2.9484e-05
+          },
+          "id": "gen-dec-1790080936-vDKWae07riUd3KAc51QP",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-146",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "exclude",
+        "rationale": "Jev noul decision: P(include)=0.430 -> exclude (confidence in verdict: 0.570)",
+        "confidence": 0.5700000000000001,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-seed",
+        "latency_ms": 386.6549578960985,
+        "input_tokens": 746,
+        "output_tokens": 22,
+        "cost_usd": 3.1332e-05,
+        "timestamp": "2026-09-22T12:42:16.772537+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.43
+            }
+          },
+          "usage": {
+            "input_tokens": 746,
+            "output_tokens": 22,
+            "cost": 3.1332e-05
+          },
+          "id": "gen-dec-1790080936-DEKnjNKFRa83xTQv7IN4",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-411",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "exclude",
+        "rationale": "Jev noul decision: P(include)=0.150 -> exclude (confidence in verdict: 0.850)",
+        "confidence": 0.85,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-seed",
+        "latency_ms": 398.6741250846535,
+        "input_tokens": 598,
+        "output_tokens": 22,
+        "cost_usd": 2.5116e-05,
+        "timestamp": "2026-09-22T12:42:17.171549+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.15
+            }
+          },
+          "usage": {
+            "input_tokens": 598,
+            "output_tokens": 22,
+            "cost": 2.5116e-05
+          },
+          "id": "gen-dec-1790080936-CgIBN6lNf66LRo2vyo9Y",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-313",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "exclude",
+        "rationale": "Jev noul decision: P(include)=0.400 -> exclude (confidence in verdict: 0.600)",
+        "confidence": 0.6,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-seed",
+        "latency_ms": 345.1538330409676,
+        "input_tokens": 641,
+        "output_tokens": 22,
+        "cost_usd": 2.6922e-05,
+        "timestamp": "2026-09-22T12:42:17.516797+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.4
+            }
+          },
+          "usage": {
+            "input_tokens": 641,
+            "output_tokens": 22,
+            "cost": 2.6922e-05
+          },
+          "id": "gen-dec-1790080937-FFUTVtIAuxx9L6yYnnbV",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "EXP-209",
+        "candidate_kind": "experience",
+        "provider": "jev",
+        "verdict": "include",
+        "rationale": "Jev noul decision: P(include)=0.620 -> include (confidence in verdict: 0.620)",
+        "confidence": 0.62,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-seed",
+        "latency_ms": 577.9462091159075,
+        "input_tokens": 549,
+        "output_tokens": 22,
+        "cost_usd": 2.3058e-05,
+        "timestamp": "2026-09-22T12:42:18.095222+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.62
+            }
+          },
+          "usage": {
+            "input_tokens": 549,
+            "output_tokens": 22,
+            "cost": 2.3058e-05
+          },
+          "id": "gen-dec-1790080937-KV9KfEPGfH2Iwmla84lC",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "EXP-206",
+        "candidate_kind": "experience",
+        "provider": "jev",
+        "verdict": "include",
+        "rationale": "Jev noul decision: P(include)=0.570 -> include (confidence in verdict: 0.570)",
+        "confidence": 0.57,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-seed",
+        "latency_ms": 487.77879192493856,
+        "input_tokens": 548,
+        "output_tokens": 22,
+        "cost_usd": 2.3016e-05,
+        "timestamp": "2026-09-22T12:42:18.583040+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.57
+            }
+          },
+          "usage": {
+            "input_tokens": 548,
+            "output_tokens": 22,
+            "cost": 2.3016e-05
+          },
+          "id": "gen-dec-1790080938-xuGwW7oVEkRCHuA9mLIO",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-122",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "exclude",
+        "rationale": "Jev noul decision: P(include)=0.130 -> exclude (confidence in verdict: 0.870)",
+        "confidence": 0.87,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-seed",
+        "latency_ms": 439.0316251665354,
+        "input_tokens": 677,
+        "output_tokens": 22,
+        "cost_usd": 2.8434e-05,
+        "timestamp": "2026-09-22T12:42:19.022136+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.13
+            }
+          },
+          "usage": {
+            "input_tokens": 677,
+            "output_tokens": 22,
+            "cost": 2.8434e-05
+          },
+          "id": "gen-dec-1790080938-Ps6wEprGD9DUBDqpUrbc",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-311",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "exclude",
+        "rationale": "Jev noul decision: P(include)=0.060 -> exclude (confidence in verdict: 0.940)",
+        "confidence": 0.94,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-seed",
+        "latency_ms": 340.3582919854671,
+        "input_tokens": 649,
+        "output_tokens": 22,
+        "cost_usd": 2.7258e-05,
+        "timestamp": "2026-09-22T12:42:19.362566+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.06
+            }
+          },
+          "usage": {
+            "input_tokens": 649,
+            "output_tokens": 22,
+            "cost": 2.7258e-05
+          },
+          "id": "gen-dec-1790080939-ebcZNUfYLg32y8fYuh5V",
+          "provider": "TypeSafe"
+        }
+      }
+    ]
+  },
+  "baseline_test_split": {
+    "n_test_examples": 5,
+    "mean_score": 0.74478,
+    "per_example": [
+      {
+        "candidate_id": "EXP-090",
+        "candidate_title": "Guest carts must not create loyalty accounts",
+        "candidate_body": "When implementing guest flows in Checkout (APP-003), ensure no code path provisions a Loyalty (APP-015) account. A prior change created orphaned loyalty accounts for guests, triggering a data-cleanup incident.",
+        "category": "must_include",
+        "target_verdict": "include",
+        "decision_verdict": "include",
+        "p_include": 0.92,
+        "confidence": 0.92,
+        "rationale": "Jev noul decision: P(include)=0.920 -> include (confidence in verdict: 0.920)",
+        "score": 0.9936
+      },
+      {
+        "candidate_id": "EXP-055",
+        "candidate_title": "Pricing/promotion changes during a promo window require a wr",
+        "candidate_body": "Pricing/promotion changes during a promo window require a write-through APP-008 cache flush.",
+        "category": "acceptable_optional",
+        "target_verdict": "include",
+        "decision_verdict": "exclude",
+        "p_include": 0.24,
+        "confidence": 0.76,
+        "rationale": "Jev noul decision: P(include)=0.240 -> exclude (confidence in verdict: 0.760)",
+        "score": 0.4224
+      },
+      {
+        "candidate_id": "EXP-209",
+        "candidate_title": "Synchronous promo calls on the checkout path must be made as",
+        "candidate_body": "Synchronous promo calls on the checkout path must be made async or cached.",
+        "category": "related_but_unnecessary",
+        "target_verdict": "exclude",
+        "decision_verdict": "include",
+        "p_include": 0.63,
+        "confidence": 0.63,
+        "rationale": "Jev noul decision: P(include)=0.630 -> include (confidence in verdict: 0.630)",
+        "score": 0.6031
+      },
+      {
+        "candidate_id": "EXP-206",
+        "candidate_title": "Saga compensations must be idempotent and tested for partial",
+        "candidate_body": "Saga compensations must be idempotent and tested for partial failure.",
+        "category": "related_but_unnecessary",
+        "target_verdict": "exclude",
+        "decision_verdict": "include",
+        "p_include": 0.54,
+        "confidence": 0.54,
+        "rationale": "Jev noul decision: P(include)=0.540 -> include (confidence in verdict: 0.540)",
+        "score": 0.7083999999999999
+      },
+      {
+        "candidate_id": "KN-311",
+        "candidate_title": "Postmortem: Storefront latency degradation under load test",
+        "candidate_body": "A pre-peak load test saturated the Storefront Web origin (APP-001) while the API Gateway (APP-024) passed full load through, degrading p95/p99 latency for a fraction of NA users overlapping the test window. Root cause was capacity: insufficient origin autoscaling headroom and edge load-shedding not pre-configured to protect the origin. Mitigated by tuning edge load-shedding; follow-ups right-size origin headroom and schedule load tests off-peak with better isolation.",
+        "category": "must_exclude",
+        "target_verdict": "exclude",
+        "decision_verdict": "exclude",
+        "p_include": 0.06000000000000005,
+        "confidence": 0.94,
+        "rationale": "Jev noul decision: P(include)=0.060 -> exclude (confidence in verdict: 0.940)",
+        "score": 0.9964
+      }
+    ]
+  },
+  "optimized_budget_run": {
+    "criterion_id": "X-GEPA-1-optimized",
+    "prompt_version": "x-gepa-1-pilot-v1-optimized",
+    "jev_instructions": "You are a classifier that decides whether a single candidate artifact should be included in the Worker's working context for a downstream task. You must judge each candidate strictly on its own content (candidate_title and candidate_body). Do NOT assume anything about other candidates, candidate sets, or external context beyond what is contained in the fields you are given.\n\nInput format (always present):\n- candidate_id: string (identifier; for reference only \u2014 do not use its semantics to decide).\n- candidate_title: short title of the artifact.\n- candidate_body: the full artifact text to be judged.\n\nOutput format (must follow exactly):\n- verdict: one of the two strings: \"include\" or \"exclude\"\n- confidence: a decimal number between 0.00 and 1.00 representing your estimated probability that the verdict is correct.\n\nPrimary decision rule (strict):\n- Include the candidate (\"include\") only if, judged strictly from its content, it would be useful to include in the Worker's working context to complete the target task. Use \"useful\" as meaning: the content either directly contains required rules/requirements/policies or acceptable optional information that the Worker might legitimately rely on when performing the task.\n- Exclude the candidate (\"exclude\") if, judged strictly from its content, it is not needed in the Worker's working context. This includes:\n  - content that is unrelated or off-topic,\n  - content that is merely related/background but not necessary (related_but_unnecessary),\n  - content that must be excluded (explicitly disallowed, irrelevant, or otherwise categorized as must_exclude).\n\nCategory mapping rules (derived from examples and domain policy):\n- must_exclude -> exclude\n- related_but_unnecessary -> exclude (being related is NOT sufficient; it must be necessary or acceptable to include)\n- acceptable_optional -> include\n\nAdditional judgment guidance:\n- Judge solely on candidate_title and candidate_body. Do not assume missing clarifying details from other artifacts.\n- Consider whether the Worker would actively need or legitimately use this artifact when solving the task. If it contains concrete constraints, required behaviors, or acceptable optional procedures that would affect how the Worker performs the task, include it.\n- If the artifact is purely contextual, historical, tangential, or redundant and not necessary for the Worker to perform the task, exclude it.\n- If the content is ambiguous about its utility, be conservative: prefer exclude unless there is a clear reason the Worker should have it.\n- Do not invent or infer external facts; you may use internal domain knowledge to interpret technical statements in the candidate_body, but do not assume external connections to other candidates.\n\nConfidence scoring guidelines:\n- Provide a numeric probability reflecting how confident you are that the verdict is correct.\n- High-confidence (\u2265 0.8): candidate clearly belongs (or clearly does not belong) according to the rules above.\n- Medium-confidence (0.6\u20130.79): reasonably clear evidence but some ambiguity.\n- Low-confidence (0.4\u20130.59): borderline or ambiguous; make your best judgment.\n- Very low (< 0.4): strong uncertainty (avoid unless truly ambiguous).\n- If you output \"include\", the confidence may be interpreted as P(include); if \"exclude\", the confidence is your P(correct excluding) estimate.\n\nFormatting and behavior constraints:\n- Output only the two fields: verdict and confidence. Do not add explanations, notes, or other metadata in the final output.\n- Do not reference other candidates, external documents, or the classification labels (e.g., do not print \"must_exclude\" or \"related_but_unnecessary\"). Use only \"include\"/\"exclude\".\n- Be consistent and reproducible: apply the same rules to all candidates.\n\nExamples (mapping from training instances):\n- A candidate labeled must_exclude should be judged \"exclude\" with high confidence.\n- A candidate that is related but unnecessary should be judged \"exclude\" (do not be swayed by topical relevance alone).\n- A candidate that is acceptable optional or contains directly useful rules should be judged \"include\".\n\nUse these rules for every candidate you receive.",
+    "jev_criteria_true": "This candidate artifact should be included in the Worker's working context for this task: its content is relevant to guest checkout order placement (CHK-1421, APP-003) and materially helps complete it correctly.",
+    "jev_criteria_false": "This candidate artifact should be excluded from the Worker's working context for this task: it is out of scope, a distractor, or its content is not resolvable/available to judge.",
+    "raw_included_pre_budget": [
+      "EXP-090",
+      "EXP-209",
+      "KN-045",
+      "KN-052",
+      "KN-063",
+      "KN-101",
+      "KN-128"
+    ],
+    "budgeted_selected": [
+      "EXP-090",
+      "KN-045",
+      "KN-052",
+      "KN-101",
+      "KN-128"
+    ],
+    "budgeted_excluded": [
+      "EXP-055",
+      "EXP-206",
+      "EXP-209",
+      "KN-047",
+      "KN-063",
+      "KN-122",
+      "KN-146",
+      "KN-311",
+      "KN-313",
+      "KN-411"
+    ],
+    "dropped_for_budget": [
+      "EXP-209",
+      "KN-063"
+    ],
+    "selected_count": 5,
+    "budget_respected": true,
+    "must_include_retained": [
+      "KN-045",
+      "KN-052",
+      "EXP-090"
+    ],
+    "must_include_retention_rate": 1.0,
+    "acceptable_optional_retained": [],
+    "acceptable_optional_retention_rate": 0.0,
+    "related_but_unnecessary_retained": [
+      "KN-128"
+    ],
+    "related_but_unnecessary_retention_rate": 0.16666666666666666,
+    "kn101_selected_post_budget": true,
+    "recall": 0.6,
+    "precision": 0.75,
+    "score": 0.667,
+    "verdict": "partial",
+    "gate_pass": true,
+    "required_missing": [],
+    "forbidden_selected": [],
+    "raw_decisions": [
+      {
+        "candidate_id": "KN-045",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "include",
+        "rationale": "Jev noul decision: P(include)=0.950 -> include (confidence in verdict: 0.950)",
+        "confidence": 0.95,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-optimized",
+        "latency_ms": 455.72508312761784,
+        "input_tokens": 1426,
+        "output_tokens": 22,
+        "cost_usd": 5.9892e-05,
+        "timestamp": "2026-09-22T12:42:21.852953+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.95
+            }
+          },
+          "usage": {
+            "input_tokens": 1426,
+            "output_tokens": 22,
+            "cost": 5.9892e-05
+          },
+          "id": "gen-dec-1790080941-Kx7urM79vkd5nJNnWxQ0",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-052",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "include",
+        "rationale": "Jev noul decision: P(include)=0.890 -> include (confidence in verdict: 0.890)",
+        "confidence": 0.89,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-optimized",
+        "latency_ms": 470.57624999433756,
+        "input_tokens": 1507,
+        "output_tokens": 22,
+        "cost_usd": 6.3294e-05,
+        "timestamp": "2026-09-22T12:42:22.323599+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.89
+            }
+          },
+          "usage": {
+            "input_tokens": 1507,
+            "output_tokens": 22,
+            "cost": 6.3294e-05
+          },
+          "id": "gen-dec-1790080941-6D7HmRL3aUfhSqg7dq40",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "EXP-090",
+        "candidate_kind": "experience",
+        "provider": "jev",
+        "verdict": "include",
+        "rationale": "Jev noul decision: P(include)=0.860 -> include (confidence in verdict: 0.860)",
+        "confidence": 0.86,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-optimized",
+        "latency_ms": 412.9949591588229,
+        "input_tokens": 1399,
+        "output_tokens": 22,
+        "cost_usd": 5.8758e-05,
+        "timestamp": "2026-09-22T12:42:22.736657+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.86
+            }
+          },
+          "usage": {
+            "input_tokens": 1399,
+            "output_tokens": 22,
+            "cost": 5.8758e-05
+          },
+          "id": "gen-dec-1790080942-f0yiDdfR2xRzXYV86UN3",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-063",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "include",
+        "rationale": "Jev noul decision: P(include)=0.680 -> include (confidence in verdict: 0.680)",
+        "confidence": 0.68,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-optimized",
+        "latency_ms": 413.63924997858703,
+        "input_tokens": 1490,
+        "output_tokens": 22,
+        "cost_usd": 6.258e-05,
+        "timestamp": "2026-09-22T12:42:23.150339+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.68
+            }
+          },
+          "usage": {
+            "input_tokens": 1490,
+            "output_tokens": 22,
+            "cost": 6.258e-05
+          },
+          "id": "gen-dec-1790080942-HhAec2N8Xk3Hgx3NKwuB",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "EXP-055",
+        "candidate_kind": "experience",
+        "provider": "jev",
+        "verdict": "exclude",
+        "rationale": "Jev noul decision: P(include)=0.250 -> exclude (confidence in verdict: 0.750)",
+        "confidence": 0.75,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-optimized",
+        "latency_ms": 457.17829116620123,
+        "input_tokens": 1376,
+        "output_tokens": 22,
+        "cost_usd": 5.7792e-05,
+        "timestamp": "2026-09-22T12:42:23.607581+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.25
+            }
+          },
+          "usage": {
+            "input_tokens": 1376,
+            "output_tokens": 22,
+            "cost": 5.7792e-05
+          },
+          "id": "gen-dec-1790080943-rtH4jkXNblf5QNrXgIHu",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-047",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "exclude",
+        "rationale": "Jev noul decision: P(include)=0.080 -> exclude (confidence in verdict: 0.920)",
+        "confidence": 0.92,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-optimized",
+        "latency_ms": 454.2094999924302,
+        "input_tokens": 1469,
+        "output_tokens": 22,
+        "cost_usd": 6.1698e-05,
+        "timestamp": "2026-09-22T12:42:24.061960+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.08
+            }
+          },
+          "usage": {
+            "input_tokens": 1469,
+            "output_tokens": 22,
+            "cost": 6.1698e-05
+          },
+          "id": "gen-dec-1790080943-pdbu7wIT24Nlz2OdYFsz",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-101",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "include",
+        "rationale": "Jev noul decision: P(include)=0.690 -> include (confidence in verdict: 0.690)",
+        "confidence": 0.69,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-optimized",
+        "latency_ms": 360.0550829432905,
+        "input_tokens": 1519,
+        "output_tokens": 22,
+        "cost_usd": 6.3798e-05,
+        "timestamp": "2026-09-22T12:42:24.422085+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.69
+            }
+          },
+          "usage": {
+            "input_tokens": 1519,
+            "output_tokens": 22,
+            "cost": 6.3798e-05
+          },
+          "id": "gen-dec-1790080944-KnYsT9TolMmX0U7hT76b",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-128",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "include",
+        "rationale": "Jev noul decision: P(include)=0.740 -> include (confidence in verdict: 0.740)",
+        "confidence": 0.74,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-optimized",
+        "latency_ms": 377.82912515103817,
+        "input_tokens": 1525,
+        "output_tokens": 22,
+        "cost_usd": 6.405e-05,
+        "timestamp": "2026-09-22T12:42:24.799984+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.74
+            }
+          },
+          "usage": {
+            "input_tokens": 1525,
+            "output_tokens": 22,
+            "cost": 6.405e-05
+          },
+          "id": "gen-dec-1790080944-HXNBZj0qOgWlE378ZKAH",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-146",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "exclude",
+        "rationale": "Jev noul decision: P(include)=0.270 -> exclude (confidence in verdict: 0.730)",
+        "confidence": 0.73,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-optimized",
+        "latency_ms": 363.6302079539746,
+        "input_tokens": 1569,
+        "output_tokens": 22,
+        "cost_usd": 6.5898e-05,
+        "timestamp": "2026-09-22T12:42:25.163667+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.27
+            }
+          },
+          "usage": {
+            "input_tokens": 1569,
+            "output_tokens": 22,
+            "cost": 6.5898e-05
+          },
+          "id": "gen-dec-1790080944-WU2iNACFbPnHIOyWA1D6",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-411",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "exclude",
+        "rationale": "Jev noul decision: P(include)=0.140 -> exclude (confidence in verdict: 0.860)",
+        "confidence": 0.86,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-optimized",
+        "latency_ms": 382.73720792494714,
+        "input_tokens": 1421,
+        "output_tokens": 22,
+        "cost_usd": 5.9682e-05,
+        "timestamp": "2026-09-22T12:42:25.546452+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.14
+            }
+          },
+          "usage": {
+            "input_tokens": 1421,
+            "output_tokens": 22,
+            "cost": 5.9682e-05
+          },
+          "id": "gen-dec-1790080945-NBXAcoNiiPBzfGJi8s3Y",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-313",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "exclude",
+        "rationale": "Jev noul decision: P(include)=0.230 -> exclude (confidence in verdict: 0.770)",
+        "confidence": 0.77,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-optimized",
+        "latency_ms": 404.2783749755472,
+        "input_tokens": 1464,
+        "output_tokens": 22,
+        "cost_usd": 6.1488e-05,
+        "timestamp": "2026-09-22T12:42:25.950928+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.23
+            }
+          },
+          "usage": {
+            "input_tokens": 1464,
+            "output_tokens": 22,
+            "cost": 6.1488e-05
+          },
+          "id": "gen-dec-1790080945-3kbWxUUrBL4EwwziMUHu",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "EXP-209",
+        "candidate_kind": "experience",
+        "provider": "jev",
+        "verdict": "include",
+        "rationale": "Jev noul decision: P(include)=0.620 -> include (confidence in verdict: 0.620)",
+        "confidence": 0.62,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-optimized",
+        "latency_ms": 510.3466250002384,
+        "input_tokens": 1372,
+        "output_tokens": 22,
+        "cost_usd": 5.7624e-05,
+        "timestamp": "2026-09-22T12:42:26.461368+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.62
+            }
+          },
+          "usage": {
+            "input_tokens": 1372,
+            "output_tokens": 22,
+            "cost": 5.7624e-05
+          },
+          "id": "gen-dec-1790080946-xq8ncXYUWfJAschMiI7i",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "EXP-206",
+        "candidate_kind": "experience",
+        "provider": "jev",
+        "verdict": "exclude",
+        "rationale": "Jev noul decision: P(include)=0.470 -> exclude (confidence in verdict: 0.530)",
+        "confidence": 0.53,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-optimized",
+        "latency_ms": 404.3542919680476,
+        "input_tokens": 1371,
+        "output_tokens": 22,
+        "cost_usd": 5.7582e-05,
+        "timestamp": "2026-09-22T12:42:26.865760+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.47
+            }
+          },
+          "usage": {
+            "input_tokens": 1371,
+            "output_tokens": 22,
+            "cost": 5.7582e-05
+          },
+          "id": "gen-dec-1790080946-Mu3HKEe4ica0QaPw29Yd",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-122",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "exclude",
+        "rationale": "Jev noul decision: P(include)=0.120 -> exclude (confidence in verdict: 0.880)",
+        "confidence": 0.88,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-optimized",
+        "latency_ms": 421.3885001372546,
+        "input_tokens": 1500,
+        "output_tokens": 22,
+        "cost_usd": 6.3e-05,
+        "timestamp": "2026-09-22T12:42:27.288032+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.12
+            }
+          },
+          "usage": {
+            "input_tokens": 1500,
+            "output_tokens": 22,
+            "cost": 6.3e-05
+          },
+          "id": "gen-dec-1790080946-M93DCUhn8MNnNAq7oU0e",
+          "provider": "TypeSafe"
+        }
+      },
+      {
+        "candidate_id": "KN-311",
+        "candidate_kind": "knowledge",
+        "provider": "jev",
+        "verdict": "exclude",
+        "rationale": "Jev noul decision: P(include)=0.060 -> exclude (confidence in verdict: 0.940)",
+        "confidence": 0.94,
+        "model": "typesafe/jev-1.13-20260917",
+        "prompt_version": "x-gepa-1-pilot-v1-optimized",
+        "latency_ms": 453.69141711853445,
+        "input_tokens": 1472,
+        "output_tokens": 22,
+        "cost_usd": 6.1824e-05,
+        "timestamp": "2026-09-22T12:42:27.741830+00:00",
+        "raw_output": {
+          "model": "typesafe/jev-1.13-20260917",
+          "answers": {
+            "include_in_context": {
+              "type": "noul",
+              "noul": 0.06
+            }
+          },
+          "usage": {
+            "input_tokens": 1472,
+            "output_tokens": 22,
+            "cost": 6.1824e-05
+          },
+          "id": "gen-dec-1790080947-OwxhVSm4xZhsYhrMipuP",
+          "provider": "TypeSafe"
+        }
+      }
+    ]
+  },
+  "optimized_test_split": {
+    "n_test_examples": 5,
+    "mean_score": 0.75862,
+    "per_example": [
+      {
+        "candidate_id": "EXP-090",
+        "candidate_title": "Guest carts must not create loyalty accounts",
+        "candidate_body": "When implementing guest flows in Checkout (APP-003), ensure no code path provisions a Loyalty (APP-015) account. A prior change created orphaned loyalty accounts for guests, triggering a data-cleanup incident.",
+        "category": "must_include",
+        "target_verdict": "include",
+        "decision_verdict": "include",
+        "p_include": 0.86,
+        "confidence": 0.86,
+        "rationale": "Jev noul decision: P(include)=0.860 -> include (confidence in verdict: 0.860)",
+        "score": 0.9804
+      },
+      {
+        "candidate_id": "EXP-055",
+        "candidate_title": "Pricing/promotion changes during a promo window require a wr",
+        "candidate_body": "Pricing/promotion changes during a promo window require a write-through APP-008 cache flush.",
+        "category": "acceptable_optional",
+        "target_verdict": "include",
+        "decision_verdict": "exclude",
+        "p_include": 0.25,
+        "confidence": 0.75,
+        "rationale": "Jev noul decision: P(include)=0.250 -> exclude (confidence in verdict: 0.750)",
+        "score": 0.4375
+      },
+      {
+        "candidate_id": "EXP-209",
+        "candidate_title": "Synchronous promo calls on the checkout path must be made as",
+        "candidate_body": "Synchronous promo calls on the checkout path must be made async or cached.",
+        "category": "related_but_unnecessary",
+        "target_verdict": "exclude",
+        "decision_verdict": "include",
+        "p_include": 0.64,
+        "confidence": 0.64,
+        "rationale": "Jev noul decision: P(include)=0.640 -> include (confidence in verdict: 0.640)",
+        "score": 0.5904
+      },
+      {
+        "candidate_id": "EXP-206",
+        "candidate_title": "Saga compensations must be idempotent and tested for partial",
+        "candidate_body": "Saga compensations must be idempotent and tested for partial failure.",
+        "category": "related_but_unnecessary",
+        "target_verdict": "exclude",
+        "decision_verdict": "exclude",
+        "p_include": 0.45999999999999996,
+        "confidence": 0.54,
+        "rationale": "Jev noul decision: P(include)=0.460 -> exclude (confidence in verdict: 0.540)",
+        "score": 0.7884
+      },
+      {
+        "candidate_id": "KN-311",
+        "candidate_title": "Postmortem: Storefront latency degradation under load test",
+        "candidate_body": "A pre-peak load test saturated the Storefront Web origin (APP-001) while the API Gateway (APP-024) passed full load through, degrading p95/p99 latency for a fraction of NA users overlapping the test window. Root cause was capacity: insufficient origin autoscaling headroom and edge load-shedding not pre-configured to protect the origin. Mitigated by tuning edge load-shedding; follow-ups right-size origin headroom and schedule load tests off-peak with better isolation.",
+        "category": "must_exclude",
+        "target_verdict": "exclude",
+        "decision_verdict": "exclude",
+        "p_include": 0.06000000000000005,
+        "confidence": 0.94,
+        "rationale": "Jev noul decision: P(include)=0.060 -> exclude (confidence in verdict: 0.940)",
+        "score": 0.9964
+      }
+    ]
+  },
+  "run_id": "10b9e4fbda9c",
+  "reflection_lm": "openai/gpt-5-mini",
+  "max_metric_calls": 60,
+  "seed_candidate": {
+    "jev_instructions": "Should this ONE candidate artifact be included in the Worker's working context for this task? Judge it strictly on its own content -- do not assume information about any other candidate.",
+    "jev_criteria_true": "This candidate artifact should be included in the Worker's working context for this task: its content is relevant to guest checkout order placement (CHK-1421, APP-003) and materially helps complete it correctly.",
+    "jev_criteria_false": "This candidate artifact should be excluded from the Worker's working context for this task: it is out of scope, a distractor, or its content is not resolvable/available to judge."
+  },
+  "updated_at": "2026-09-22T12:42:29.966725+00:00"
+}

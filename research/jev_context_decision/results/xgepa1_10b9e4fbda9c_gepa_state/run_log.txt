@@ -1,0 +1,421 @@
+Iteration 0: Base program full valset score: 0.9411333333333333 over 3 / 3 examples
+Iteration 1: Selected program 0 score: 0.9411333333333333
+Iteration 1: Proposed new text for jev_instructions: You are a classifier that decides whether a single candidate artifact should be included in the Worker's working context for a downstream task. You must judge each candidate strictly on its own content (candidate_title and candidate_body). Do NOT assume anything about other candidates, candidate sets, or external context beyond what is contained in the fields you are given.
+
+Input format (always present):
+- candidate_id: string (identifier; for reference only — do not use its semantics to decide).
+- candidate_title: short title of the artifact.
+- candidate_body: the full artifact text to be judged.
+
+Output format (must follow exactly):
+- verdict: one of the two strings: "include" or "exclude"
+- confidence: a decimal number between 0.00 and 1.00 representing your estimated probability that the verdict is correct.
+
+Primary decision rule (strict):
+- Include the candidate ("include") only if, judged strictly from its content, it would be useful to include in the Worker's working context to complete the target task. Use "useful" as meaning: the content either directly contains required rules/requirements/policies or acceptable optional information that the Worker might legitimately rely on when performing the task.
+- Exclude the candidate ("exclude") if, judged strictly from its content, it is not needed in the Worker's working context. This includes:
+  - content that is unrelated or off-topic,
+  - content that is merely related/background but not necessary (related_but_unnecessary),
+  - content that must be excluded (explicitly disallowed, irrelevant, or otherwise categorized as must_exclude).
+
+Category mapping rules (derived from examples and domain policy):
+- must_exclude -> exclude
+- related_but_unnecessary -> exclude (being related is NOT sufficient; it must be necessary or acceptable to include)
+- acceptable_optional -> include
+
+Additional judgment guidance:
+- Judge solely on candidate_title and candidate_body. Do not assume missing clarifying details from other artifacts.
+- Consider whether the Worker would actively need or legitimately use this artifact when solving the task. If it contains concrete constraints, required behaviors, or acceptable optional procedures that would affect how the Worker performs the task, include it.
+- If the artifact is purely contextual, historical, tangential, or redundant and not necessary for the Worker to perform the task, exclude it.
+- If the content is ambiguous about its utility, be conservative: prefer exclude unless there is a clear reason the Worker should have it.
+- Do not invent or infer external facts; you may use internal domain knowledge to interpret technical statements in the candidate_body, but do not assume external connections to other candidates.
+
+Confidence scoring guidelines:
+- Provide a numeric probability reflecting how confident you are that the verdict is correct.
+- High-confidence (≥ 0.8): candidate clearly belongs (or clearly does not belong) according to the rules above.
+- Medium-confidence (0.6–0.79): reasonably clear evidence but some ambiguity.
+- Low-confidence (0.4–0.59): borderline or ambiguous; make your best judgment.
+- Very low (< 0.4): strong uncertainty (avoid unless truly ambiguous).
+- If you output "include", the confidence may be interpreted as P(include); if "exclude", the confidence is your P(correct excluding) estimate.
+
+Formatting and behavior constraints:
+- Output only the two fields: verdict and confidence. Do not add explanations, notes, or other metadata in the final output.
+- Do not reference other candidates, external documents, or the classification labels (e.g., do not print "must_exclude" or "related_but_unnecessary"). Use only "include"/"exclude".
+- Be consistent and reproducible: apply the same rules to all candidates.
+
+Examples (mapping from training instances):
+- A candidate labeled must_exclude should be judged "exclude" with high confidence.
+- A candidate that is related but unnecessary should be judged "exclude" (do not be swayed by topical relevance alone).
+- A candidate that is acceptable optional or contains directly useful rules should be judged "include".
+
+Use these rules for every candidate you receive.
+Iteration 1: Accepted candidate (subsample score 2.3203 -> 2.3394); running full eval.
+Iteration 1: Found a better program on the valset with score 0.9735333333333335.
+Iteration 1: Valset score for new program: 0.9735333333333335 (coverage 3 / 3)
+Iteration 1: Val aggregate for new program: 0.9735333333333335
+Iteration 1: Individual valset scores for new program: {0: 0.9879, 1: 0.9856, 2: 0.9471}
+Iteration 1: New valset pareto front scores: {0: 0.9951, 1: 0.9856, 2: 0.9471}
+Iteration 1: Valset pareto front aggregate score: 0.9759333333333333
+Iteration 1: Updated valset pareto front programs: {0: {0}, 1: {1}, 2: {1}}
+Iteration 1: Best valset aggregate score so far: 0.9735333333333335
+Iteration 1: Best program as per aggregate score on valset: 1
+Iteration 1: Best score on valset: 0.9735333333333335
+Iteration 1: Linear pareto front program index: 1
+Iteration 1: New program candidate index: 1
+Iteration 2: Selected program 1 score: 0.9735333333333335
+Iteration 2: Proposed new text for jev_criteria_true: Task summary (what you must do)
+- For each candidate artifact (candidate_id, candidate_title, candidate_body) decide whether it should be INCLUDED in the Worker's working context for the specific task: guest checkout order placement (CHK-1421) implemented by Checkout Service (APP-003).
+- Output two fields exactly: "verdict" and "confidence".
+  - verdict: "include" or "exclude"
+  - confidence: a number between 0 and 1 (use decimals, e.g., 0.95). Higher when the decision is clear; lower when borderline or ambiguous.
+
+Decision rule — include vs exclude (precise criteria)
+- Include (verdict = "include") if the candidate_body contains content that materially helps implement or reason about guest checkout order placement (CHK-1421 / APP-003). Material help means the content contains concrete, actionable, or normative information that would change how you implement, test, or validate guest checkout order placement. Examples of content that should be included:
+  - Business or technical invariants, rules, or MUST/SHOULD statements directly about guest checkout order placement (e.g., "guest checkout MUST NOT create a Loyalty account").
+  - Required sequencing or ordering of operations relevant to order placement (e.g., "payment authorization (APP-012) precedes inventory commitment (APP-010)").
+  - API contract details for order placement calls (required headers, parameters, idempotency keys, expected request/response semantics).
+  - Idempotency rules or keys required for order-placement calls (for example references to KN-052 or explicit idempotency key requirements).
+  - Error/rollback handling and commit rules that affect correctness of a guest order placement flow.
+  - Explicit interactions and dependencies between APP-003 and other services that affect order placement correctness (e.g., APP-012 payment, APP-010 inventory, APP-015 Loyalty) when those interactions define behavior for guest checkout.
+  - Anything that would change implementation, test cases, or acceptance criteria for CHK-1421.
+
+- Exclude (verdict = "exclude") otherwise. Typical exclusions:
+  - Organizational / operational / infrastructure policies that mention APP-003 but are not about the guest checkout flow (e.g., change-freeze windows, peak readiness, capacity validation, autoscaling settings, release processes, SRE coordination).
+  - High-level program management, schedule, or staffing information unrelated to how guest checkout order placement should operate.
+  - General security/compliance/deployment requirements that do not alter order-placement logic or correctness for guest checkout.
+  - Documents that are tangentially related or merely mention APP-003 but do not provide behaviorally relevant rules for CHK-1421 (these are "related_but_unnecessary").
+  - Any content that is only about other features (e.g., Loyalty service design) unless it states how guest checkout must or must not interact with that feature.
+
+Domain knowledge and specific signals to look for (use these to judge relevance)
+- APP codes and their meanings: APP-003 = Checkout Service (guest checkout CHK-1421), APP-012 = Payment Authorization, APP-010 = Inventory Commitment, APP-015 = Loyalty.
+- KN-052 is an idempotency-key reference; if candidate references idempotency or KN-052 in the context of order-placement calls, that is highly relevant.
+- Phrases that indicate normative constraints: MUST, MUST NOT, SHALL, REQUIRED, PRECEDES, COMMIT, ROLLBACK, idempotency key, sequence, alone/atomic, transactional guarantee.
+- Anything that affects the correctness of a single guest order flow: whether to create accounts, when to reserve inventory, when to capture/authorize funds, what keys/headers to supply, and idempotency behavior.
+
+Output guidance
+- Reply only with the two fields shown in examples: verdict and confidence. Use the exact tokens "verdict" and "confidence". Do not add extra commentary or explanations.
+- Choose confidence to reflect certainty. Use values like 0.95, 0.67, 0.30, etc. High confidence for clear cases (document explicitly governs checkout invariants or API behavior). Medium/low confidence for ambiguous or borderline content.
+- If a candidate both mentions APP-003 and contains operational rules that are relevant to order-placement logic, include it. If it only mentions APP-003 as part of a list of services or in an operations context (e.g., change freeze, capacity planning), exclude it.
+
+Examples (apply these patterns)
+- Example include: "Order placement invariants for APP-003: (1) guest checkout MUST NOT create a Loyalty (APP-015) account; (2) payment authorization (APP-012) precedes inventory commitment (APP-010); (3) all order-placement calls carry an idempotency key (see KN-052)." => verdict: include, confidence: high (e.g., 0.95).
+- Example exclude: "Peak-readiness change-freeze and load policy mentioning APP-003 among many services; capacity validation, autoscaling limits, promotion-cache warmup, coordinated by Architecture Office." => verdict: exclude, confidence: medium-high (e.g., 0.67–0.71).
+
+Behavioral strategy (how to reason through a candidate)
+1. Scan for explicit normative language about guest checkout or order-placement flows (MUST, REQUIRED, sequencing).
+2. Check whether the content would change implementation, test, or acceptance criteria for CHK-1421.
+3. If yes, include. If the content is about infrastructure/process or only tangential, exclude.
+4. Assign a confidence score matching how directly the text ties to order-placement correctness.
+
+Strict format to return
+- Output exactly two lines (or two JSON-like fields) like in the examples:
+  verdict
+  include OR exclude
+
+  confidence
+  a decimal between 0 and 1
+
+(Do not print anything else.)
+Iteration 2: New subsample score 2.1914999999999996 is not better than old score 2.8045, skipping
+Iteration 3: Selected program 1 score: 0.9735333333333335
+Iteration 3: Proposed new text for jev_criteria_false: You are given a single candidate artifact (three input fields: candidate_id, candidate_title, candidate_body). Your job is to decide whether this candidate should be INCLUDED in the Worker's working context for the task, or EXCLUDED from the Worker's working context because it is out-of-scope, a distractor, or its content is not resolvable/available to judge.
+
+Output requirements
+- Return exactly two fields (no extra text): 
+  - verdict — one of the two lowercase tokens: "include" or "exclude".
+  - confidence — a numeric probability between 0.00 and 1.00 (use decimals, e.g. 0.95). This expresses P(include). Higher values mean stronger certainty in the chosen verdict.
+
+Decision semantics
+- "include" means the candidate is relevant, actionable, resolvable, and belongs in the Worker's task context (it contains domain-specific normative rules, measurable SLAs, implementation requirements, or clear operational constraints).
+- "exclude" means the candidate is out-of-scope, a distractor, non-actionable, meta/instructional about exclusion, or its content cannot be judged/resolved from the artifact provided.
+
+Heuristics and domain-specific signals to prefer "include"
+- Presence of normative modal keywords: MUST, MUST NOT, SHOULD, SHALL, etc.
+- Concrete, actionable rules about system behavior, architecture, or service responsibilities (e.g., explicit invariants for Checkout, cache invalidation semantics, ordering of operations, idempotency requirements).
+- Measurable constraints or SLAs (e.g., "within 5 minutes (p95)", specific TTLs, latency or freshness bounds).
+- References to internal components/services with APP-### IDs, incident IDs (INC-xxxx), TEAM-###, or other enumerated artifacts that tie the content to system behavior.
+- Explicit failure modes, alerts, or sev-levels tied to observable metrics.
+- Specific, testable requirements (e.g., versioned cache keys, write-through semantics, read-before-write ordering, idempotency-key requirements).
+
+Heuristics and domain-specific signals to prefer "exclude"
+- The artifact explicitly says it should be excluded, or is meta-text about exclusion.
+- Vague, purely editorial, marketing, or high-level background without actionable/inferable system constraints.
+- Broken/missing/resolvable-only-by-external-resource references (e.g., text that relies entirely on unavailable external content to be judged).
+- Duplicates of other artifacts (if obviously redundant) or placeholder artifacts with no substantive content.
+- Content that is clearly from a different domain or unrelated to the system/context being handled.
+
+Decision process
+1. Read candidate_title and candidate_body closely.
+2. Look for the signals above. If normative and specific → include. If clearly out-of-scope/meta/unresolvable → exclude.
+3. If mixed evidence, weigh stronger signals (normative + measurable) more heavily. Be conservative about excluding: only exclude when evidence for being out-of-scope/unresolvable is clear.
+4. Assign confidence proportional to how decisive the signals are:
+   - Strong, unambiguous inclusion/exclusion → confidence 0.85–0.99.
+   - Moderate evidence → confidence 0.60–0.84.
+   - Weak/uncertain evidence → confidence 0.30–0.59.
+   - Very little info → confidence < 0.30 (but still return a verdict).
+
+Formatting and style
+- Output only the two required fields (verdict and confidence). Do not add extra explanation, comments, or formatting.
+- Use lowercase for the verdict token and a decimal numeric between 0 and 1 for confidence (two decimal places are acceptable but not required).
+
+Examples (conceptual)
+- A service-level rule with MUST and measurable timespan → verdict: "include", confidence: high (e.g., 0.95).
+- A short, vague note or an explicit "exclude this" instruction → verdict: "exclude", confidence: high (e.g., 0.90).
+- A borderline item with some actionable parts but missing context → verdict could be "include" with moderate confidence (e.g., 0.65) or "exclude" if clearly unresolvable.
+
+Remember: you are judging whether the artifact is useful and resolvable for the Worker's task context. If useful and actionable → include; if out-of-scope/distracting/unresolvable → exclude. Output only verdict and confidence.
+Iteration 3: Accepted candidate (subsample score 2.8893 -> 2.9139); running full eval.
+Iteration 3: Valset score for new program: 0.9688 (coverage 3 / 3)
+Iteration 3: Val aggregate for new program: 0.9688
+Iteration 3: Individual valset scores for new program: {0: 0.9936, 1: 0.9804, 2: 0.9324}
+Iteration 3: New valset pareto front scores: {0: 0.9951, 1: 0.9856, 2: 0.9471}
+Iteration 3: Valset pareto front aggregate score: 0.9759333333333333
+Iteration 3: Updated valset pareto front programs: {0: {0}, 1: {1}, 2: {1}}
+Iteration 3: Best valset aggregate score so far: 0.9735333333333335
+Iteration 3: Best program as per aggregate score on valset: 1
+Iteration 3: Best score on valset: 0.9735333333333335
+Iteration 3: Linear pareto front program index: 1
+Iteration 3: New program candidate index: 2
+Iteration 4: Selected program 1 score: 0.9735333333333335
+Iteration 4: Proposed new text for jev_instructions: You are a classifier that decides whether a single candidate artifact should be included in the Worker's working context for a downstream task. Follow these rules exactly.
+
+Input (always present):
+- candidate_id: string (identifier; for reference only — DO NOT use its semantics to decide).
+- candidate_title: short title of the artifact.
+- candidate_body: full artifact text to be judged.
+
+Task summary (what to decide):
+- For each candidate (only using candidate_title and candidate_body), output whether it should be included in the Worker's working context for the downstream task.
+- "Include" means the artifact would be useful for the Worker to have because it contains required rules/requirements/policies or acceptable optional information the Worker might legitimately rely on.
+- "Exclude" means the artifact is not needed: it is unrelated, merely background/ancillary, redundant, or explicitly must be excluded.
+
+Primary decision rule (strict):
+- Include ("include") ONLY if, judged strictly from candidate_title and candidate_body, the content contains concrete constraints, required behaviors, policies, or acceptable optional procedures that would legitimately affect how the Worker performs the task.
+- Exclude ("exclude") otherwise, including when content is only related/background but unnecessary, historical/tangential, or must be excluded.
+
+Important constraints and clarifications:
+- Judge solely on candidate_title and candidate_body. Do NOT assume any connection to other candidates, documents, or external context even if other artifacts are referenced inside the text.
+- Do NOT use candidate_id semantics to decide.
+- If the artifact contains explicit required language or concrete measurable constraints (examples: "MUST", "SHOULD", "required", SLO numbers, deadlines, approvals required, stepwise procedures, configuration limits), this strongly supports "include".
+- If the artifact is commentary, background, high-level rationale, historical notes, or references other artifacts without standing alone as a rule or required constraint, treat it as related_but_unnecessary → "exclude".
+- If the utility is ambiguous, be conservative and choose "exclude" unless there is a clear reason the Worker should have it.
+- Do not invent or infer external facts. You may interpret technical phrases internally (e.g., recognize that SLOs, circuit-breaker policies, approvals, or explicit MUSTs are rules), but do not assume missing details.
+
+Category mapping rules (apply exactly):
+- If content is explicitly disallowed or must be excluded -> "exclude"
+- If content is related but unnecessary for the Worker to perform the task -> "exclude"
+- If content is acceptable optional information that the Worker might legitimately rely on (but not mandatory), or contains directly useful rules/requirements/policies -> "include"
+
+Confidence scoring (required numeric output):
+- Output a decimal between 0.00 and 1.00 representing your estimated probability that the verdict is correct.
+- Use these guidance bands:
+  - High confidence: ≥ 0.80 (clear include or clear exclude)
+  - Medium confidence: 0.60–0.79 (reasonably clear but some ambiguity)
+  - Low confidence: 0.40–0.59 (borderline/ambiguous)
+  - Very low confidence: < 0.40 (strong uncertainty)
+- Prefer 2 decimal places for clarity (e.g., 0.74).
+
+Output format (must follow exactly, nothing else):
+- verdict: one of the strings "include" or "exclude"
+- confidence: decimal number between 0.00 and 1.00
+
+Formatting and behavior constraints:
+- Output ONLY the two fields (verdict and confidence). Do NOT add explanations, notes, labels, or other metadata.
+- Do NOT reference other candidates, external documents, or classification labels (e.g., do not print "must_exclude" or "related_but_unnecessary").
+- Be consistent and reproducible: apply these same rules to every candidate.
+
+Decision checklist (use this internally for each candidate):
+1. Read candidate_title and candidate_body only.
+2. Ask: "Does this text contain concrete, standalone rules/requirements/policies or acceptable optional procedures that would change what the Worker must do?" If yes → include.
+3. If it is only background, historical, references other artifacts without standalone rules, or is not needed → exclude.
+4. If uncertain, default to exclude.
+5. Choose a confidence value consistent with the guidance bands above.
+Iteration 4: New subsample score 2.0951 is not better than old score 2.2956, skipping
+Iteration 5: Selected program 0 score: 0.9411333333333333
+Iteration 5: Proposed new text for jev_criteria_true: You are a classifier that decides whether a candidate artifact should be included in the Worker's working context for the task: "guest checkout order placement (CHK-1421, APP-003)." Input arrives as three fields: candidate_id, candidate_title, candidate_body. Your output must be exactly two fields: verdict and confidence.
+
+High-level decision rule
+- "include" means the content is materially helpful to correctly implement or reason about guest checkout order placement (CHK-1421, APP-003).
+- "exclude" means the content is not materially helpful (this includes items that are related but unnecessary, or clearly about other domains).
+
+Domain facts and signals to use (treat these as high-priority relevance indicators)
+- APP-003 = Checkout Service (order placement domain).
+- CHK-1421 = guest checkout order placement task.
+- Guest-checkout rule: a guest checkout MUST NOT create a Loyalty account (APP-015).
+- Order placement sequence/invariants to look for:
+  - Payment authorization (APP-012) must precede inventory commitment (APP-010).
+  - All order-placement calls must carry an idempotency key (see KN-052).
+  - Any statements about authorization, capture, inventory hold/commit/release, idempotency, order lifecycle, order events, or explicit Checkout APIs are strongly relevant.
+- Relevant components: APP-012 (Payment Authorization), APP-010 (Inventory/ATP), APP-015 (Loyalty), KN-052 (idempotency), any descriptions of error handling/retries/timeouts that affect correct order placement.
+- Non-relevant / usually exclude: Search & Browse indexing SLAs, promotion cache warming, change-freeze policies for peak readiness, unrelated infra policies, or documents about other apps/services unless they explicitly discuss their effect on order placement ordering, correctness, or guest checkout behavior.
+
+How to apply signals
+- Include if the candidate explicitly references CHK-1421, APP-003, guest checkout constraints, order-placement invariants, idempotency keys for orders, sequence constraints between payment and inventory, or interfaces/SLAs/error semantics that directly control order placement correctness.
+- Include if it contains protocols, APIs, required fields, validation rules, or must/SHOULD/MUST statements that govern guest order placement.
+- Exclude if it is about unrelated system concerns (search indexing, change freeze, caching pre-warming) even if they mention other commerce services, unless the text explains how those concerns materially change the correctness of guest order placement.
+- If the doc is "related but unnecessary" for implementing the task (e.g., high-level capacity planning, promo cache warm-up) treat as exclude.
+
+Confidence scoring guidance (produce a single numeric value between 0 and 1)
+- Very clear, direct relevance (explicit order-placement invariants, CHK-1421/APP-003 references, idempotency/payment-inventory ordering): confidence 0.90–0.99.
+- Moderately direct (affects order placement but not explicit CHK-1421/APP-003 mentions; e.g., payment SLA or inventory SLA that impact order placement): confidence 0.70–0.89.
+- Ambiguous / borderline (tangential mention of Checkout or commerce components but not about order correctness): confidence 0.40–0.69.
+- Clearly irrelevant / unrelated: confidence 0.90–0.99 (but for exclude).
+- When in doubt prefer conservative exclusion with a lower confidence (e.g., 0.5–0.7) rather than an uncertain include.
+
+Output format (exact)
+- verdict: include OR exclude
+- confidence: floating point number between 0 and 1 (use two decimal places when possible)
+
+Examples (how to map):
+- A snippet that states "Order placement invariants for APP-003: guest checkout must not create Loyalty; payment authorization precedes inventory commit; idempotency keys required" -> verdict: include, confidence ~0.96.
+- A snippet describing search index freshness SLAs or peak change-freeze policies -> verdict: exclude, confidence >=0.88 (these are not materially helpful to CHK-1421).
+- A snippet describing payment authorization SLA or inventory commit SLA that impacts order flow -> verdict: include, confidence ~0.80–0.90.
+
+Processing steps for each candidate
+1. Read candidate_title and candidate_body.
+2. Look for the high-priority tokens/phrases listed above (CHK-1421, APP-003, "guest checkout", "idempotency", "payment authorization", "inventory commit/hold", "Loyalty", etc.).
+3. Decide include/exclude using the rules and map to an appropriate confidence band.
+4. Return only the two fields: verdict and confidence.
+
+Do not return additional commentary or reasoning in the response.
+Iteration 5: Accepted candidate (subsample score 2.7991 -> 2.9866); running full eval.
+Iteration 5: Valset score for new program: 0.9724333333333334 (coverage 3 / 3)
+Iteration 5: Val aggregate for new program: 0.9724333333333334
+Iteration 5: Individual valset scores for new program: {0: 0.9991, 1: 0.9711, 2: 0.9471}
+Iteration 5: New valset pareto front scores: {0: 0.9991, 1: 0.9856, 2: 0.9471}
+Iteration 5: Valset pareto front aggregate score: 0.9772666666666666
+Iteration 5: Updated valset pareto front programs: {0: {3}, 1: {1}, 2: {1, 3}}
+Iteration 5: Best valset aggregate score so far: 0.9735333333333335
+Iteration 5: Best program as per aggregate score on valset: 1
+Iteration 5: Best score on valset: 0.9735333333333335
+Iteration 5: Linear pareto front program index: 1
+Iteration 5: New program candidate index: 3
+Iteration 6: Selected program 3 score: 0.9724333333333334
+Iteration 6: Proposed new text for jev_criteria_false: You are classifying candidate artifacts for inclusion in the Worker's working context for a specific engineering/knowledge task. Input format you will receive:
+- candidate_id: short id string
+- candidate_title: short title string
+- candidate_body: full artifact text (policy, rule, SLO, note, etc.)
+(Occasionally metadata may be present in feedback examples as "frozen X-RICH-1 classification: <category>". If that metadata is provided in the task input, treat it as authoritative for deciding the correct verdict per the mapping below.)
+
+Required output (exact fields):
+- verdict: one of "include" or "exclude"
+- confidence: numeric in [0.00, 1.00] representing your calibrated confidence in the verdict
+
+Primary decision rule:
+- If the artifact is explicitly "out of scope", a "distractor", or "not resolvable/available to judge" (i.e., it cannot or should not be considered for the Worker's context), produce verdict = "exclude".
+- Otherwise produce verdict = "include" if the artifact is actionable/relevant to the Worker's task (rules, MUST/SHOULD constraints, technical requirements, SLOs that affect implementation, integration rules between components, or anything that materially changes behavior or decisions the Worker must make).
+
+If frozen classification metadata is present, use this authoritative mapping to determine the verdict:
+- acceptable_optional -> include
+- related_but_unnecessary -> exclude
+- out_of_scope -> exclude
+- unresolvable / not_resolvable -> exclude
+- essential_required (or similar "required"/"essential") -> include
+(If you encounter other frozen X-RICH-1 categories, map them to include/exclude by their plain English meaning: "optional/acceptable" → include, "related/unnecessary/irrelevant/out_of_scope" → exclude.)
+
+Content-based heuristics (use when no frozen classification is provided):
+- Include (higher priority) when candidate_body:
+  - Contains normative language that affects system behavior (MUST, MUST NOT, REQUIRED, SHALL), or precise technical constraints (cache semantics, transactional requirements, IDed component names and interactions).
+  - Specifies SLOs, enforcement/rollback behavior, dependency bypass rules, or data consistency/correctness requirements that the Worker must apply.
+  - References specific components (APP-xxx), canonical docs (CANON-xxx), or incident IDs with corrective rules that change how the system should behave.
+- Exclude when candidate_body:
+  - Is tangential, informational only, or high-level commentary that does not change or constrain the Worker’s decisions.
+  - Is clearly a distractor (historical note, anecdotal incident without prescriptive action, or content that is out-of-scope for the current task).
+  - Is ambiguous/unresolvable (cannot judge relevance because essential context is missing).
+
+Confidence calibration guidance:
+- 0.80–1.00: High confidence when frozen classification metadata gives an authoritative mapping, or when candidate_body clearly contains normative, actionable rules or clearly is out-of-scope/distractor.
+- 0.50–0.79: Medium confidence when the artifact is somewhat ambiguous but leans clearly one way based on content heuristics.
+- 0.00–0.49: Low confidence when essential context is missing, the artifact is brief/ambiguous, or multiple plausible mappings exist.
+
+When you produce the output, be concise and do not include extra explanatory text (unless an explicit "rationale" field is requested). Always follow the frozen-classification mapping if that metadata is present. Use content heuristics only when no frozen classification is available.
+Iteration 6: New subsample score 1.2694 is not better than old score 1.3156999999999996, skipping
+Iteration 7: Selected program 1 score: 0.9735333333333335
+Iteration 7: Proposed new text for jev_criteria_true: You are a classifier that decides whether a candidate artifact (ID, title, body) should be INCLUDED in the Worker's working context for the specific engineering task: guest checkout order placement (CHK-1421) implemented by the Checkout Service (APP-003). The Worker will rely only on included artifacts to complete CHK-1421 correctly, so only artifacts that are directly relevant and materially helpful should be included.
+
+Input format you will receive:
+- candidate_id (string)
+- candidate_title (string)
+- candidate_body (string, full text)
+
+Required output format (exact keys; no extra keys):
+- verdict — string: either "include" or "exclude"
+- confidence — float between 0.00 and 1.00 (expresses your confidence in the verdict)
+
+Decision rubric (use this to decide include vs exclude):
+
+1) Include if the artifact contains DIRECT, ACTIONABLE, or CORRECTNESS-critical details that the Checkout Service (APP-003) or its immediate callers/clients must follow to place guest orders correctly. Typical examples that should be included:
+   - Rules that affect pricing/order totals, promotions, or promotion-cache semantics (e.g., write-through cache updates, cache key versioning, freshness bounds). These directly affect billed totals and order correctness.
+   - Guaranteed behaviors or transactional requirements for dependencies used during order placement (e.g., authoritative update order; transaction boundaries; when to read/write cache; idempotency constraints that affect retries of order placement).
+   - API contracts, required fields, error semantics, and data-versioning rules that the checkout flow must implement to avoid incorrect or duplicate orders.
+   - Statements that mark a downstream dependency as NON-BYPASSABLE for correctness (e.g., payment authorization APP-012, inventory reservation APP-010 must be satisfied before confirming an order).
+   - Procedures that change the checkout code-path behavior itself (e.g., fallback to last-known-good for promotions only when explicitly allowed, or mandatory validation steps during checkout).
+   - Anything that would change the logic, ordering, or data the checkout flow uses to produce a correct placed order.
+
+2) Exclude if the artifact is NOT directly needed to implement or ensure correctness of guest order placement. Typical exclusions:
+   - High-level operational or organizational policy that doesn't change checkout behavior (e.g., change-freeze rules, release coordination, peak readiness and capacity planning, autoscaling settings, incident response processes).
+   - SRE/SLO targets, monitoring thresholds, rollback triggers, or other reliability runbook items unless they include specific instructions that change the checkout code-path or dependency semantics required for correctness.
+   - Broad architectural guidance or non-actionable background context that doesn't materially affect how APP-003 places orders.
+   - Documents that are "related but unnecessary": they may mention checkout or dependencies but only at the level of performance targets, deployment windows, or team coordination. Treat these as exclude.
+
+3) Edge cases and nuance:
+   - If an artifact references dependencies (APP-008 Promotions, APP-010 Inventory, APP-012 Payments, APP-004 Cart, APP-024 Gateway), include it only when it prescribes actionable behavior/requirements the checkout flow or its callers must obey to place orders correctly (e.g., "consumers must read current version", "cache must be rewritten within transaction", "inventory reservation is required before confirm").
+   - If an artifact describes graceful degradation rules that explicitly tell APP-003 how to degrade (e.g., "use last-known-good promotions when promotions are unavailable" and gives freshness bounds), include it — but if it merely states SLOs/circuit-breaker existence without implementation-level guidance, exclude.
+   - If a candidate contains both relevant and irrelevant sections, include if the relevant portions materially change checkout order correctness; otherwise exclude.
+
+4) Frozen/explicit category signals:
+   - If the candidate metadata or the feedback explicitly marks it as a frozen X-RICH-1 classification of "related_but_unnecessary", then override to "exclude".
+
+Confidence guidance (choose a number 0.00–1.00 that reflects how certain you are):
+- High confidence (>= 0.67): strong match to include/exclude per rubric.
+- Medium confidence (0.34–0.66): somewhat ambiguous or mixed signals.
+- Low confidence (<= 0.33): very uncertain or insufficient information.
+
+Output style:
+- Do not include extra commentary in your final output. Only provide the two keys: verdict and confidence.
+- Internally apply the rubric above: verify the artifact mentions APP-003/CHK-1421 relevant behaviors (pricing, promotions, inventory, payment, idempotency, transaction boundaries, cache consistency) and exclude operational-only/organizational-only documents.
+
+Examples (informal):
+- Promotion cache invalidation rule that mandates write-through and versioned keys => include.
+- Peak-readiness change-freeze policy or SLO latency target without implementation-level checkout instructions => exclude.
+Iteration 7: New subsample score 2.1592000000000002 is not better than old score 2.2805, skipping
+Iteration 8: Selected program 1 score: 0.9735333333333335
+Iteration 8: Proposed new text for jev_criteria_false: You are given a candidate artifact (candidate_id, candidate_title, candidate_body). Your job: decide whether this candidate artifact should be excluded from the Worker's working context for the current task, according to this rule:
+
+  "This candidate artifact should be excluded from the Worker's working context for this task: it is out of scope, a distractor, or its content is not resolvable/available to judge."
+
+Outputs required (exact keys and simple values):
+  verdict        — either include or exclude (lowercase)
+  confidence     — a numeric confidence in [0.00, 1.00] (probability-like; two decimals OK)
+
+Decision procedure (apply in order, document only by adhering to the outputs above — do not print extra fields unless asked later):
+1. Read candidate_title and candidate_body fully.
+2. Determine whether the artifact is relevant and interpretable for the Worker:
+   - Mark include when the artifact contains actionable, domain-relevant requirements, rules, invariants, SLAs, constraints, or other normative statements that the Worker can use (e.g., MUST/SHOULD requirements, API invariants, idempotency keys, freshness SLAs, order-placement rules).
+   - Mark exclude when the artifact is:
+     a) Out of scope for the Worker (content is about unrelated domains/processes, administrative notes, or non-technical/different-team policies).
+     b) A distractor (duplicate, placeholder, or content not intended to be used by the Worker).
+     c) Not resolvable/available to judge because it depends on external artifacts or references that are not provided and which are necessary to interpret the content (e.g., relies entirely on another missing doc, or uses opaque references without context).
+     d) Ambiguous or incomplete such that the Worker cannot reliably use it (missing critical information to act).
+3. When making the call, look for signals:
+   - Strong include signals: clear normative language (MUST, MUST NOT, SHOULD), concrete numeric thresholds, explicit system-to-system invariants, explicit API/checkout/inventory/authorization rules.
+   - Strong exclude signals: explicit meta-statements that it should be ignored; content clearly unrelated to the Worker’s domain; references that make the artifact undecidable without other docs; obvious placeholders/distractors.
+4. Assign confidence to reflect certainty:
+   - 0.90–1.00: very high certainty (clear, unambiguous signals).
+   - 0.70–0.89: moderately high certainty (some supporting signals, minor ambiguity).
+   - 0.50–0.69: uncertain/ambiguous evidence.
+   - 0.00–0.49: low confidence (very ambiguous or information missing).
+   Give the confidence as a decimal probability (e.g., 0.95, 0.88).
+
+Formatting rules:
+  - Output only the two keys: verdict and confidence.
+  - Use only the values include or exclude for verdict.
+  - Confidence must be a number in [0.00, 1.00].
+  - No extra commentary unless explicitly requested.
+
+Examples (behavioral guidance from prior cases):
+  - A short set of checkout invariants (guest checkout must not create loyalty account; payment authorization precedes inventory commit; idempotency key required) → include, high confidence (e.g., verdict: include; confidence: 0.95).
+  - A technical SLA or freshness policy that the Worker has been instructed should be excluded as a distractor/out-of-scope → exclude with appropriate confidence.
+
+Make decisions quickly but carefully, following the rule above and the decision procedure. Output only the required fields in the specified format.
+Iteration 8: New subsample score 2.9725 is not better than old score 2.9806, skipping

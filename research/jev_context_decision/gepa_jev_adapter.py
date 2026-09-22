@@ -29,10 +29,21 @@ The per-example score GEPA optimizes against is a Brier-score complement
 (1 - (p_include - target)^2, in [0, 1], higher is better) over JEV's own
 ``noul`` probability -- not raw classification accuracy -- so GEPA gets
 calibration signal, not just a binary right/wrong.
+
+Every real ``provider.decide()`` call in ``evaluate()`` goes through
+``decide_with_retry()``: bounded exponential-backoff retry on transient
+network failures only (``TimeoutError``/``socket.timeout``/
+``urllib.error.URLError``), resending the exact same request each attempt.
+Application-level errors (a real OpenRouter error response, a misconfigured
+provider) are never retried -- they propagate on the first attempt, same as
+before this was added.
 """
 
 from __future__ import annotations
 
+import socket
+import time
+import urllib.error
 from dataclasses import dataclass, field
 from typing import Any, Mapping, Sequence
 
@@ -43,6 +54,41 @@ from .providers.jev_provider import JevProvider
 #: The exact keys GEPA's ``seed_candidate`` / ``candidate`` dicts must use.
 #: These map 1:1 onto the corresponding ``DecisionCase`` fields.
 COMPONENT_KEYS: tuple[str, ...] = ("jev_instructions", "jev_criteria_true", "jev_criteria_false")
+
+#: Exceptions treated as transient/retryable -- purely network-level failures.
+#: Deliberately excludes OpenRouterError (a real non-2xx response, e.g. auth or
+#: a bad request) and ProviderNotConfigured -- those are not transient and must
+#: propagate immediately, not be retried. socket.timeout is TimeoutError's alias
+#: on Python >=3.10 (listed anyway for clarity, matching the exact set specified
+#: for this retry policy).
+TRANSIENT_EXCEPTIONS: tuple[type[BaseException], ...] = (
+    TimeoutError,
+    socket.timeout,
+    urllib.error.URLError,
+)
+
+
+def decide_with_retry(provider: Any, candidate: Any, case: DecisionCase, *,
+                       max_attempts: int = 3, base_delay: float = 2.0) -> Any:
+    """``provider.decide(candidate, case=case)`` with bounded exponential-backoff
+    retry on transient network failures only.
+
+    Every attempt resends the exact same ``candidate``/``case`` -- nothing about
+    the request changes between retries. Non-transient errors (an actual
+    OpenRouter error response, a misconfigured provider, etc.) propagate on the
+    first attempt, unretried. After ``max_attempts`` transient failures, the
+    last exception is re-raised (not swallowed) so the caller's own
+    checkpointing can react to a real, unrecovered failure.
+    """
+    attempt = 0
+    while True:
+        attempt += 1
+        try:
+            return provider.decide(candidate, case=case)
+        except TRANSIENT_EXCEPTIONS:
+            if attempt >= max_attempts:
+                raise
+            time.sleep(base_delay * (2 ** (attempt - 1)))
 
 
 def seed_candidate_from_bc_0101() -> dict[str, str]:
@@ -121,7 +167,7 @@ class JevGepaAdapter:
 
         for data_inst in batch:
             artifact = data_inst.load()
-            decision = self.provider.decide(artifact, case=case)
+            decision = decide_with_retry(self.provider, artifact, case)
             p_include = decision.confidence if decision.verdict == "include" else 1.0 - (decision.confidence or 0.5)
             target = 1.0 if data_inst.target_verdict == "include" else 0.0
             score = 1.0 - (p_include - target) ** 2  # Brier-complement, higher is better
