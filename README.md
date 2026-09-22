@@ -1,12 +1,150 @@
 # EnterpriseSim
 
-> **A benchmark for AI agents on a _realistic enterprise_ — measuring the agent, not the
-> model, and whether it actually _learns_ over time. Reproducible, and with zero data risk.**
+**An open-source testbed for simulating enterprise AI Worker use cases and evaluating the
+decisions they make.**
 
 Coding benchmarks test agents on isolated, toy repositories. Real enterprises are the
 opposite: legacy debt, cross-team dependencies, incidents, governance rules, half-strangled
-monoliths. **EnterpriseSim is a coherent, fictional Fortune 500 you can drop an AI agent
-into — plus a fair scoreboard to prove how well it does the work.**
+monoliths. EnterpriseSim is a coherent, fictional Fortune 500 you can drop an AI Worker
+into — enterprise context, applications, relationships, constraints, candidate decisions,
+and a fair scoreboard for what it actually does with all of it.
+
+---
+
+## What happens when an AI Worker has to make enterprise decisions, not just generate answers?
+
+EnterpriseSim lets you build a controlled enterprise scenario — a task, the applications and
+enterprise context around it, the relationships between them, the constraints, the candidate
+decisions on the table, and the criteria you'll evaluate against — then run a Worker through
+it and inspect what it actually did.
+
+```mermaid
+flowchart TD
+    A[Enterprise scenario] --> B[Task + context + constraints]
+    B --> C[AI Worker]
+    C --> D[Decisions]
+    D --> E[Evaluation]
+    E --> F[Evidence / results]
+```
+
+Inside one task, the Worker isn't reading a single document — it's sitting in the middle of
+an interconnected enterprise:
+
+```mermaid
+flowchart TD
+    ES[EnterpriseSim] --> APP["Applications<br/>Checkout / Payments / Loyalty"]
+    ES --> KN["Knowledge<br/>Policies / Standards / Rules"]
+    ES --> EXP["Experience<br/>Incidents / Lessons / Operations"]
+    APP --> W[AI Worker]
+    KN --> W
+    EXP --> W
+    W --> D[Decision]
+```
+
+One of the decision engines I'm experimenting with inside EnterpriseSim is **JEV**
+(`typesafe/jev-1.13`). Instead of free-form generated text, JEV returns a structured decision
+and a confidence/probability score — something you can repeat, compare, and score the same
+way every time. To be clear about the shape of this: **EnterpriseSim is the testbed,
+environment, and evaluator; JEV is one decision engine being tested inside it** — not the
+other way around, and not the only one (GPT shows up throughout the research too).
+
+```mermaid
+flowchart TD
+    ES[EnterpriseSim] --> SC["Scenario + task + context<br/>+ candidate decisions"]
+    SC --> JEV[JEV]
+    JEV --> DC["Decision + confidence"]
+    DC --> EV[EnterpriseSim evaluation]
+    EV --> R[Experiment result]
+```
+
+Most agent demos show you the final answer. I'm interested in everything that happened
+before it:
+
+- What did the Worker look at?
+- What did it ignore?
+- What did it decide to keep?
+- What did it decide to discard?
+- What happens when context is limited?
+- Which information survives?
+
+That's what EnterpriseSim is for.
+
+### A concrete example: guest checkout
+
+Picture a Worker responsible for placing a guest checkout order. It potentially has access
+to checkout rules, an order-idempotency standard, loyalty policy, pricing rules, payment
+behavior, application dependencies, past incidents, and general operational experience. It
+can't carry all of that into every decision.
+
+```mermaid
+flowchart TD
+    T[Guest checkout task] --> INFO["Enterprise information:<br/>checkout rules, idempotency, loyalty,<br/>pricing, payments, incidents, app dependencies"]
+    INFO --> TOO[Too much possible context]
+    TOO --> Q["What should the Worker keep?"]
+    Q --> WC[Working context]
+```
+
+The problem isn't access. The problem is selection. That turned into five controlled
+experiments, each changing one thing at a time:
+
+```mermaid
+flowchart TD
+    E1["Relevance<br/>Is relevant information enough?"] --> E2["Necessity<br/>Is it actually needed?"]
+    E2 --> E3["Richer context<br/>What changes as relationships get richer?"]
+    E3 --> E4["Enterprise structure<br/>Does the application graph change decisions?"]
+    E4 --> E5["Scarcity<br/>What happens when the Worker can't keep everything?"]
+```
+
+Internally these are tracked as `BC-0101` → `BC-0102` → `X-RICH-1` → `X-RICH-2` → `X-RICH-3`
+— reproducible IDs, not the story. The scarcity experiment is where the research question
+sharpened into something worth naming: **when an AI Worker cannot remember everything, does
+it know what it cannot afford to forget?**
+
+```mermaid
+flowchart TD
+    C[15 candidates] --> D["Independent model decisions<br/>(include / exclude + confidence)"]
+    D --> R[Confidence ranking]
+    R --> TOP["Top 5 only<br/>(the context budget)"]
+    TOP --> S["What gets sacrificed?"]
+```
+
+The model was not told about the budget. Fifteen candidates were independently judged
+include/exclude with a confidence score, exactly as in the richer-context experiments before
+it; a hard cap of five was then applied mechanically, after the fact, over the model's own
+ranked confidence. Full numbers and caveats:
+[`research/jev_context_decision/RESEARCH_STATE.md`](research/jev_context_decision/RESEARCH_STATE.md).
+
+This is one instance of a loop I expect to keep running as EnterpriseSim grows past guest
+checkout into more use cases:
+
+```mermaid
+flowchart TD
+    S[Scenario] --> H[Hypothesis]
+    H --> RW[Run AI Worker]
+    RW --> CD[Capture decisions]
+    CD --> EV[Evaluate]
+    EV --> IR[Inspect results]
+    IR --> L[Learn something]
+    L --> DN[Design next experiment]
+    DN --> S
+```
+
+### What you get
+
+- Simulated enterprise scenarios
+- Structured enterprise context
+- Candidate decisions
+- Application relationships
+- Constraints
+- Model/provider integrations
+- Experiment runners
+- Evaluation/scoring
+- Reproducible results
+- Raw research evidence
+
+This is an actual experimental testbed you can run, not just documentation about AI Workers.
+It's growing through concrete use cases — guest checkout and context assembly are the first
+one, not the only one.
 
 ---
 
@@ -61,96 +199,6 @@ python examples/quickstart/run_quickstart.py
 Runs a baseline Worker against a real benchmark case (`BC-0101`, context assembly) and
 prints an objective score — deterministic, zero dependencies. It scores **0.79 (PARTIAL)**,
 just under the pass bar: your baseline to beat. See [`examples/quickstart/`](examples/quickstart/).
-
----
-
-## Can a Worker make the right decisions, not just a good answer?
-
-Most LLM evaluation asks whether the final output was good. I wanted to ask an earlier
-question: does the Worker make the right decisions *along the way* — what information it
-uses, what it ignores, what it does next, what it keeps when it can't keep everything? That's
-what the research under [`research/jev_context_decision/`](research/jev_context_decision/) is
-for — the first of what I intend to be a growing set of concrete, simulated enterprise use
-cases built on EnterpriseSim, not the only thing this repo is for.
-
-```mermaid
-flowchart TD
-    A[Enterprise scenario] --> B[Task + context + constraints]
-    B --> C[AI Worker]
-    C --> D[Decisions]
-    D --> E[Evaluation]
-    E --> F[Evidence / results]
-```
-
-You define a scenario, a task, the enterprise context around it, the constraints, and the
-decisions you want to evaluate. You run a Worker through it. You measure what it actually
-did. Inside one task, the Worker isn't reading a single document — it's sitting in the
-middle of an interconnected enterprise:
-
-```mermaid
-flowchart TD
-    ES[EnterpriseSim] --> APP["Applications<br/>Checkout / Payments / Loyalty"]
-    ES --> KN["Knowledge<br/>Policies / Standards / Rules"]
-    ES --> EXP["Experience<br/>Incidents / Lessons / Operations"]
-    APP --> W[AI Worker]
-    KN --> W
-    EXP --> W
-    W --> D[Decision]
-```
-
-One of the models I'm experimenting with here is **JEV** (`typesafe/jev-1.13`), a
-decision-oriented model built around structured decisions and a confidence score instead of
-free-form generated text. Give it an enterprise state and a structured decision question, and
-it hands back a decision and a confidence — something repeatable, comparable, scoreable. I'm
-not claiming JEV is a better model or a better judge than GPT; the research is explicit that
-neither is established. It just gave me a second, differently-built way to ask "did the
-Worker make the right call," next to GPT.
-
-```mermaid
-flowchart TD
-    ES[EnterpriseSim testbed] --> JEV["JEV<br/>structured decision + confidence"]
-    ES --> GPT["GPT<br/>free-form response, parsed"]
-    JEV --> EV[Evaluation]
-    GPT --> EV
-    EV --> R[Experiment results]
-```
-
-### The first use case: guest checkout
-
-Picture a Worker responsible for placing a guest checkout order. It potentially has access
-to checkout rules, an order-idempotency standard, loyalty policy, pricing rules, payment
-behavior, application dependencies, past incidents, and general operational experience. It
-can't carry all of that into every decision.
-
-```mermaid
-flowchart TD
-    T[Guest checkout task] --> INFO["Enterprise information:<br/>checkout rules, idempotency, loyalty,<br/>pricing, payments, incidents, app dependencies"]
-    INFO --> TOO[Too much to keep all of it]
-    TOO --> Q["What should the Worker keep?"]
-    Q --> WC[Working context]
-```
-
-The problem isn't access. It's selection. That turned into five controlled experiments,
-each changing one thing at a time:
-
-```mermaid
-flowchart TD
-    E1["Relevance<br/>Is relevant information enough?"] --> E2["Necessity<br/>Is it actually needed?"]
-    E2 --> E3["Richer enterprise context<br/>What changes as relationships get richer?"]
-    E3 --> E4["Explicit enterprise structure<br/>Does the application graph change decisions?"]
-    E4 --> E5["Context scarcity<br/>What happens when the Worker can't keep everything?"]
-```
-
-Internally these are tracked as `BC-0101`, `BC-0102`, `X-RICH-1`, `X-RICH-2`, and `X-RICH-3`
-— reproducible IDs, not the story. The full write-up, with real numbers and real caveats, is
-in [`research/jev_context_decision/RESEARCH_STATE.md`](research/jev_context_decision/RESEARCH_STATE.md).
-
-**What's actually in there:** simulated enterprise scenarios and candidate context, explicit
-decision criteria for each experiment, model/provider integrations for Jev and GPT, runnable
-experiment code, evaluation and scoring, raw results for every run, an offline test suite
-(129 tests, no network calls), and the full research narrative with its findings and open
-questions. It's a testbed that's growing through concrete use cases, not a finished
-enterprise simulator — guest checkout and context assembly are the first one.
 
 ---
 
